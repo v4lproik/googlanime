@@ -14,7 +14,6 @@ Router.map(function() {
   this.resource('users', function() {});
   this.resource('animes', function() {});
   this.resource('signup', function() {});
-  this.resource('login', function() {});
   this.resource('profile', function() {});
   this.resource('logout', function() {});
   this.resource('account', function() {
@@ -28,7 +27,6 @@ Router.map(function() {
     this.route('page', function() {});
   });
   this.resource('search', {queryParams: ['q']}, function() {});
-  this.resource('search/anime', { path: '/search/anime' }, function() { });
 });
 
 export default Router;

@@ -10,5 +10,6 @@ export default Ember.Route.extend({
 
   model: function(params) {
     console.debug(params);
+    this.controllerFor("search").set("query", params.q);
   }
 });
