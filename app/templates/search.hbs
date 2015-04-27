@@ -8,8 +8,6 @@
         }
     });
 
-
-
     //prevent redirection
     $('ul.search-type li a').on('click', function(e) {
         e.preventDefault();
@@ -19,11 +17,24 @@
     {
         $('ul.search-type li').click(function(e)
         {
+            var clickEl = $('ul.search-type li a');
+
+            //deselect
+            clickEl.each(function(){
+                $(this).css("box-shadow", "none");
+                $(this).css("z-index", "none");
+                $(this).css("border", "1px solid #ddd");
+                $(this).css("border-bottom", "none");
+
+            });
+            //select
+            $(this).find("a").css("border-top", "1px solid #3B6F96");
+            $(this).find("a").css("box-shadow", "inset 0 1.5px #3B6F96");
+            $(this).find("a").css("border-bottom", "none");
+
             type = $(this).find("a").text();
         });
     });
-
-
 </script>
 
 {{#if controller.query}}
@@ -38,11 +49,22 @@
 
 <div class="container vertical-center">
   <div class="row " >
-      <div style="text-align: center;font-size: xx-large" class="col-xs-12 center-block">
+      <div class="col-xs-12 center-block container-brand">
           GooglAnime
       </div>
       <div style="height: 30px;" class="col-xs-12 center-block">
       </div>
+      <div class="col-xs-8 center-block">
+          <nav>
+              <ul class="search-type pagination custom">
+                  <li><a class="default" href="#">Anime</a></li>
+                  <li><a href="#">Manga</a></li>
+                  <li><a href="#">Mangaka</a></li>
+                  <li><a href="#">Character</a></li>
+                  <li><a href="#">Podcast</a></li>
+              </ul>
+          </nav>
+      </div><!-- /.col-lg-6 -->
       <div class="col-xs-8 center-block">
           <div class="input-group">
                   <div class="container-4 input-group-btn right-addon">
@@ -55,19 +77,6 @@
               <!--</div>-->
           </div><!-- /input-group -->
       </div><!-- /.col-lg-6 -->
-
-      <div class="col-xs-8 center-block">
-          <nav style="margin-top:-20px">
-            <ul class="search-type pagination">
-                <li><a href="#">Anime</a></li>
-                <li><a href="#">Manga</a></li>
-                <li><a href="#">Mangaka</a></li>
-                <li><a href="#">Character</a></li>
-                <li><a href="#">Podcast</a></li>
-            </ul>
-        </nav>
-      </div><!-- /.col-lg-6 -->
-
   </div><!-- /.row -->
 </div><!-- /.row -->
 
