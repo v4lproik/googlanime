@@ -1,6 +1,8 @@
 # googlanime
 
-This is simple Ember.JS application that implements the following feature:
+This project is not meant to be online education purpose only at the moment.
+
+This is a simple Ember.JS application that implements the following feature:
 
 - Sign in with google/facebook/github using torii library
 - QueryParams

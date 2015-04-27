@@ -26,7 +26,6 @@ export default Ember.Route.extend({
 
     switch(params.type) {
       case "anime":
-        console.debug("type=>anime");
         return this.store.findAll('anime');
         break;
     }

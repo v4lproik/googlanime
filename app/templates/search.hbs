@@ -1,4 +1,5 @@
 <script type="text/javascript">
+
     var type = "Anime";
 
     $('#search').keypress(function(e){
@@ -41,9 +42,15 @@
             top: $('#navtop').height()
         }
     });
+
+    $(".serie-poster-image").on({
+        "mouseover" : function() {
+            $("#serie-poster").attr('src', this.src);
+        }
+    });
+
 </script>
 {{#if controller.query}}
-    <!-- subnav here -->
     <div class="navbar subnav" role="navigation">
           <div class="navbar-left">
               <ul class="pager subnav-pager ">
@@ -76,12 +83,72 @@
           </div>
     </div>
     <div class="container-fluid container-search-result">
-      {{#if layoutAnimeList}}
+        <div class="col-xs-2" style="margin-left:10px;margin-right: 20px">
+            <div class="row">
+                  <img id="serie-poster" style="max-width: 100%;" src="https://static.hummingbird.me/anime/poster_images/000/003/936/large/gqt6iYB.jpg?1419000387">
+                <!--<a data-tooltip="Watch Trailer" class="trailer-link" data-bindattr-991="991" data-ember-action="992">-->
+                <!--<i class="fa fa-youtube-play"></i>-->
+                <!--</a>-->
+            </div>
+            <div class="row">
+                <div class="series-panel">
+                    <div class="serie-info">
+                        <h4 class="serie-titles" style="text-align: left;padding-bottom:5px;border-bottom: 1px solid black">
+                            Titles
+                        </h4>
+                        <ul class="series-metadata">
+                            <li>English title</li>
+                            <li>Jap title</li>
+                        </ul>
+
+                        <h4 class="serie-information" style="text-align: left;padding-bottom:5px;border-bottom: 1px solid black">
+                            Information
+                        </h4>
+                        <ul class="series-metadata">
+                            <li>TV</li>
+                            <li title="Violence, Profanity">R17+</li>
+                            <li>
+                                64 episodes
+                            </li>
+                            <li>
+
+                                24
+
+                                min
+                            </li>
+                            <li>Aired from 5 Apr 2009 to 4 Jul 2010</li>
+                            <li>Genres: <li>Action</li>
+
+                            <li>Adventure</li>
+
+                            <li>Drama</li>
+
+                            <li>Fantasy</li>
+
+                            <li>Magic</li>
+
+                            <li>Military</li></li>
+
+                            <li>Studios:  <li>Bones</li>
+
+                            <li>Aniplex</li>
+
+                            <li>Square Enix</li>
+
+                            <li>FUNimation Entertainment</li>
+
+                            <li>Mainichi Broadcasting</li></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+      {{#if layoutList}}
         {{#each anime in model}}
           {{model.titles.canonical}}
             <div class="row">
                 <a href="#" class="thumbnail">
-                  {{debugger}}
                     <img src="{{anime.poster_image}}" alt="125x125">
                 </a>
             </div>
@@ -89,15 +156,19 @@
       {{else}}
         {{#each anime in model}}
           {{model.titles.canonical}}
-            <div class="col-xs-2">
-                <a href="#" class="thumbnail">
-                    <img src="{{anime.poster_image}}" alt="125x125">
+            <div class="col-xs-1" style="margin: 0;padding: 0">
+                <a href="#" class="thumbnail" style="margin: 0;padding: 0">
+                    <img class="serie-poster-image" src="{{anime.poster_image}}" alt="125x125">
+                    <div style="display: none">
+                        <div class="serie-title-canonical">
+                          {{anime.titles.canonical}}
+                        </div>
+                    </div>
                 </a>
             </div>
         {{/each}}
       {{/if}}
     </div>
-
 {{else}}
     <div class="container">
       <div class="container vertical-center">
@@ -130,4 +201,3 @@
       </div>
     </div>
 {{/if}}
-
