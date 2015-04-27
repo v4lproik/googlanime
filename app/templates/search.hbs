@@ -3,7 +3,7 @@
 
     $('#search').keypress(function(e){
         if(e.which == 13){
-            var url = "search?q=" + $('#search').val() + "&type=" + type.toLowerCase();
+            var url = "search?query=" + $('#search').val() + "&type=" + type.toLowerCase();
             window.location.replace(url);
         }
     });
@@ -25,15 +25,16 @@
 
 
 </script>
-{{queryParams}}
-{{query}}
 
 {{#if controller.query}}
-  query
-{{else}}
-pas query
+<div class="alert alert-info">
+    <a class="close" data-dismiss="alert">×</a>
+    Query Params:<br/>
+    {{#each q in queryParams}}
+      {{q}} => {{query-param q controller}} <br/>
+    {{/each}}
+</div>
 {{/if}}
-
 
 <div class="container vertical-center">
   <div class="row " >
