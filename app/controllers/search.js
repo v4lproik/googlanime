@@ -6,6 +6,8 @@ export default Ember.Controller.extend({
   query: null,
   type: null,
 
+  layoutList: false,
+
   actions: {
     search: function() {
       this.set('query', this.get('searchValue'));
