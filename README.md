@@ -16,3 +16,4 @@ This assumes you have git, node, bower, and ember-cli installed
 npm install
 bower install
 ```
+
