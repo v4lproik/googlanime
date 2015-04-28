@@ -59,3 +59,8 @@ body{
 .navbar-default .navbar-nav .open .dropdown-menu>li>a,.navbar-custom .navbar-nav .open .dropdown-menu {
   color: rgb(59, 111, 150);
 }
+
+.navbar-fixed-bottom{
+  padding-top: 10px;
+  background-color: #282e34;
+}

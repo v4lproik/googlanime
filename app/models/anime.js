@@ -5,7 +5,7 @@ App.ApplicationAdapter = DS.FixtureAdapter.extend();
 
 let Anime = DS.Model.extend({
   slug: DS.attr('string'),
-  synopsys: DS.attr('string'),
+  synopsis: DS.attr('string'),
   started_airing_date: DS.attr('string'),
   finished_airing_date: DS.attr('string'),
   youtube_video_id: DS.attr('string'),

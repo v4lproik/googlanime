@@ -1,4 +1,5 @@
 <script type="text/javascript">
+
     var type = "Anime";
 
     $('#search').keypress(function(e){
@@ -41,53 +42,234 @@
             top: $('#navtop').height()
         }
     });
+
+    $(".serie-poster-image").on({
+        "mouseover" : function() {
+
+            //update img
+            $("#serie-poster").attr('src', this.src);
+
+            //get parent"
+            var parent = $(this).next('.serie-hidden');
+
+            var canonical = parent.find("#serie-title-canonical").text();
+            if(canonical != ""){
+                $('#serie-title-canonical-left').append("Canonical: " + canonical);
+                $('#serie-title-canonical-left').css("display", "block");
+            }else
+                $('#serie-title-canonical-left').css("display", "none");
+
+            var english = parent.find(".serie-title-english").text();
+            if(english != ""){
+                $('#serie-title-english-left').text("English: " + english)
+                $('#serie-title-english-left').css("display", "block");
+            }else
+                $('#serie-title-english-left').css("display", "none");
+
+            var japanese = parent.find(".serie-title-japanese").text();
+            if(japanese != ""){
+                $('#serie-title-japanese-left').text("Japanese: " + japanese)
+                $('#serie-title-japanese-left').css("display", "block");
+            }else
+                $('#serie-title-japanese-left').css("display", "none");
+
+            var romaji = parent.find(".serie-title-romaji").text();
+            if(romaji != ""){
+                $('#serie-title-romaji-left').text("Romaji: " + romaji)
+                $('#serie-title-romaji-left').css("display", "block");
+            }else
+                $('#serie-title-romaji-left').css("display", "none");
+
+            var romaji = parent.find(".serie-started-airing-date").text();
+            if(romaji != ""){
+                $('#serie-started-airing-date-left').text("Aired: " + romaji)
+                $('#serie-started-airing-date-left').css("display", "block");
+            }else
+                $('#serie-started-airing-date-left').css("display", "none");
+
+            var romaji = parent.find(".serie-finished-airing-date").text();
+            if(romaji != ""){
+                $('#serie-finished-airing-date-left').text("To: " + romaji)
+                $('#serie-finished-airing-date-left').css("display", "block");
+            }else
+                $('#serie-finished-airing-date-left').css("display", "none");
+
+            var romaji = parent.find(".serie-youtube-video-id").text();
+            if(romaji != ""){
+                $('#serie-youtube-video-id-left').text("To: " + romaji)
+                $('#serie-youtube-video-id-left').css("display", "block");
+            }else
+                $('#serie-youtube-video-id-left').css("display", "none");
+
+            var romaji = parent.find(".serie-age-rating").text();
+            if(romaji != ""){
+                $('#serie-age-rating-left').text("To: " + romaji)
+                $('#serie-age-rating-left').css("display", "block");
+            }else
+                $('#serie-age-rating-left').css("display", "none");
+
+            var romaji = parent.find(".serie-episode-count").text();
+            if(romaji != ""){
+                $('#serie-episode-count-left').text("To: " + romaji)
+                $('#serie-episode-count-left').css("display", "block");
+            }else
+                $('#serie-episode-count-left').css("display", "none");
+
+            var romaji = parent.find(".serie-episode-length").text();
+            if(romaji != ""){
+                $('#serie-episode-length-left').text("To: " + romaji)
+                $('#sserie-episode-length-left').css("display", "block");
+            }else
+                $('#serie-episode-length-left').css("display", "none");
+
+            var romaji = parent.find(".serie-show-type").text();
+            if(romaji != ""){
+                $('#serie-show-type-left').text("To: " + romaji)
+                $('#serie-show-type-left').css("display", "block");
+            }else
+                $('#serie-show-type-left').css("display", "none");
+
+
+        }
+    });
 </script>
 {{#if controller.query}}
-    <!-- subnav here -->
     <div class="navbar subnav" role="navigation">
-          <div class="navbar-left">
-              <ul class="pager subnav-pager ">
-                  <div class="col-xs-8">
-                      <div class="input-group">
-                          <div class="container-4 input-group-btn right-addon">
-                            {{input id="search2" required="true" type="text" class="form-control" placeholder="Search for..." value=controller.query}}
-                              <span class="icon"><i class="fa fa-search"></i></span>
+        <div class="navbar-left">
+            <ul class="pager subnav-pager ">
+                <div class="col-xs-5">
+                    <div class="input-group">
+                        <div class="container-4 input-group-btn right-addon">
+                          {{input id="search2" required="true" type="text" class="form-control" placeholder="Search for..." value=controller.query}}
+                            <span class="icon"><i class="fa fa-search"></i></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-2">
+                    <div class="pull-right" >
+                        <button href="#Foo" class="btn btn-default btn btn-filter" data-toggle="collapse">
+                            <span class="glyphicon glyphicon-filter" ></span>
+                        </button>
+                    </div>
+                    <div class="pull-right" style="margin-left:0px;">
+                        <button type="button" class="btn btn-default" aria-label="Left Align" style="" {{action "changeLayoutToThumbnail"}}>
+                            <span class="glyphicon glyphicon-th" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                    <div class="pull-right">
+                        <button type="button" class="btn btn-default" aria-label="Left Align" style="" {{action "changeLayoutToList"}}>
+                            <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                </div>
+            </ul>
+        </div>
+    </div>
+    <div class="container-fluid container-search-result">
+      {{#if layoutList}}
+        {{#each anime in model}}
+            <div class="row" style="border-bottom: 1px solid #ddd;padding: 15px;">
+                <div class="col-md-1 vertical-center-anime">
+                    <img style="max-width: 100%;" src="{{anime.poster_image}}">
+                </div>
+                <div class="col-md-9" style="text-align: justify;margin: 0;padding: 0">
+                    <h4 class="media-heading">{{anime.titles.romaji}}<small><i></i></small></h4>
+
+                  <div class="vertical-center-anime col-center-block">{{anime.synopsis}}</div>
+                </div>
+                <div class="col-md-1 vertical-center-anime centering">
+                    {{anime.show_type}}
+                </div>
+                <div class="col-md-1 vertical-center-anime centering">
+                    {{anime.episode_count}}
+                </div>
+            </div>
+        {{/each}}
+      {{else}}
+          <div class="col-xs-2" style="margin-left:10px;margin-right: 20px">
+              <div class="row">
+                  <img id="serie-poster" style="max-width: 100%;" src="">
+              </div>
+              <div class="row">
+                  <div id="series-panel">
+                      <div id="serie-info">
+                          <h4 style="text-align: left;padding-bottom:5px;border-bottom: 1px solid black">
+                              Titles
+                          </h4>
+                          <div id="serie-titles">
+                              <div style="display: none" id="serie-title-canonical-left">Canonical: </div>
+                              <div style="display: none" id="serie-title-english-left">English: </div>
+                              <div style="display: none" id="serie-title-japanese-left">Japanese: </div>
+                              <div style="display: none" id="serie-title-romaji-left">Romaji: </div>
+                          </div>
+                          <h4 id="serie-information" style="text-align: left;padding-bottom:5px;border-bottom: 1px solid black">
+                              Information
+                          </h4>
+                          <div id="serie-metadata">
+                              <div id="serie-started-airing-date-left">Aired: </div>
+                              <div id="serie-finished-airing-date-left">To: </div>
+                              <div id="serie-youtube-video-id-left">Trailer: </div>
+                              <div id="serie-age-rating-left">Rating: </div>
+                              <div id="serie-episode-count-left">Episodes: </div>
+                              <div id="serie-episode-length-left">Duration: </div>
+                              <div id="serie-show-type-left">Type: </div>
                           </div>
                       </div>
                   </div>
-              </ul>
+              </div>
           </div>
+        {{#each anime in model}}
+          {{model.titles.canonical}}
+            <div class="col-xs-1" style="margin: 0;padding: 0">
+                <a href="#" class="thumbnail" style="margin: 0;padding: 0">
+                    <img class="serie-poster-image" src="{{anime.poster_image}}" alt="125x125">
+                    <div class="serie-hidden" style="display: none">
+                        <div class="serie-title-canonical">{{anime.titles.canonical}}</div>
+                        <div class="serie-title-english">{{anime.titles.english}}</div>
+                        <div class="serie-title-japanese">{{anime.titles.japanese}}</div>
+                        <div class="serie-started-airing-date">{{anime.started_airing_date}}</div>
+                        <div class="serie-finished-airing-date">{{anime.finished_airing_date}}</div>
+                        <div class="serie-youtube-video-id">{{anime.youtube_video_id}}</div>
+                        <div class="serie-age-rating">{{anime.age_rating}}</div>
+                        <div class="serie-episode-count">{{anime.episode_count}}</div>
+                        <div class="serie-episode-length">{{anime.episode_length}}</div>
+                        <div class="serie-show-type">{{anime.show_type}}</div>
+                        <!--<div class="serie-genres">{{anime.genres}}</div>-->
+                    </div>
+                </a>
+            </div>
+        {{/each}}
+      {{/if}}
     </div>
 {{else}}
     <div class="container">
-      <div class="container vertical-center">
-          <div class="row " >
-              <div class="col-xs-12 center-block container-brand">
-                  GooglAnime
-              </div>
-              <div style="height: 30px;" class="col-xs-12 center-block">
-              </div>
-              <div class="col-xs-8 center-block">
-                  <nav>
-                      <ul class="search-type pagination custom">
-                          <li><a class="default" href="#">Anime</a></li>
-                          <li><a href="#">Manga</a></li>
-                          <li><a href="#">Mangaka</a></li>
-                          <li><a href="#">Character</a></li>
-                          <li><a href="#">Podcast</a></li>
-                      </ul>
-                  </nav>
-              </div>
-              <div class="col-xs-8 center-block">
-                  <div class="input-group">
-                      <div class="container-4 input-group-btn right-addon">
-                        {{input id="search" required="true" type="text" class="form-control" placeholder="Search for..." value=searchValue}}
-                          <span class="icon"><i class="fa fa-search"></i></span>
-                      </div>
-                  </div>
-              </div>
-          </div>
-      </div>
+        <div class="container vertical-center">
+            <div class="row " >
+                <div class="col-xs-12 center-block container-brand">
+                    GooglAnime
+                </div>
+                <div style="height: 30px;" class="col-xs-12 center-block">
+                </div>
+                <div class="col-xs-8 center-block">
+                    <nav>
+                        <ul class="search-type pagination custom">
+                            <li><a class="default" href="#">Anime</a></li>
+                            <li><a href="#">Manga</a></li>
+                            <li><a href="#">Mangaka</a></li>
+                            <li><a href="#">Character</a></li>
+                            <li><a href="#">Podcast</a></li>
+                        </ul>
+                    </nav>
+                </div>
+                <div class="col-xs-8 center-block">
+                    <div class="input-group">
+                        <div class="container-4 input-group-btn right-addon">
+                          {{input id="search" required="true" type="text" class="form-control" placeholder="Search for..." value=searchValue}}
+                            <span class="icon"><i class="fa fa-search"></i></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 {{/if}}
-
