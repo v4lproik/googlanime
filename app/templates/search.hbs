@@ -96,40 +96,38 @@
 
             var romaji = parent.find(".serie-youtube-video-id").text();
             if(romaji != ""){
-                $('#serie-youtube-video-id-left').text("To: " + romaji)
+                $('#serie-youtube-video-id-left').text("Trailer: " + romaji)
                 $('#serie-youtube-video-id-left').css("display", "block");
             }else
                 $('#serie-youtube-video-id-left').css("display", "none");
 
             var romaji = parent.find(".serie-age-rating").text();
             if(romaji != ""){
-                $('#serie-age-rating-left').text("To: " + romaji)
+                $('#serie-age-rating-left').text("Rating: " + romaji)
                 $('#serie-age-rating-left').css("display", "block");
             }else
                 $('#serie-age-rating-left').css("display", "none");
 
             var romaji = parent.find(".serie-episode-count").text();
             if(romaji != ""){
-                $('#serie-episode-count-left').text("To: " + romaji)
+                $('#serie-episode-count-left').text("Episodes: " + romaji)
                 $('#serie-episode-count-left').css("display", "block");
             }else
                 $('#serie-episode-count-left').css("display", "none");
 
             var romaji = parent.find(".serie-episode-length").text();
             if(romaji != ""){
-                $('#serie-episode-length-left').text("To: " + romaji)
+                $('#serie-episode-length-left').text("Duration: " + romaji)
                 $('#sserie-episode-length-left').css("display", "block");
             }else
                 $('#serie-episode-length-left').css("display", "none");
 
             var romaji = parent.find(".serie-show-type").text();
             if(romaji != ""){
-                $('#serie-show-type-left').text("To: " + romaji)
+                $('#serie-show-type-left').text("Type: " + romaji)
                 $('#serie-show-type-left').css("display", "block");
             }else
                 $('#serie-show-type-left').css("display", "none");
-
-
         }
     });
 </script>
@@ -225,6 +223,7 @@
                     <img class="serie-poster-image" src="{{anime.poster_image}}" alt="125x125">
                     <div class="serie-hidden" style="display: none">
                         <div class="serie-title-canonical">{{anime.titles.canonical}}</div>
+                        <div class="serie-title-romaji">{{anime.titles.romaji}}</div>
                         <div class="serie-title-english">{{anime.titles.english}}</div>
                         <div class="serie-title-japanese">{{anime.titles.japanese}}</div>
                         <div class="serie-started-airing-date">{{anime.started_airing_date}}</div>
