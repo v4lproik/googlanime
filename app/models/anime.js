@@ -27,14 +27,14 @@ Anime.reopenClass({
     {
       "id":2,
       "titles":
-        [
+
           {
             "canonical":"Cowboy Bebop: Tengoku no Tobira",
             "english":"Cowboy Bebop: Knockin' on Heaven's Door",
             "romaji":"Cowboy Bebop: Tengoku no Tobira",
             "japanese":null
           }
-        ],
+        ,
       "slug":"cowboy-bebop-tengoku-no-tobira",
       "synopsis":"As the Cowboy Bebop crew travels the stars, they learn of the largest bounty yet, a huge 300 million Woolongs. Apparently, someone is wielding a hugely powerful chemical weapon, and of course the authorities are at a loss to stop it. The war to take down the most dangerous criminal yet forces the crew to face a true madman, with bare hope to succeed.\r\n(Source: ANN) ",
       "started_airing_date":"2001-09-01",
