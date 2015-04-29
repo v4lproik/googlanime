@@ -42,94 +42,6 @@
             top: $('#navtop').height()
         }
     });
-
-    $(".serie-poster-image").on({
-        "mouseover" : function() {
-
-            //update img
-            $("#serie-poster").attr('src', this.src);
-
-            //get parent"
-            var parent = $(this).next('.serie-hidden');
-
-            var canonical = parent.find("#serie-title-canonical").text();
-            if(canonical != ""){
-                $('#serie-title-canonical-left').append("Canonical: " + canonical);
-                $('#serie-title-canonical-left').css("display", "block");
-            }else
-                $('#serie-title-canonical-left').css("display", "none");
-
-            var english = parent.find(".serie-title-english").text();
-            if(english != ""){
-                $('#serie-title-english-left').text("English: " + english)
-                $('#serie-title-english-left').css("display", "block");
-            }else
-                $('#serie-title-english-left').css("display", "none");
-
-            var japanese = parent.find(".serie-title-japanese").text();
-            if(japanese != ""){
-                $('#serie-title-japanese-left').text("Japanese: " + japanese)
-                $('#serie-title-japanese-left').css("display", "block");
-            }else
-                $('#serie-title-japanese-left').css("display", "none");
-
-            var romaji = parent.find(".serie-title-romaji").text();
-            if(romaji != ""){
-                $('#serie-title-romaji-left').text("Romaji: " + romaji)
-                $('#serie-title-romaji-left').css("display", "block");
-            }else
-                $('#serie-title-romaji-left').css("display", "none");
-
-            var romaji = parent.find(".serie-started-airing-date").text();
-            if(romaji != ""){
-                $('#serie-started-airing-date-left').text("Aired: " + romaji)
-                $('#serie-started-airing-date-left').css("display", "block");
-            }else
-                $('#serie-started-airing-date-left').css("display", "none");
-
-            var romaji = parent.find(".serie-finished-airing-date").text();
-            if(romaji != ""){
-                $('#serie-finished-airing-date-left').text("To: " + romaji)
-                $('#serie-finished-airing-date-left').css("display", "block");
-            }else
-                $('#serie-finished-airing-date-left').css("display", "none");
-
-            var romaji = parent.find(".serie-youtube-video-id").text();
-            if(romaji != ""){
-                $('#serie-youtube-video-id-left').text("Trailer: " + romaji)
-                $('#serie-youtube-video-id-left').css("display", "block");
-            }else
-                $('#serie-youtube-video-id-left').css("display", "none");
-
-            var romaji = parent.find(".serie-age-rating").text();
-            if(romaji != ""){
-                $('#serie-age-rating-left').text("Rating: " + romaji)
-                $('#serie-age-rating-left').css("display", "block");
-            }else
-                $('#serie-age-rating-left').css("display", "none");
-
-            var romaji = parent.find(".serie-episode-count").text();
-            if(romaji != ""){
-                $('#serie-episode-count-left').text("Episodes: " + romaji)
-                $('#serie-episode-count-left').css("display", "block");
-            }else
-                $('#serie-episode-count-left').css("display", "none");
-
-            var romaji = parent.find(".serie-episode-length").text();
-            if(romaji != ""){
-                $('#serie-episode-length-left').text("Duration: " + romaji)
-                $('#sserie-episode-length-left').css("display", "block");
-            }else
-                $('#serie-episode-length-left').css("display", "none");
-
-            var romaji = parent.find(".serie-show-type").text();
-            if(romaji != ""){
-                $('#serie-show-type-left').text("Type: " + romaji)
-                $('#serie-show-type-left').css("display", "block");
-            }else
-                $('#serie-show-type-left').css("display", "none");
-        }
-    });
 </script>
 {{#if controller.query}}
     <div class="navbar subnav" role="navigation">
@@ -173,54 +85,51 @@
                 <div class="col-md-9" style="text-align: justify;margin: 0;padding: 0">
                     <h4 class="media-heading">{{anime.titles.romaji}}<small><i></i></small></h4>
 
-                  <div class="vertical-center-anime col-center-block">{{anime.synopsis}}</div>
+                    <div class="vertical-center-anime col-center-block">{{anime.synopsis}}</div>
                 </div>
                 <div class="col-md-1 vertical-center-anime centering">
-                    {{anime.show_type}}
+                  {{anime.show_type}}
                 </div>
                 <div class="col-md-1 vertical-center-anime centering">
-                    {{anime.episode_count}}
+                  {{anime.episode_count}}
                 </div>
             </div>
         {{/each}}
       {{else}}
           <div class="col-xs-2" style="margin-left:10px;margin-right: 20px">
-              <div class="row">
-                  <img id="serie-poster" style="max-width: 100%;" src="">
-              </div>
-              <div class="row">
-                  <div id="series-panel">
+              <div id="series-panel">
+                  <div class="row">
+                      <img id="serie-poster" style="max-width: 100%;" src="{{animeSelected.poster_image}}">
+                  </div>
+                  <div class="row">
                       <div id="serie-info">
                           <h4 style="text-align: left;padding-bottom:5px;border-bottom: 1px solid black">
                               Titles
                           </h4>
                           <div id="serie-titles">
-                              <div style="display: none" id="serie-title-canonical-left">Canonical: </div>
-                              <div style="display: none" id="serie-title-english-left">English: </div>
-                              <div style="display: none" id="serie-title-japanese-left">Japanese: </div>
-                              <div style="display: none" id="serie-title-romaji-left">Romaji: </div>
+                              <div id="serie-title-romaji-left">Romaji: {{animeSelected.titles.romaji}}</div>
+                              <div id="serie-title-japanese-left">Japanese: {{animeSelected.titles.japanese}}</div>
                           </div>
                           <h4 id="serie-information" style="text-align: left;padding-bottom:5px;border-bottom: 1px solid black">
                               Information
                           </h4>
                           <div id="serie-metadata">
-                              <div id="serie-started-airing-date-left">Aired: </div>
-                              <div id="serie-finished-airing-date-left">To: </div>
-                              <div id="serie-youtube-video-id-left">Trailer: </div>
-                              <div id="serie-age-rating-left">Rating: </div>
-                              <div id="serie-episode-count-left">Episodes: </div>
-                              <div id="serie-episode-length-left">Duration: </div>
-                              <div id="serie-show-type-left">Type: </div>
+                              <div id="serie-started-airing-date-left">Aired: {{animeSelected.started_airing_date}}</div>
+                              <div id="serie-finished-airing-date-left">To: {{animeSelected.finished_airing_date}}</div>
+                              <div id="serie-youtube-video-id-left">Trailer: http://youtube.com/{{animeSelected.youtube_video_id}}</div>
+                              <div id="serie-age-rating-left">Rating: {{animeSelected.age_rating}}</div>
+                              <div id="serie-episode-count-left">Episodes: {{animeSelected.episode_count}}</div>
+                              <div id="serie-episode-length-left">Duration: {{animeSelected.episode_length}}</div>
+                              <div id="serie-show-type-left">Type: {{animeSelected.show_type}}</div>
                           </div>
                       </div>
-                  </div>
-              </div>
+                  </div></div>
           </div>
         {{#each anime in model}}
           {{model.titles.canonical}}
             <div class="col-xs-1" style="margin: 0;padding: 0">
                 <a href="#" class="thumbnail" style="margin: 0;padding: 0">
-                    <img class="serie-poster-image" src="{{anime.poster_image}}" alt="125x125">
+                    <img {{action "updateSeriePanel" anime on="mouseEnter"}} class="serie-poster-image" src="{{anime.poster_image}}" alt="125x125">
                     <div class="serie-hidden" style="display: none">
                         <div class="serie-title-canonical">{{anime.titles.canonical}}</div>
                         <div class="serie-title-romaji">{{anime.titles.romaji}}</div>
