@@ -26,7 +26,14 @@ export default Ember.Route.extend({
 
     switch(params.type) {
       case "anime":
-        return this.store.findAll('anime');
+        //set the first object of the list to selectedAnime so we won't have an ugly empty display
+        var controller = this.controllerFor("search");
+        return this.store.findAll('anime').then(
+          function(animes){
+            controller.set("animeSelected", animes.get("firstObject"));
+            return animes;
+        });
+
         break;
     }
   }
