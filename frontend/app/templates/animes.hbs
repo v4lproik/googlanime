@@ -1,0 +1,80 @@
+<div class="row" style="margin-top:-10px;vertical-align: middle;">
+    <div class="pull-left">
+        <h4>Animes</h4>
+    </div>
+    <div class="pull-right" >
+        <button href="#Foo" class="btn btn-default btn btn-filter" data-toggle="collapse">
+            <span class="glyphicon glyphicon-filter" ></span>
+        </button>
+    </div>
+    <div class="pull-right" style="margin-left:0px;">
+        <button type="button" class="btn btn-default" aria-label="Left Align" style="" {{action "changeAnimeLayoutToThumbnail"}}>
+            <span class="glyphicon glyphicon-th" aria-hidden="true"></span>
+        </button>
+    </div>
+    <div class="pull-right">
+        <button type="button" class="btn btn-default" aria-label="Left Align" style="" {{action "changeAnimeLayoutToList"}}>
+            <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+        </button>
+    </div>
+</div>
+<div class="row" style="margin-top:-10px;">
+    <hr>
+</div>
+<div class="row">
+    <div id="Foo" class="collapse" style="Text-size:smallest;">
+      {{#em-form form_layout="default" model=someModel action="some-action"}}
+          <fieldset>
+            {{em-select
+            label="Type"
+            property="gender"
+            content=genderOptions
+            optionValuePath="content.id"
+            optionLabelPath="content.name"
+            prompt="--select--"}}
+            {{em-select
+            label="Score"
+            property="gender"
+            content=genderOptions
+            optionValuePath="content.id"
+            optionLabelPath="content.name"
+            prompt="--select--"}}
+            {{em-select
+
+            label="Status"
+            property="gender"
+            content=genderOptions
+            optionValuePath="content.id"
+            optionLabelPath="content.name"
+            prompt="--select--"}}
+
+          </fieldset>
+      {{/em-form}}
+        <hr>
+
+    </div>
+</div>
+<div class="row">
+    <div id="layoutAnimeList" class="col-md-12">
+      {{#if layoutAnimeList}}
+        {{#each anime in model}}
+          {{model.titles.canonical}}
+            <div class="row">
+                <a href="#" class="thumbnail">
+                    {{debugger}}
+                    <img src="{{anime.poster_image}}" alt="125x125">
+                </a>
+            </div>
+        {{/each}}
+      {{else}}
+        {{#each anime in model}}
+          {{model.titles.canonical}}
+            <div class="col-xs-2">
+                <a href="#" class="thumbnail">
+                    <img src="{{anime.poster_image}}" alt="125x125">
+                </a>
+            </div>
+        {{/each}}
+      {{/if}}
+    </div>
+</div>
