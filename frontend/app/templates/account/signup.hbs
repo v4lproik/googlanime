@@ -1,0 +1,55 @@
+<div class="container">
+  <div class="row">
+      <div class="col-xs-12">
+          <center>
+              <!--<img src="https://d39bd7m80qu33d.cloudfront.net/1.73.6/img/docker-logo-small.png">-->
+              <h1>Join {{controllers.application.appName}} and be part of the community</h1>
+              <hr>
+          </center>
+      </div>
+      <div class="col-xs-12 col-md-6">
+          <article>
+              <h2>Manga and anime history</h2>
+              <p>Browse, host, share and manage your manga and anime.</p>
+          </article>
+          <article>
+              <h2>Share your profile</h2>
+              <p>Integrate and share your profile with your friends.</p>
+          </article>
+          <article>
+              <h2>Get the latest news</h2>
+              <p>Subscribes to the {{controllers.application.appName}} and get the latest updates</p>
+          </article>
+      </div>
+
+      <div class="col-xs-6 col-md-6">
+          <br />
+          <form method="post" id="form-login">
+              <!--<div class="form-group">-->
+                  <!--<input id="id_username"  class="form-control" maxlength="30" name="username" placeholder="Username" type="text">-->
+              <!--</div>-->
+              <!--<div class="form-group">-->
+                  <!--<input id="id_password1" class="form-control" name="password1" placeholder="Password" type="password">-->
+              <!--</div>-->
+              <!--<div class="form-group">-->
+                  <!--<input id="id_email" class="form-control" name="email" placeholder="Email Address" type="text">-->
+              <!--</div>-->
+              <!--<div class="form-group">-->
+                  <!--<button type="button" class="btn btn-primary">Sign up</button>-->
+                  <!--<label class="light right"><input checked="checked" id="id_subscribe" name="subscribe" type="checkbox"> &nbsp; Yes! I want the weekly newsletter!</label>-->
+              <!--</div>-->
+
+              <a {{action 'signUpWithFacebook'}} class="btn btn-block btn-social btn-facebook">
+                  <i class="fa fa-facebook"></i> Sign in with Facebook
+              </a>
+                  <a {{action 'signUpWithGithub'}} class="btn btn-block btn-social btn-github">
+                      <i class="fa fa-github"></i> Sign in with GitHub
+                  </a>
+                  <a {{action 'signUpWithGoogle'}} class="btn btn-block btn-social btn-google-plus">
+                      <i class="fa fa-google-plus"></i> Sign in with Google
+                  </a>
+          </form>
+      </div>
+  </div>
+</div>
+
