@@ -2,6 +2,7 @@
 
 module.exports = function(environment) {
   var ENV = {
+
     modulePrefix: 'googlanime',
     environment: environment,
     baseURL: '/',
@@ -24,7 +25,7 @@ module.exports = function(environment) {
       'font-src': "'self' data: use.typekit.net",
       'connect-src': "*",
       'img-src': "'self' www.facebook.com p.typekit.net",
-      'style-src': "'self' 'unsafe-inline' use.typekit.net",
+      'style-src': "'self' 'unsafe-inline' use.typekit.net"
     },
 
     torii: {
@@ -36,6 +37,11 @@ module.exports = function(environment) {
           redirectUri: 'http://localhost:4200'
         }
       }
+    },
+
+    backend: {
+      host: 'localhost2',
+      namespace: ''
     }
   }
 
