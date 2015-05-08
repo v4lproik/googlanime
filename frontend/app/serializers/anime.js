@@ -2,6 +2,6 @@ import DS from 'ember-data';
 
 export default DS.RESTSerializer.extend(DS.EmbeddedRecordsMixin, {
   attrs: {
-    titles: {embedded: 'always'}
+    //titles: {embedded: 'always'}
   }
 });

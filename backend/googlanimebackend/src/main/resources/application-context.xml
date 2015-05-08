@@ -10,8 +10,7 @@
 		http://www.springframework.org/schema/tx
 		http://www.springframework.org/schema/tx/spring-tx.xsd
 		http://www.springframework.org/schema/mvc
-		http://www.springframework.org/schema/mvc/spring-mvc.xsd
-		http://www.springframework.org/schema/data/elasticsearch">
+		http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
 
     <!-- needed for @autowired -->
@@ -22,20 +21,5 @@
     <tx:annotation-driven/>
 
     <context:property-placeholder location="classpath:default.properties"/>
-
-    <!--<elasticsearch:repositories base-package="net.v4lproik.googlanime"/>-->
-
-
-    <!--<elasticsearch:transport-client id="client" cluster-nodes="192.168.59.103:9300" cluster-name="elasticsearch" />-->
-
-
-    <!--<elasticsearch:transport-client id="client" cluster-name="elasticsearch" cluster-nodes="127.0.0.1:9300"/>-->
-    <!--<bean name="elasticsearchTemplate" class="org.springframework.data.elasticsearch.core.ElasticsearchTemplate">-->
-        <!--<constructor-arg name="client" ref="client"/>-->
-    <!--</bean>-->
-
-
-    <!--<elasticsearch:repositories base-package="org.springframework.data.elasticsearch.repositories" />-->
-
 
 </beans>

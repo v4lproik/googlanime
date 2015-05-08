@@ -20,12 +20,12 @@ module.exports = function(environment) {
     },
 
     contentSecurityPolicy: {
-      'default-src': "'*'",
-      'script-src': "'*'",
-      'font-src': "'self' data: use.typekit.net",
-      'connect-src': "*",
-      'img-src': "'self' www.facebook.com p.typekit.net",
-      'style-src': "'self' 'unsafe-inline' use.typekit.net"
+      'default-src': "'self' http://localhost:8080",
+      'script-src': "'self' http://localhost:8080",
+      'font-src': "'self' data: use.typekit.net http://localhost:8080",
+      'connect-src': "'self' http://localhost:8080",
+      'img-src': "'self' http://localhost:8080 www.facebook.com p.typekit.net",
+      'style-src': "'self' 'unsafe-inline' http://localhost:8080 use.typekit.net"
     },
 
     torii: {
@@ -40,7 +40,7 @@ module.exports = function(environment) {
     },
 
     backend: {
-      host: 'localhost2',
+      host: 'http://localhost:8080',
       namespace: ''
     }
   }
