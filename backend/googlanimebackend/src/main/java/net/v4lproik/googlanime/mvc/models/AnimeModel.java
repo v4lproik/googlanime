@@ -52,8 +52,6 @@ public class AnimeModel {
 
     private Map<String, String> links;
 
-//    private List<Map<String, String>> titles;
-
     public String getSynopsis() {
         return synopsis;
     }

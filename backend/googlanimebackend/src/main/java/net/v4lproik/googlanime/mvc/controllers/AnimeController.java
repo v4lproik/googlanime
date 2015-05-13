@@ -33,7 +33,9 @@ public class AnimeController {
     @ResponseStatus(value = HttpStatus.OK)
     @ResponseBody
     public JSONResponse list(@RequestParam("n") String str) throws IOException {
-        return new JSONResponse(repository.findBySlug(str));
+        JSONResponse response = new JSONResponse();
+        response.setAnimes(repository.findBySlug(str));
+        return response;
     }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
