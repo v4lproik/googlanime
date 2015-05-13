@@ -13,10 +13,19 @@ public abstract class WebsiteAbstract {
      * @return
      * @throws IOException
      */
-    abstract public MyAnimeListAnime crawl(ImportOptions opts) throws IOException;
+    public abstract MyAnimeListAnime crawl(ImportOptions opts) throws IOException;
+
+    /**
+     * This functions aims to crawl an anime through the website by id
+     * @param opts contains the type manga or anime and the query's name
+     * @return
+     * @throws IOException
+     */
+    public abstract MyAnimeListAnime crawlById(ImportOptions opts) throws IOException;
 
     /**
      * This function aims to call an API
      */
-    abstract public void call();
+    public abstract void call();
+
 }

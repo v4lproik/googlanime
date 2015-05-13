@@ -25,13 +25,13 @@ public class MyAnimeList extends WebsiteAbstract {
 
     @Override
     public MyAnimeListAnime crawl(ImportOptions opts) throws IOException {
+        MyAnimeListAnime myAnimeListAnime = new MyAnimeListAnime();
+
         final String type = opts.getType();
         final String name = opts.getQuery();
+        final String url = DOMAIN + type + ".php?q=" + name;
 
-        MyAnimeListAnime myAnimeListAnime = new MyAnimeListAnime();
-        String url = DOMAIN + type + ".php?q=" + name;
-
-        log.debug("Trying to get result from ");
+        log.debug("Trying to get result from " + url);
 
         final Connection.Response response = Jsoup.connect(url).userAgent(USER_AGENT).execute();
 
@@ -39,8 +39,27 @@ public class MyAnimeList extends WebsiteAbstract {
         if(response.url().toString().startsWith(DOMAIN + "anime/") && countMatches(response.url().toString(), "/") == 5){
             Document doc = response.parse();
             myAnimeListAnime = scrapGeneralInformation(doc, url);
-        }else{
+        }
 
+        return myAnimeListAnime;
+    }
+
+    @Override
+    public MyAnimeListAnime crawlById(ImportOptions opts) throws IOException {
+        MyAnimeListAnime myAnimeListAnime = new MyAnimeListAnime();
+
+        final String type = opts.getType();
+        final String id = opts.getId().toString();
+        final String url = DOMAIN + type + "/" + id;
+
+        log.debug("Trying to get result from " + url);
+
+        final Connection.Response response = Jsoup.connect(url).userAgent(USER_AGENT).execute();
+
+        //get list or anime ?
+        if(response.url().toString().startsWith(DOMAIN + "anime/") && countMatches(response.url().toString(), "/") == 4){
+            Document doc = response.parse();
+            myAnimeListAnime = scrapGeneralInformation(doc, url);
         }
 
         return myAnimeListAnime;

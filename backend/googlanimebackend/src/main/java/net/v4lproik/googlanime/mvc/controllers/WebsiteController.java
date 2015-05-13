@@ -25,6 +25,8 @@ public class WebsiteController {
 
     static Logger log = Logger.getLogger(WebsiteController.class.getName());
 
+    final Boolean STORE_LOCALLY = true;
+
     @Autowired
     private WebsiteFactory websiteFactory;
 
@@ -43,6 +45,42 @@ public class WebsiteController {
             MyAnimeListAnime myAnimeListAnime = website.crawl(new ImportOptions(name, type));
             log.debug(myAnimeListAnime.toString());
             response.setAnimes(myAnimeListAnime);
+
+            //store in the database
+            if (STORE_LOCALLY){
+
+            }
+
+            return response;
+        }catch (IOException e){
+            log.debug("re " + e.getMessage());
+            response.setError(e.getMessage());
+        }
+
+        return response;
+    }
+
+    @RequestMapping(value = "/import", method = RequestMethod.GET, params={"from", "type", "id"})
+    @ResponseStatus(value = HttpStatus.OK)
+    @ResponseBody
+    public JSONResponse list(@RequestParam(value = "from", required = true) String from,
+                             @RequestParam(value = "type", required = true) String type,
+                             @RequestParam(value = "id", required = true) Integer id) throws BackendException {
+
+        JSONResponse response = new JSONResponse();
+
+        WebsiteAbstract website = websiteFactory.getWebsite(from);
+
+        try{
+            MyAnimeListAnime myAnimeListAnime = website.crawlById(new ImportOptions(id, type));
+            log.debug(myAnimeListAnime.toString());
+            response.setAnimes(myAnimeListAnime);
+
+            //store in the database
+            if (STORE_LOCALLY){
+
+            }
+
             return response;
         }catch (IOException e){
             log.error(e.getMessage());
