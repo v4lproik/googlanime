@@ -2,10 +2,10 @@ package net.v4lproik.googlanime.mvc.controllers;
 
 import net.v4lproik.googlanime.mvc.models.BackendException;
 import net.v4lproik.googlanime.mvc.models.JSONResponse;
+import net.v4lproik.googlanime.mvc.models.Website;
 import net.v4lproik.googlanime.mvc.models.WebsiteFactory;
 import net.v4lproik.googlanime.service.api.ImportOptions;
 import net.v4lproik.googlanime.service.api.MyAnimeListAnime;
-import net.v4lproik.googlanime.service.api.Website;
 import net.v4lproik.googlanime.service.api.WebsiteAbstract;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +39,7 @@ public class WebsiteController {
 
         JSONResponse response = new JSONResponse();
 
-        WebsiteAbstract website = websiteFactory.getWebsite(from);
+        WebsiteAbstract website = websiteFactory.getWebsite(Website.valueOf(from.toUpperCase()));
 
         try{
             MyAnimeListAnime myAnimeListAnime = website.crawl(new ImportOptions(name, type));
@@ -69,7 +69,7 @@ public class WebsiteController {
 
         JSONResponse response = new JSONResponse();
 
-        WebsiteAbstract website = websiteFactory.getWebsite(from);
+        WebsiteAbstract website = websiteFactory.getWebsite(Website.valueOf(from.toUpperCase()));
 
         try{
             MyAnimeListAnime myAnimeListAnime = website.crawlById(new ImportOptions(id, type));
