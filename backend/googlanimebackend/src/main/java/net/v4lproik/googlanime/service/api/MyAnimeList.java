@@ -172,7 +172,7 @@ public class MyAnimeList extends WebsiteAbstract {
                                             List<Object> spinOffs = myAnimeListAnime.getSpinoff();
                                             spinOffs.add(spinOff);
 
-                                            myAnimeListAnime.setSideStories(spinOffs);
+                                            myAnimeListAnime.setSpinoff(spinOffs);
                                         }
                                     }
                                 }else{
@@ -196,7 +196,7 @@ public class MyAnimeList extends WebsiteAbstract {
                                                 List<Object> others = myAnimeListAnime.getOthers();
                                                 others.add(other);
 
-                                                myAnimeListAnime.setSideStories(others);
+                                                myAnimeListAnime.setOthers(others);
                                             }
                                         }
                                     }else{
@@ -220,7 +220,32 @@ public class MyAnimeList extends WebsiteAbstract {
                                                     List<Object> sequels = myAnimeListAnime.getOthers();
                                                     sequels.add(sequel);
 
-                                                    myAnimeListAnime.setSideStories(sequels);
+                                                    myAnimeListAnime.setSequels(sequels);
+                                                }
+                                            }
+                                        }else{
+                                            if (line.startsWith("Alternative version:")) {
+                                                log.debug("Alternative versions have been found");
+
+                                                Document docTmp = Jsoup.parse(line);
+                                                Elements links = docTmp.select("a");
+
+                                                for (Element link : links) {
+                                                    String linkHref = link.attr("href");
+                                                    String title = link.text();
+                                                    Integer id = this.getIdFromLinkRelative(linkHref);
+
+                                                    if (id != null) {
+                                                        MyAnimeListAnime alternativeVersion = new MyAnimeListAnime();
+                                                        alternativeVersion.setId(id);
+                                                        alternativeVersion.setTitle(title);
+
+                                                        //get sequels
+                                                        List<Object> alternativeVersions = myAnimeListAnime.getOthers();
+                                                        alternativeVersions.add(alternativeVersion);
+
+                                                        myAnimeListAnime.setAlternativeVersions(alternativeVersions);
+                                                    }
                                                 }
                                             }
                                         }
