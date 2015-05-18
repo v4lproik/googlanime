@@ -1,6 +1,8 @@
 package net.v4lproik.googlanime.service.api;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by joel on 09/05/2015.
@@ -8,6 +10,8 @@ import java.util.Arrays;
 public class MyAnimeListAnime {
 
     private Integer id;
+
+    private String title;
 
     private String[] synonyms;
 
@@ -31,8 +35,6 @@ public class MyAnimeListAnime {
 
     private String finishedAiringDate;
 
-    private String youtubeVideoId;
-
     private String ageRating;
 
     private String episodeCount;
@@ -43,7 +45,19 @@ public class MyAnimeListAnime {
 
     private String posterImage;
 
-    private String coverImage;
+    private String[] tags;
+
+    private List<Object> sequels = new ArrayList<Object>();
+
+    private List<Object> alternativeVersions = new ArrayList<Object>();
+
+    private List<Object> prequels = new ArrayList<Object>();
+
+    private List<Object> spinoff = new ArrayList<Object>();
+
+    private List<Object> sideStories = new ArrayList<Object>();
+
+    private List<Object> others = new ArrayList<Object>();
 
     public Integer getId() {
         return id;
@@ -93,14 +107,6 @@ public class MyAnimeListAnime {
         this.finishedAiringDate = finishedAiringDate;
     }
 
-    public String getYoutubeVideoId() {
-        return youtubeVideoId;
-    }
-
-    public void setYoutubeVideoId(String youtubeVideoId) {
-        this.youtubeVideoId = youtubeVideoId;
-    }
-
     public String getAgeRating() {
         return ageRating;
     }
@@ -139,14 +145,6 @@ public class MyAnimeListAnime {
 
     public void setPosterImage(String posterImage) {
         this.posterImage = posterImage;
-    }
-
-    public String getCoverImage() {
-        return coverImage;
-    }
-
-    public void setCoverImage(String coverImage) {
-        this.coverImage = coverImage;
     }
 
     public String getPopularity() {
@@ -197,10 +195,67 @@ public class MyAnimeListAnime {
         this.synonyms = synonyms;
     }
 
+    public List<Object> getSequels() {
+        return sequels;
+    }
+
+    public void setSequels(List<Object> sequels) {
+        this.sequels = sequels;
+    }
+
+    public List<Object> getPrequels() {
+        return prequels;
+    }
+
+    public void setPrequels(List<Object> prequels) {
+        this.prequels = prequels;
+    }
+
+    public List<Object> getSpinoff() {
+        return spinoff;
+    }
+
+    public void setSpinoff(List<Object> spinoff) {
+        this.spinoff = spinoff;
+    }
+
+    public List<Object> getSideStories() {
+        return sideStories;
+    }
+
+    public void setSideStories(List<Object> sideStories) {
+        this.sideStories = sideStories;
+    }
+
+    public List<Object> getOthers() {
+        return others;
+    }
+
+    public void setOthers(List<Object> others) {
+        this.others = others;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String[] getTags() {
+        return tags;
+    }
+
+    public void setTags(String[] tags) {
+        this.tags = tags;
+    }
+
     @Override
     public String toString() {
         return "MyAnimeListAnime{" +
                 "id=" + id +
+                ", title='" + title + '\'' +
                 ", synonyms=" + Arrays.toString(synonyms) +
                 ", englishTitle='" + englishTitle + '\'' +
                 ", japaneseTitle='" + japaneseTitle + '\'' +
@@ -212,13 +267,27 @@ public class MyAnimeListAnime {
                 ", producers=" + Arrays.toString(producers) +
                 ", genres=" + Arrays.toString(genres) +
                 ", finishedAiringDate='" + finishedAiringDate + '\'' +
-                ", youtubeVideoId='" + youtubeVideoId + '\'' +
                 ", ageRating='" + ageRating + '\'' +
                 ", episodeCount='" + episodeCount + '\'' +
                 ", episodeLength='" + episodeLength + '\'' +
                 ", showType='" + showType + '\'' +
                 ", posterImage='" + posterImage + '\'' +
-                ", coverImage='" + coverImage + '\'' +
+                ", tags=" + Arrays.toString(tags) +
+                ", sequels=" + sequels +
+                ", alternativeVersions=" + alternativeVersions +
+                ", prequels=" + prequels +
+                ", spinoff=" + spinoff +
+                ", sideStories=" + sideStories +
+                ", others=" + others +
                 '}';
     }
+
+    public List<Object> getAlternativeVersions() {
+        return alternativeVersions;
+    }
+
+    public void setAlternativeVersions(List<Object> alternativeVersions) {
+        this.alternativeVersions = alternativeVersions;
+    }
+
 }

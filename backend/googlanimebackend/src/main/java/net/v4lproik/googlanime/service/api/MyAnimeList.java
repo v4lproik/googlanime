@@ -8,6 +8,7 @@ import org.jsoup.select.Elements;
 import org.jsoup.nodes.Element;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.elasticsearch.common.lang3.StringUtils.countMatches;
 import static org.elasticsearch.common.lang3.StringUtils.substring;
@@ -66,16 +67,35 @@ public class MyAnimeList extends WebsiteAbstract {
         return myAnimeListAnime;
     }
 
+    private Integer getIdFromLinkAbsolute(String link) {
+        try {
+            return Integer.parseInt(link.split("/")[4].split("/")[0]);
+        } catch (Exception e){
+            log.debug("Error parsing id");
+        }
+
+        return null;
+    }
+
+    private Integer getIdFromLinkRelative(String link) {
+        try {
+            return Integer.parseInt(link.split("/")[2].split("/")[0]);
+        } catch (Exception e){
+            log.debug("Error parsing id");
+        }
+
+        return null;
+    }
+
     private MyAnimeListAnime scrapGeneralInformation(Document doc, String url, String type){
+        String pattern;
         MyAnimeListAnime myAnimeListAnime = new MyAnimeListAnime();
 
         //get id
-        try {
-            myAnimeListAnime.setId(Integer.parseInt(url.split("/")[4].split("/")[0]));
-        }catch (Exception e){
-            log.debug("Error parsing id");
-            return null;
-        }
+        myAnimeListAnime.setId(this.getIdFromLinkAbsolute(url));
+
+        //get main title
+        myAnimeListAnime.setTitle(doc.select("h1").first().ownText());
 
         //parse for general information - work in porgress
         Elements tds = doc.select("td");
@@ -84,12 +104,131 @@ public class MyAnimeList extends WebsiteAbstract {
                 myAnimeListAnime.setSynopsis(td.text().substring(12, td.text().length()));
             }else {
                 if (td.text().startsWith("EditRelated")) {
-//                    log.debug(td.html());
-//                    log.debug("---------------------");
                     String tmp[] = substringBetween(td.html(), "Related " + type.substring(0,1).toUpperCase() + type.substring(1) + "</h2>", "<h2>").split("<br>");
 
-                    System.out.println(Arrays.toString(tmp));
+                    for (String line : tmp){
+                        if (line.startsWith("Sequel:")){
+                            log.debug("Sequel has been found");
 
+                            Document docTmp = Jsoup.parse(line);
+                            Element link = docTmp.select("a").first();
+                            String linkHref = link.attr("href");
+                            String title =  link.text();
+                            Integer id = this.getIdFromLinkRelative(linkHref);
+
+                            if (id != null){
+                                MyAnimeListAnime sequel = new MyAnimeListAnime();
+                                sequel.setId(id);
+                                sequel.setTitle(title);
+
+                                //get sequels
+                                List<Object> sequels = myAnimeListAnime.getSequels();
+                                sequels.add(sequel);
+
+                                myAnimeListAnime.setSequels(sequels);
+                            }
+                        }else {
+                            if (line.startsWith("Side story:")) {
+                                log.debug("Side Stories have been found");
+
+                                Document docTmp = Jsoup.parse(line);
+                                Elements links = docTmp.select("a");
+
+                                for (Element link : links) {
+                                    String linkHref = link.attr("href");
+                                    String title = link.text();
+                                    Integer id = this.getIdFromLinkRelative(linkHref);
+
+                                    if (id != null) {
+                                        MyAnimeListAnime sideStory = new MyAnimeListAnime();
+                                        sideStory.setId(id);
+                                        sideStory.setTitle(title);
+
+                                        //get sequels
+                                        List<Object> sideStories = myAnimeListAnime.getSideStories();
+                                        sideStories.add(sideStory);
+
+                                        myAnimeListAnime.setSideStories(sideStories);
+                                    }
+                                }
+                            }else{
+                                if (line.startsWith("Spin-off:")) {
+                                    log.debug("Spin Off have been found");
+
+                                    Document docTmp = Jsoup.parse(line);
+                                    Elements links = docTmp.select("a");
+
+                                    for (Element link : links) {
+                                        String linkHref = link.attr("href");
+                                        String title = link.text();
+                                        Integer id = this.getIdFromLinkRelative(linkHref);
+
+                                        if (id != null) {
+                                            MyAnimeListAnime spinOff = new MyAnimeListAnime();
+                                            spinOff.setId(id);
+                                            spinOff.setTitle(title);
+
+                                            //get sequels
+                                            List<Object> spinOffs = myAnimeListAnime.getSpinoff();
+                                            spinOffs.add(spinOff);
+
+                                            myAnimeListAnime.setSideStories(spinOffs);
+                                        }
+                                    }
+                                }else{
+                                    if (line.startsWith("Other:")) {
+                                        log.debug("Others have been found");
+
+                                        Document docTmp = Jsoup.parse(line);
+                                        Elements links = docTmp.select("a");
+
+                                        for (Element link : links) {
+                                            String linkHref = link.attr("href");
+                                            String title = link.text();
+                                            Integer id = this.getIdFromLinkRelative(linkHref);
+
+                                            if (id != null) {
+                                                MyAnimeListAnime other = new MyAnimeListAnime();
+                                                other.setId(id);
+                                                other.setTitle(title);
+
+                                                //get sequels
+                                                List<Object> others = myAnimeListAnime.getOthers();
+                                                others.add(other);
+
+                                                myAnimeListAnime.setSideStories(others);
+                                            }
+                                        }
+                                    }else{
+                                        if (line.startsWith("Sequel:")) {
+                                            log.debug("Sequels have been found");
+
+                                            Document docTmp = Jsoup.parse(line);
+                                            Elements links = docTmp.select("a");
+
+                                            for (Element link : links) {
+                                                String linkHref = link.attr("href");
+                                                String title = link.text();
+                                                Integer id = this.getIdFromLinkRelative(linkHref);
+
+                                                if (id != null) {
+                                                    MyAnimeListAnime sequel = new MyAnimeListAnime();
+                                                    sequel.setId(id);
+                                                    sequel.setTitle(title);
+
+                                                    //get sequels
+                                                    List<Object> sequels = myAnimeListAnime.getOthers();
+                                                    sequels.add(sequel);
+
+                                                    myAnimeListAnime.setSideStories(sequels);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -112,7 +251,12 @@ public class MyAnimeList extends WebsiteAbstract {
             if (div.text().startsWith("Episodes: "))
                 myAnimeListAnime.setEpisodeCount(div.text().substring(10, div.text().length()));
 
-            if (div.text().startsWith("Aired: ")) {
+            if (type.equals("manga"))
+                pattern = "Published: ";
+            else
+                pattern = "Aired: ";
+
+            if (div.text().startsWith(pattern)) {
                 String[] tmp;
                 tmp = div.text().substring(7, div.text().length()).split("to ");
                 try {
@@ -149,6 +293,22 @@ public class MyAnimeList extends WebsiteAbstract {
 
             if (div.text().startsWith("Type: "))
                 myAnimeListAnime.setShowType(div.text().substring(6, div.text().length()));
+        }
+
+        Elements h2s = doc.select("h2");
+        for (Element h2 : h2s) {
+            if (h2.text().equals("Popular Tags")){
+                log.debug("Popular tags have been found");
+                Elements els = h2.nextElementSibling().select("span").select("a");
+
+                String[] tags = new String[els.size()];
+                int i = 0;
+                for (Element tag : els){
+                    tags[i] = tag.text();
+                    i++;
+                }
+                myAnimeListAnime.setTags(tags);
+            }
         }
 
         return myAnimeListAnime;
