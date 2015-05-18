@@ -1,6 +1,5 @@
 package net.v4lproik.googlanime.service.api;
 
-import javax.persistence.Id;
 import java.util.Arrays;
 
 /**
@@ -10,7 +9,7 @@ public class MyAnimeListAnime {
 
     private Integer id;
 
-    private String[] Synonyms;
+    private String[] synonyms;
 
     private String englishTitle;
 
@@ -191,18 +190,18 @@ public class MyAnimeListAnime {
     }
 
     public String[] getSynonyms() {
-        return Synonyms;
+        return synonyms;
     }
 
     public void setSynonyms(String[] synonyms) {
-        Synonyms = synonyms;
+        this.synonyms = synonyms;
     }
 
     @Override
     public String toString() {
         return "MyAnimeListAnime{" +
                 "id=" + id +
-                ", Synonyms=" + Arrays.toString(Synonyms) +
+                ", synonyms=" + Arrays.toString(synonyms) +
                 ", englishTitle='" + englishTitle + '\'' +
                 ", japaneseTitle='" + japaneseTitle + '\'' +
                 ", synopsis='" + synopsis + '\'' +
