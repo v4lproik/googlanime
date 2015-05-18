@@ -10,6 +10,8 @@ public class MyAnimeListAnime {
 
     private Integer id;
 
+    private String[] Synonyms;
+
     private String englishTitle;
 
     private String japaneseTitle;
@@ -188,10 +190,19 @@ public class MyAnimeListAnime {
         this.genres = genres;
     }
 
+    public String[] getSynonyms() {
+        return Synonyms;
+    }
+
+    public void setSynonyms(String[] synonyms) {
+        Synonyms = synonyms;
+    }
+
     @Override
     public String toString() {
         return "MyAnimeListAnime{" +
                 "id=" + id +
+                ", Synonyms=" + Arrays.toString(Synonyms) +
                 ", englishTitle='" + englishTitle + '\'' +
                 ", japaneseTitle='" + japaneseTitle + '\'' +
                 ", synopsis='" + synopsis + '\'' +
