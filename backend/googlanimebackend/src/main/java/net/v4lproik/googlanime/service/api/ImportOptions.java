@@ -5,6 +5,8 @@ package net.v4lproik.googlanime.service.api;
  */
 public class ImportOptions {
 
+    private Boolean dependency;
+
     private String query;
 
     private String type;
@@ -19,6 +21,18 @@ public class ImportOptions {
     public ImportOptions(Integer id, String type) {
         this.id = id;
         this.type = type;
+    }
+
+    public ImportOptions(String query, String type, Integer id) {
+        this.query = query;
+        this.type = type;
+        this.id = id;
+    }
+
+    public ImportOptions(int id, String type, Boolean dependency) {
+        this.dependency = dependency;
+        this.type = type;
+        this.id = id;
     }
 
     public Integer getId() {
