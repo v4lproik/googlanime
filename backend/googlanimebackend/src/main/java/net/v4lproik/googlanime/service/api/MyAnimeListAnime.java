@@ -59,6 +59,13 @@ public class MyAnimeListAnime {
 
     private List<Object> others = new ArrayList<Object>();
 
+    public MyAnimeListAnime(Integer id) {
+        this.id = id;
+    }
+
+    public MyAnimeListAnime() {
+    }
+
     public Integer getId() {
         return id;
     }
