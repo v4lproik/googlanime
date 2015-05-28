@@ -39,7 +39,12 @@ public class WebsiteController {
 
         JSONResponse response = new JSONResponse();
 
-        WebsiteAbstract website = websiteFactory.getWebsite(Website.valueOf(from.toUpperCase()));
+        WebsiteAbstract website = websiteFactory.getWebsite(Website.containsValue(from.toUpperCase()));
+
+        if (website == null) {
+            response.setError(String.format("Website enum %s not found", from));
+            return response;
+        }
 
         try{
             MyAnimeListAnime myAnimeListAnime = website.crawl(new ImportOptions(name, type));
@@ -69,7 +74,12 @@ public class WebsiteController {
 
         JSONResponse response = new JSONResponse();
 
-        WebsiteAbstract website = websiteFactory.getWebsite(Website.valueOf(from.toUpperCase()));
+        WebsiteAbstract website = websiteFactory.getWebsite(Website.containsValue(from.toUpperCase()));
+
+        if (website == null) {
+            response.setError(String.format("Website enum %s not found", from));
+            return response;
+        }
 
         try{
             MyAnimeListAnime myAnimeListAnime = website.crawlById(new ImportOptions(id, type));
