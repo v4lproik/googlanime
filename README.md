@@ -1,6 +1,6 @@
 # googlanime
 
-Java backend [![Circle CI](https://circleci.com/gh/v4lproik/googlanime/tree/master.svg?style=svg)](https://circleci.com/gh/v4lproik/googlanime/tree/master)
+Java backend [![Circle CI](https://circleci.com/gh/v4lproik/googlanime/tree/master.svg?style=shield)](https://circleci.com/gh/v4lproik/googlanime/tree/master)
 
 This project is not meant to be online, education purpose only at the moment.
 
