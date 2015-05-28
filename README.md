@@ -1,5 +1,7 @@
 # googlanime
 
+Java backend [![Circle CI](https://circleci.com/gh/v4lproik/googlanime/tree/master.svg?style=svg)](https://circleci.com/gh/v4lproik/googlanime/tree/master)
+
 This project is not meant to be online, education purpose only at the moment.
 
 This projects aims to provide a clear and nice interface to whoever is seeking for anime/manga information.
