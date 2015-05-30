@@ -4,14 +4,14 @@ import org.apache.log4j.Logger;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.elasticsearch.common.lang3.StringUtils.countMatches;
-import static org.elasticsearch.common.lang3.StringUtils.substring;
 import static org.elasticsearch.common.lang3.StringUtils.substringBetween;
 
 /**
@@ -21,10 +21,10 @@ public class MyAnimeList extends WebsiteAbstract {
 
     static Logger log = Logger.getLogger(MyAnimeList.class.getName());
 
-    public final String DOMAIN = "http://myanimelist.net/";
-    public final String API = "";
-    public final String USER_AGENT = "iMAL-iOS";
-    public final String[] URL_GRAB = new String[]{"characters", "characters#staff"};
+    public static final String DOMAIN = "http://myanimelist.net/";
+    public static final String API = "";
+    public static final String USER_AGENT = "iMAL-iOS";
+    public static final String[] URL_GRAB = new String[]{"characters", "characters#staff"};
 
     @Override
     public MyAnimeListAnime crawl(ImportOptions opts) throws IOException {
@@ -55,19 +55,29 @@ public class MyAnimeList extends WebsiteAbstract {
         final String id = opts.getId().toString();
         final String url = DOMAIN + type + "/" + id;
 
-        log.debug("Trying to get result from " + url);
+        Document doc = getResultFromJSoup(url, type);
 
-        final Connection.Response response = Jsoup.connect(url).userAgent(USER_AGENT).execute();
 
-        if(response.url().toString().startsWith(DOMAIN + type + "/") && countMatches(response.url().toString(), "/") == 4){
-            Document doc = response.parse();
+        if(doc != null)
             myAnimeListAnime = scrapGeneralInformation(doc, url, type);
-        }
 
         return myAnimeListAnime;
     }
 
-    private Integer getIdFromLinkAbsolute(String link) {
+    protected Document getResultFromJSoup(String url, String type) throws IOException {
+        log.debug("Trying to get result from " + url);
+
+        final Connection.Response response = Jsoup.connect(url).userAgent(USER_AGENT).execute();
+
+        Document doc = null;
+        if(response.url().toString().startsWith(DOMAIN + type + "/") && countMatches(response.url().toString(), "/") == 4){
+            doc = response.parse();
+        }
+
+        return doc;
+    }
+
+    protected Integer getIdFromLinkAbsolute(String link) {
         try {
             return Integer.parseInt(link.split("/")[4].split("/")[0]);
         } catch (Exception e){
@@ -247,6 +257,35 @@ public class MyAnimeList extends WebsiteAbstract {
                                                         myAnimeListAnime.setAlternativeVersions(alternativeVersions);
                                                     }
                                                 }
+                                            }else {
+                                                if (line.startsWith("Characters")) {
+                                                    log.debug("Characters have been found");
+
+                                                    Document docTmp = Jsoup.parse(line);
+                                                    Elements links = docTmp.select("a");
+
+                                                    for (Element link : links) {
+                                                        String linkHref = link.attr("href");
+                                                        String wholeName = link.text();
+                                                        Integer id = this.getIdFromLinkRelative(linkHref);
+
+                                                        if (id != null) {
+                                                            MyAnimeListCharacter character = new MyAnimeListCharacter();
+                                                            character.setId(id);
+
+                                                            //set first and last name
+                                                            try {
+                                                                String[] tmp2 = wholeName.split(",");
+                                                                character.setFirstName(tmp[0]);
+                                                                character.setLastName(tmp[1]);
+                                                            } catch (Exception e) {
+                                                                log.debug("Error when trying to split first and last name");
+                                                            }
+
+                                                            myAnimeListAnime.getCharacters().add(character);
+                                                        }
+                                                    }
+                                                }
                                             }
                                         }
                                     }
@@ -276,10 +315,7 @@ public class MyAnimeList extends WebsiteAbstract {
             if (div.text().startsWith("Episodes: "))
                 myAnimeListAnime.setEpisodeCount(div.text().substring(10, div.text().length()));
 
-            if (type.equals("manga"))
-                pattern = "Published: ";
-            else
-                pattern = "Aired: ";
+            pattern = type.equals("manga") ? "Published: " : "Aired: ";
 
             if (div.text().startsWith(pattern)) {
                 String[] tmp;
@@ -297,6 +333,18 @@ public class MyAnimeList extends WebsiteAbstract {
 
             if (div.text().startsWith("Genres: "))
                 myAnimeListAnime.setGenres(div.text().substring(8, div.text().length()).replace(", ", ",").split(","));
+
+            if (div.text().startsWith("Authors: ")){
+
+                String parts[] = div.text().substring(9, div.text().length()).replace(", ", ",").split(",");
+                ArrayList<String> listItems = new ArrayList<String>();
+
+                for (int i = 0; i < parts.length; i = i+2) {
+                    listItems.add(parts[i] + ", " + parts[i+1]);
+                }
+
+                myAnimeListAnime.setAuthors(listItems.toArray(new String[0]));
+            }
 
             if (div.text().startsWith("Duration: "))
                 myAnimeListAnime.setEpisodeLength(div.text().substring(10, div.text().length()));
@@ -342,5 +390,10 @@ public class MyAnimeList extends WebsiteAbstract {
     @Override
     public void call() {
 
+    }
+
+    public String test(){
+        System.out.println("You have called test");
+        return "original test";
     }
 }
