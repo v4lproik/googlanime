@@ -1,7 +1,8 @@
 package net.v4lproik.googlanime.service.api;
 
+import com.google.common.base.Objects;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -27,7 +28,7 @@ public class MyAnimeListAnime {
 
     private String popularity;
 
-    private String Score;
+    private String score;
 
     private String[] producers;
 
@@ -45,6 +46,8 @@ public class MyAnimeListAnime {
 
     private String posterImage;
 
+    private String[] authors;
+
     private String[] tags;
 
     private List<Object> sequels = new ArrayList<Object>();
@@ -58,6 +61,8 @@ public class MyAnimeListAnime {
     private List<Object> sideStories = new ArrayList<Object>();
 
     private List<Object> others = new ArrayList<Object>();
+
+    private List<MyAnimeListCharacter> characters = new ArrayList<MyAnimeListCharacter>();
 
     public MyAnimeListAnime(Integer id) {
         this.id = id;
@@ -171,11 +176,11 @@ public class MyAnimeListAnime {
     }
 
     public String getScore() {
-        return Score;
+        return score;
     }
 
     public void setScore(String score) {
-        Score = score;
+        this.score = score;
     }
 
     public String[] getProducers() {
@@ -260,33 +265,51 @@ public class MyAnimeListAnime {
 
     @Override
     public String toString() {
-        return "MyAnimeListAnime{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", synonyms=" + Arrays.toString(synonyms) +
-                ", englishTitle='" + englishTitle + '\'' +
-                ", japaneseTitle='" + japaneseTitle + '\'' +
-                ", synopsis='" + synopsis + '\'' +
-                ", startedAiringDate='" + startedAiringDate + '\'' +
-                ", rank='" + rank + '\'' +
-                ", popularity='" + popularity + '\'' +
-                ", Score='" + Score + '\'' +
-                ", producers=" + Arrays.toString(producers) +
-                ", genres=" + Arrays.toString(genres) +
-                ", finishedAiringDate='" + finishedAiringDate + '\'' +
-                ", ageRating='" + ageRating + '\'' +
-                ", episodeCount='" + episodeCount + '\'' +
-                ", episodeLength='" + episodeLength + '\'' +
-                ", showType='" + showType + '\'' +
-                ", posterImage='" + posterImage + '\'' +
-                ", tags=" + Arrays.toString(tags) +
-                ", sequels=" + sequels +
-                ", alternativeVersions=" + alternativeVersions +
-                ", prequels=" + prequels +
-                ", spinoff=" + spinoff +
-                ", sideStories=" + sideStories +
-                ", others=" + others +
-                '}';
+        return Objects.toStringHelper(this)
+                .add("id", id)
+                .add("title", title)
+                .add("synonyms", synonyms)
+                .add("englishTitle", englishTitle)
+                .add("japaneseTitle", japaneseTitle)
+                .add("synopsis", synopsis)
+                .add("startedAiringDate", startedAiringDate)
+                .add("rank", rank)
+                .add("popularity", popularity)
+                .add("score", score)
+                .add("producers", producers)
+                .add("genres", genres)
+                .add("finishedAiringDate", finishedAiringDate)
+                .add("ageRating", ageRating)
+                .add("episodeCount", episodeCount)
+                .add("episodeLength", episodeLength)
+                .add("showType", showType)
+                .add("posterImage", posterImage)
+                .add("authors", authors)
+                .add("tags", tags)
+                .add("sequels", sequels)
+                .add("alternativeVersions", alternativeVersions)
+                .add("prequels", prequels)
+                .add("spinoff", spinoff)
+                .add("sideStories", sideStories)
+                .add("others", others)
+                .add("characters", characters)
+                .toString();
+    }
+
+    public List<MyAnimeListCharacter> getCharacters() {
+        return characters;
+    }
+
+    public void setCharacters(List<MyAnimeListCharacter> characters) {
+        this.characters = characters;
+    }
+
+    public String[] getAuthors() {
+        return authors;
+    }
+
+    public void setAuthors(String[] authors) {
+        this.authors = authors;
     }
 
     public List<Object> getAlternativeVersions() {
