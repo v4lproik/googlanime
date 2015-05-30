@@ -22,9 +22,6 @@ public class AnimeController {
     @Autowired
     private AnimeRepository repository;
 
-//    @Autowired
-//    CustomObjectMapper customObjectMapper;
-
     @RequestMapping(value = "", method = RequestMethod.GET, params={"n"})
     @ResponseStatus(value = HttpStatus.OK)
     @ResponseBody
