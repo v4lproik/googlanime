@@ -47,7 +47,7 @@ public class MyAnimeListAnime {
 
     private String posterImage;
 
-    private String[] authors;
+    private List<MyAnimeListAuthor> authors = new ArrayList<MyAnimeListAuthor>();
 
     private String[] tags;
 
@@ -276,11 +276,11 @@ public class MyAnimeListAnime {
         this.characters = characters;
     }
 
-    public String[] getAuthors() {
+    public List<MyAnimeListAuthor> getAuthors() {
         return authors;
     }
 
-    public void setAuthors(String[] authors) {
+    public void setAuthors(List<MyAnimeListAuthor> authors) {
         this.authors = authors;
     }
 

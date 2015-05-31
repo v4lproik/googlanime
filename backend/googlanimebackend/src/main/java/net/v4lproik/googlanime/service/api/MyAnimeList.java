@@ -343,11 +343,15 @@ public class MyAnimeList extends WebsiteAbstract {
                 String parts[] = div.text().substring(9, div.text().length()).replace(", ", ",").split(",");
                 ArrayList<String> listItems = new ArrayList<String>();
 
+                List<MyAnimeListAuthor> authors = myAnimeListAnime.getAuthors();
                 for (int i = 0; i < parts.length; i = i+2) {
+                    MyAnimeListAuthor author = new MyAnimeListAuthor();
                     listItems.add(parts[i] + ", " + parts[i+1]);
-                }
+                    author.setFirstName(parts[i]);
+                    author.setLastName(parts[i + 1]);
 
-                myAnimeListAnime.setAuthors(listItems.toArray(new String[0]));
+                    log.info(String.format("Add new author %s", author.toString()));
+                }
             }
 
             if (div.text().startsWith("Duration: "))
@@ -377,7 +381,6 @@ public class MyAnimeList extends WebsiteAbstract {
 
         Elements h2s = doc.select("h2");
         for (Element h2 : h2s) {
-//            log.debug(h2.text());
             if (h2.text().equals("Popular Tags")){
                 log.debug("Popular tags have been found");
                 Elements els = h2.nextElementSibling().select("span").select("a");
@@ -422,6 +425,43 @@ public class MyAnimeList extends WebsiteAbstract {
                         }
 
                         current = current.nextSibling();
+                    }
+                }else {
+                    //Add authors for anime
+                    if (h2.text().equals("Add staff | More staffStaff")) {
+                        log.debug("Authors have been found");
+
+                        Node current = h2.nextElementSibling();
+                        Element el = (Element) current;
+
+                        Elements trs = el.select("tr");
+
+                        for (Element tr : trs){
+
+                            // Get character info
+                            MyAnimeListAuthor author = new MyAnimeListAuthor();
+                            try{
+                                String characterFullName = tr.select("td").get(1).select("a").text();
+                                String[] jobs = tr.select("td").get(1).select("small").text().split(" ,");
+
+                                String[] parts = characterFullName.split(",");
+
+                                if (parts.length == 2){
+                                    author.setFirstName(parts[0]);
+                                    author.setLastName(parts[1]);
+                                }else {
+                                    if (parts.length == 1)
+                                        author.setLastName(characterFullName);
+                                }
+                                author.setJob(jobs);
+                                myAnimeListAnime.getAuthors().add(author);
+
+                                log.info(String.format("Add new author %s", author.toString()));
+                            }catch (Exception e){
+                                log.debug("Error when trying to get author's name");
+                            }
+                        }
+
                     }
                 }
             }
