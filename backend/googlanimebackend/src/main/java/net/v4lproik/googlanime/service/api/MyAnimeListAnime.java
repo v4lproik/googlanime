@@ -63,6 +63,10 @@ public class MyAnimeListAnime {
 
     private List<Object> others = new ArrayList<Object>();
 
+    private List<Object> summaries = new ArrayList<Object>();
+
+    private List<Object> adaptations = new ArrayList<Object>();
+
     private List<MyAnimeListCharacter> characters = new ArrayList<MyAnimeListCharacter>();
 
     public MyAnimeListAnime(Integer id) {
@@ -288,6 +292,22 @@ public class MyAnimeListAnime {
         this.alternativeVersions = alternativeVersions;
     }
 
+    public List<Object> getSummaries() {
+        return summaries;
+    }
+
+    public void setSummaries(List<Object> summaries) {
+        this.summaries = summaries;
+    }
+
+    public List<Object> getAdaptations() {
+        return adaptations;
+    }
+
+    public void setAdaptations(List<Object> adaptations) {
+        this.adaptations = adaptations;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
@@ -317,6 +337,8 @@ public class MyAnimeListAnime {
                 .append("spinoff", spinoff)
                 .append("sideStories", sideStories)
                 .append("others", others)
+                .append("summaries", summaries)
+                .append("adaptations", adaptations)
                 .append("characters", characters)
                 .toString();
     }
