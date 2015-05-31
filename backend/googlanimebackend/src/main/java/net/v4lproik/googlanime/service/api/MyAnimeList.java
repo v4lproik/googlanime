@@ -49,19 +49,24 @@ public class MyAnimeList extends WebsiteAbstract {
 
     @Override
     public MyAnimeListAnime crawlById(ImportOptions opts) throws IOException {
-        MyAnimeListAnime myAnimeListAnime = new MyAnimeListAnime();
 
         final String type = opts.getType();
         final String id = opts.getId().toString();
         final String url = DOMAIN + type + "/" + id;
 
+        if (type == null || id == null)
+            throw new IllegalArgumentException("Both type and id argument cannot be null");
+
+        if (type.isEmpty() || id.isEmpty())
+            throw new IllegalArgumentException("Both type and id argument cannot be empty");
+
         Document doc = getResultFromJSoup(url, type);
 
 
-        if(doc != null)
-            myAnimeListAnime = scrapGeneralInformation(doc, url, type);
+        if(doc == null)
+            throw new IOException("No data to be parsed");
 
-        return myAnimeListAnime;
+        return scrapGeneralInformation(doc, url, type);
     }
 
     protected Document getResultFromJSoup(String url, String type) throws IOException {
