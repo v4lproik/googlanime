@@ -1,5 +1,7 @@
 package net.v4lproik.googlanime.service.api;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -12,6 +14,8 @@ import java.util.List;
 public class MyAnimeListAnime {
 
     private Integer id;
+
+    private String type;
 
     private String title;
 
@@ -47,25 +51,27 @@ public class MyAnimeListAnime {
 
     private String posterImage;
 
+    private MyAnimeListAnime parent;
+
     private List<MyAnimeListAuthor> authors = new ArrayList<MyAnimeListAuthor>();
 
     private String[] tags;
 
-    private List<Object> sequels = new ArrayList<Object>();
+    private List<MyAnimeListAnime> sequels = new ArrayList<MyAnimeListAnime>();
 
-    private List<Object> alternativeVersions = new ArrayList<Object>();
+    private List<MyAnimeListAnime> alternativeVersions = new ArrayList<MyAnimeListAnime>();
 
-    private List<Object> prequels = new ArrayList<Object>();
+    private List<MyAnimeListAnime> prequels = new ArrayList<MyAnimeListAnime>();
 
-    private List<Object> spinoff = new ArrayList<Object>();
+    private List<MyAnimeListAnime> spinoff = new ArrayList<MyAnimeListAnime>();
 
-    private List<Object> sideStories = new ArrayList<Object>();
+    private List<MyAnimeListAnime> sideStories = new ArrayList<MyAnimeListAnime>();
 
-    private List<Object> others = new ArrayList<Object>();
+    private List<MyAnimeListAnime> others = new ArrayList<MyAnimeListAnime>();
 
-    private List<Object> summaries = new ArrayList<Object>();
+    private List<MyAnimeListAnime> summaries = new ArrayList<MyAnimeListAnime>();
 
-    private List<Object> adaptations = new ArrayList<Object>();
+    private List<MyAnimeListAnime> adaptations = new ArrayList<MyAnimeListAnime>();
 
     private List<MyAnimeListCharacter> characters = new ArrayList<MyAnimeListCharacter>();
 
@@ -212,46 +218,6 @@ public class MyAnimeListAnime {
         this.synonyms = synonyms;
     }
 
-    public List<Object> getSequels() {
-        return sequels;
-    }
-
-    public void setSequels(List<Object> sequels) {
-        this.sequels = sequels;
-    }
-
-    public List<Object> getPrequels() {
-        return prequels;
-    }
-
-    public void setPrequels(List<Object> prequels) {
-        this.prequels = prequels;
-    }
-
-    public List<Object> getSpinoff() {
-        return spinoff;
-    }
-
-    public void setSpinoff(List<Object> spinoff) {
-        this.spinoff = spinoff;
-    }
-
-    public List<Object> getSideStories() {
-        return sideStories;
-    }
-
-    public void setSideStories(List<Object> sideStories) {
-        this.sideStories = sideStories;
-    }
-
-    public List<Object> getOthers() {
-        return others;
-    }
-
-    public void setOthers(List<Object> others) {
-        this.others = others;
-    }
-
     public String getTitle() {
         return title;
     }
@@ -284,34 +250,111 @@ public class MyAnimeListAnime {
         this.authors = authors;
     }
 
-    public List<Object> getAlternativeVersions() {
+    public List<MyAnimeListAnime> getSequels() {
+        return sequels;
+    }
+
+    public void setSequels(List<MyAnimeListAnime> sequels) {
+        this.sequels = sequels;
+    }
+
+    public List<MyAnimeListAnime> getAlternativeVersions() {
         return alternativeVersions;
     }
 
-    public void setAlternativeVersions(List<Object> alternativeVersions) {
+    public void setAlternativeVersions(List<MyAnimeListAnime> alternativeVersions) {
         this.alternativeVersions = alternativeVersions;
     }
 
-    public List<Object> getSummaries() {
+    public List<MyAnimeListAnime> getPrequels() {
+        return prequels;
+    }
+
+    public void setPrequels(List<MyAnimeListAnime> prequels) {
+        this.prequels = prequels;
+    }
+
+    public List<MyAnimeListAnime> getSpinoff() {
+        return spinoff;
+    }
+
+    public void setSpinoff(List<MyAnimeListAnime> spinoff) {
+        this.spinoff = spinoff;
+    }
+
+    public List<MyAnimeListAnime> getSideStories() {
+        return sideStories;
+    }
+
+    public void setSideStories(List<MyAnimeListAnime> sideStories) {
+        this.sideStories = sideStories;
+    }
+
+    public List<MyAnimeListAnime> getOthers() {
+        return others;
+    }
+
+    public void setOthers(List<MyAnimeListAnime> others) {
+        this.others = others;
+    }
+
+    public List<MyAnimeListAnime> getSummaries() {
         return summaries;
     }
 
-    public void setSummaries(List<Object> summaries) {
+    public void setSummaries(List<MyAnimeListAnime> summaries) {
         this.summaries = summaries;
     }
 
-    public List<Object> getAdaptations() {
+    public List<MyAnimeListAnime> getAdaptations() {
         return adaptations;
     }
 
-    public void setAdaptations(List<Object> adaptations) {
+    public void setAdaptations(List<MyAnimeListAnime> adaptations) {
         this.adaptations = adaptations;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public MyAnimeListAnime getParent() {
+        return parent;
+    }
+
+    public void setParent(MyAnimeListAnime parent) {
+        this.parent = parent;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        MyAnimeListAnime that = (MyAnimeListAnime) o;
+
+        return new EqualsBuilder()
+                .append(id, that.id)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(id)
+                .toHashCode();
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
                 .append("id", id)
+                .append("type", type)
                 .append("title", title)
                 .append("synonyms", synonyms)
                 .append("englishTitle", englishTitle)

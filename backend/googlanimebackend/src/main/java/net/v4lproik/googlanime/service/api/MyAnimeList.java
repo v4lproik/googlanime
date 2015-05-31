@@ -10,7 +10,9 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 import static org.elasticsearch.common.lang3.StringUtils.countMatches;
 import static org.elasticsearch.common.lang3.StringUtils.substringBetween;
@@ -27,6 +29,11 @@ public class MyAnimeList extends WebsiteAbstract {
     public static final String USER_AGENT = "iMAL-iOS";
     public static final String[] URL_GRAB = new String[]{"characters", "characters#staff"};
 
+    private List<Integer> animeScrapped = new ArrayList<Integer>();
+    private List<Integer> animeErrorScrapped = new ArrayList<Integer>();
+
+    private MyAnimeListAnime root;
+
     @Override
     public MyAnimeListAnime crawl(ImportOptions opts) throws IOException {
         MyAnimeListAnime myAnimeListAnime = new MyAnimeListAnime();
@@ -42,7 +49,7 @@ public class MyAnimeList extends WebsiteAbstract {
         //get list or anime ?
         if(response.url().toString().startsWith(DOMAIN + type + "/") && countMatches(response.url().toString(), "/") == 5){
             Document doc = response.parse();
-            myAnimeListAnime = scrapGeneralInformation(doc, url, type);
+            myAnimeListAnime = scrapGeneralInformation(doc, url, type, null);
         }
 
         return myAnimeListAnime;
@@ -52,35 +59,182 @@ public class MyAnimeList extends WebsiteAbstract {
     public MyAnimeListAnime crawlById(ImportOptions opts) throws IOException {
 
         final String type = opts.getType();
-        final String id = opts.getId().toString();
-        final String url = DOMAIN + type + "/" + id;
+        final Integer id = opts.getId();
+        final Boolean dependency = opts.getDependency();
 
         if (type == null || id == null)
             throw new IllegalArgumentException("Both type and id argument cannot be null");
 
-        if (type.isEmpty() || id.isEmpty())
+        if (type.isEmpty() || id.toString().isEmpty())
             throw new IllegalArgumentException("Both type and id argument cannot be empty");
 
-        Document doc = getResultFromJSoup(url, type);
+        // Set the root here so it gets never overwritten
+        root = new MyAnimeListAnime(id);
+        root.setType(type);
 
+        if (!dependency){
+            log.debug(String.format("ToScrap %s", id.toString()));
 
-        if(doc == null)
-            throw new IOException("No data to be parsed");
+            String url = createURL(id, type);
+            Document doc = this.getResultFromJSoup(url, type);
 
-        return scrapGeneralInformation(doc, url, type);
+            if (doc == null)
+                throw new IOException(String.format("No data fetched for url %s", url));
+
+            scrapGeneralInformation(doc, url, type, root);
+
+            log.debug(root.toString());
+
+            return root;
+        }
+
+        return letsScrap(root, true);
+    }
+
+    protected MyAnimeListAnime letsScrap(MyAnimeListAnime toScrap, Boolean first) throws IOException {
+
+        String url;
+        Document doc;
+
+        while (toScrap != null){
+
+            String type = toScrap.getType();
+            Integer id = toScrap.getId();
+
+            if (type == null || id == null)
+                throw new IllegalArgumentException("Both type and id argument cannot be null");
+
+            if (type.isEmpty() || id.toString().isEmpty())
+                throw new IllegalArgumentException("Both type and id argument cannot be empty");
+
+            if (!animeScrapped.contains(toScrap.getId())) {
+                log.debug(String.format("ToScrap %s => %s", id.toString(), toScrap.getTitle()));
+
+                url = createURL(id, type);
+                doc = getResultFromJSoup(url, type);
+
+                if (doc == null) {
+                    animeErrorScrapped.add(id);
+                } else {
+                    scrapGeneralInformation(doc, url, type, toScrap);
+                    animeScrapped.add(id);
+                }
+
+                log.debug(toScrap.toString());
+            }
+
+            MyAnimeListAnime nextToScrap = whoSNext(toScrap);
+
+            // Tricky part
+            if (nextToScrap == null){
+                letsScrap(toScrap.getParent(), false);
+            }
+
+            toScrap = nextToScrap;
+        }
+
+        return root;
     }
 
     protected Document getResultFromJSoup(String url, String type) throws IOException {
         log.debug("Trying to get result from " + url);
 
+        try {
+            long delay = (5 + new Random().nextInt(5)) * 1000;
+            Integer seconds = (int) (delay / 1000) % 60 ;
+            log.debug(String.format("Delay : %ss", seconds.toString()));
+            Thread.sleep(delay);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         final Connection.Response response = Jsoup.connect(url).userAgent(USER_AGENT).execute();
 
         Document doc = null;
-        if(response.url().toString().startsWith(DOMAIN + type + "/") && countMatches(response.url().toString(), "/") == 4){
+
+        if(response.url().toString().startsWith(DOMAIN + type + "/") && countMatches(response.url().toString(), "/") == 5){
             doc = response.parse();
         }
 
+        log.debug(String.format("Response url %s", response.url()));
+
         return doc;
+    }
+
+    protected MyAnimeListAnime whoSNext(MyAnimeListAnime lastScrapped){
+
+        log.debug(String.format("Animes that have been scrapped %s ", Arrays.asList(animeScrapped)));
+        log.debug(String.format("Animes that have been errorscrapped %s ", Arrays.asList(animeErrorScrapped)));
+
+
+        for (Object anime : lastScrapped.getAdaptations()){
+            MyAnimeListAnime animeSelected = (MyAnimeListAnime) anime;
+            Integer id = animeSelected.getId();
+
+            if (!animeScrapped.contains(id) && !animeErrorScrapped.contains(id)){
+                return animeSelected;
+            }
+        }
+
+        for (Object anime : lastScrapped.getAlternativeVersions()){
+            MyAnimeListAnime animeSelected = (MyAnimeListAnime) anime;
+            int id = animeSelected.getId();
+
+            if (!animeScrapped.contains(id) && !animeErrorScrapped.contains(id)){
+                return animeSelected;
+            }
+        }
+
+        for (Object anime : lastScrapped.getPrequels()){
+            MyAnimeListAnime animeSelected = (MyAnimeListAnime) anime;
+            int id = animeSelected.getId();
+
+            if (!animeScrapped.contains(id) && !animeErrorScrapped.contains(id)){
+                return animeSelected;
+            }
+        }
+
+        for (Object anime : lastScrapped.getSequels()){
+            MyAnimeListAnime animeSelected = (MyAnimeListAnime) anime;
+            int id = animeSelected.getId();
+
+            if (!animeScrapped.contains(id) && !animeErrorScrapped.contains(id)){
+                return animeSelected;
+            }
+        }
+
+        for (Object anime : lastScrapped.getSideStories()){
+            MyAnimeListAnime animeSelected = (MyAnimeListAnime) anime;
+            int id = animeSelected.getId();
+
+            if (!animeScrapped.contains(id) && !animeErrorScrapped.contains(id)){
+                return animeSelected;
+            }
+        }
+
+        for (Object anime : lastScrapped.getOthers()){
+            MyAnimeListAnime animeSelected = (MyAnimeListAnime) anime;
+            int id = animeSelected.getId();
+
+            if (!animeScrapped.contains(id) && !animeErrorScrapped.contains(id)){
+                return animeSelected;
+            }
+        }
+
+        for (Object anime : lastScrapped.getSummaries()){
+            MyAnimeListAnime animeSelected = (MyAnimeListAnime) anime;
+            int id = animeSelected.getId();
+
+            if (!animeScrapped.contains(id) && !animeErrorScrapped.contains(id)){
+                return animeSelected;
+            }
+        }
+
+        return null;
+    }
+
+    protected void addAnimeIntoAnotherAnime(MyAnimeListAnime root, MyAnimeListAnime find){
+
     }
 
     protected Integer getIdFromLink(String link) {
@@ -96,12 +250,33 @@ public class MyAnimeList extends WebsiteAbstract {
         return null;
     }
 
-    private MyAnimeListAnime scrapGeneralInformation(Document doc, String url, String type){
+    protected String getTypeFromLink(String link) {
+        try {
+            if (link.startsWith("http") || link.startsWith("https"))
+                return link.split("/")[3].split("/")[0];
+            else
+                return link.split("/")[1].split("/")[0];
+        } catch (Exception e){
+            log.debug(String.format("Error parsing type from link : %s", link));
+        }
+
+        return null;
+    }
+
+    protected String createURL(Integer id, String type){
+        return DOMAIN + type.toString() + "/" + id.toString() + "/";
+    }
+
+    private MyAnimeListAnime scrapGeneralInformation(Document doc, String url, String type, MyAnimeListAnime myAnimeListAnime){
         String pattern;
-        MyAnimeListAnime myAnimeListAnime = new MyAnimeListAnime();
+
+        if (myAnimeListAnime == null) myAnimeListAnime = new MyAnimeListAnime();
 
         //get id
         myAnimeListAnime.setId(this.getIdFromLink(url));
+
+        //get type
+        myAnimeListAnime.setType(type);
 
         //get main title
         myAnimeListAnime.setTitle(doc.select("h1").first().ownText());
@@ -124,14 +299,17 @@ public class MyAnimeList extends WebsiteAbstract {
                             String linkHref = link.attr("href");
                             String title =  link.text();
                             Integer id = this.getIdFromLink(linkHref);
+                            type = this.getTypeFromLink(linkHref);
 
                             if (id != null){
                                 MyAnimeListAnime sequel = new MyAnimeListAnime();
                                 sequel.setId(id);
+                                sequel.setType(type);
                                 sequel.setTitle(title);
+                                sequel.setParent(myAnimeListAnime);
 
                                 //get sequels
-                                List<Object> sequels = myAnimeListAnime.getSequels();
+                                List<MyAnimeListAnime> sequels = myAnimeListAnime.getSequels();
                                 sequels.add(sequel);
                             }
                         }else {
@@ -145,14 +323,18 @@ public class MyAnimeList extends WebsiteAbstract {
                                     String linkHref = link.attr("href");
                                     String title = link.text();
                                     Integer id = this.getIdFromLink(linkHref);
+                                    type = this.getTypeFromLink(linkHref);
 
                                     if (id != null) {
                                         MyAnimeListAnime sideStory = new MyAnimeListAnime();
                                         sideStory.setId(id);
+                                        sideStory.setType(type);
                                         sideStory.setTitle(title);
+                                        sideStory.setParent(myAnimeListAnime);
+
 
                                         //get sequels
-                                        List<Object> sideStories = myAnimeListAnime.getSideStories();
+                                        List<MyAnimeListAnime> sideStories = myAnimeListAnime.getSideStories();
                                         sideStories.add(sideStory);
                                     }
                                 }
@@ -167,14 +349,18 @@ public class MyAnimeList extends WebsiteAbstract {
                                         String linkHref = link.attr("href");
                                         String title = link.text();
                                         Integer id = this.getIdFromLink(linkHref);
+                                        type = this.getTypeFromLink(linkHref);
 
                                         if (id != null) {
                                             MyAnimeListAnime spinOff = new MyAnimeListAnime();
                                             spinOff.setId(id);
+                                            spinOff.setType(type);
                                             spinOff.setTitle(title);
+                                            spinOff.setParent(myAnimeListAnime);
+
 
                                             //get sequels
-                                            List<Object> spinOffs = myAnimeListAnime.getSpinoff();
+                                            List<MyAnimeListAnime> spinOffs = myAnimeListAnime.getSpinoff();
                                             spinOffs.add(spinOff);
                                         }
                                     }
@@ -189,14 +375,18 @@ public class MyAnimeList extends WebsiteAbstract {
                                             String linkHref = link.attr("href");
                                             String title = link.text();
                                             Integer id = this.getIdFromLink(linkHref);
+                                            type = this.getTypeFromLink(linkHref);
 
                                             if (id != null) {
                                                 MyAnimeListAnime other = new MyAnimeListAnime();
                                                 other.setId(id);
+                                                other.setType(type);
                                                 other.setTitle(title);
+                                                other.setParent(myAnimeListAnime);
+
 
                                                 //get sequels
-                                                List<Object> others = myAnimeListAnime.getOthers();
+                                                List<MyAnimeListAnime> others = myAnimeListAnime.getOthers();
                                                 others.add(other);
                                             }
                                         }
@@ -211,14 +401,17 @@ public class MyAnimeList extends WebsiteAbstract {
                                                 String linkHref = link.attr("href");
                                                 String title = link.text();
                                                 Integer id = this.getIdFromLink(linkHref);
+                                                type = this.getTypeFromLink(linkHref);
 
                                                 if (id != null) {
                                                     MyAnimeListAnime prequel = new MyAnimeListAnime();
                                                     prequel.setId(id);
+                                                    prequel.setType(type);
                                                     prequel.setTitle(title);
+                                                    prequel.setParent(myAnimeListAnime);
 
                                                     //get sequels
-                                                    List<Object> prequels = myAnimeListAnime.getPrequels();
+                                                    List<MyAnimeListAnime> prequels = myAnimeListAnime.getPrequels();
                                                     prequels.add(prequel);
                                                 }
                                             }
@@ -233,14 +426,17 @@ public class MyAnimeList extends WebsiteAbstract {
                                                     String linkHref = link.attr("href");
                                                     String title = link.text();
                                                     Integer id = this.getIdFromLink(linkHref);
+                                                    type = this.getTypeFromLink(linkHref);
 
                                                     if (id != null) {
                                                         MyAnimeListAnime alternativeVersion = new MyAnimeListAnime();
                                                         alternativeVersion.setId(id);
+                                                        alternativeVersion.setType(type);
                                                         alternativeVersion.setTitle(title);
+                                                        alternativeVersion.setParent(myAnimeListAnime);
 
                                                         //get sequels
-                                                        List<Object> alternativeVersions = myAnimeListAnime.getOthers();
+                                                        List<MyAnimeListAnime> alternativeVersions = myAnimeListAnime.getOthers();
                                                         alternativeVersions.add(alternativeVersion);
                                                     }
                                                 }
@@ -255,14 +451,17 @@ public class MyAnimeList extends WebsiteAbstract {
                                                         String linkHref = link.attr("href");
                                                         String title = link.text();
                                                         Integer id = this.getIdFromLink(linkHref);
+                                                        type = this.getTypeFromLink(linkHref);
 
                                                         if (id != null) {
                                                             MyAnimeListAnime adaptations = new MyAnimeListAnime();
                                                             adaptations.setId(id);
+                                                            adaptations.setType(type);
                                                             adaptations.setTitle(title);
+                                                            adaptations.setParent(myAnimeListAnime);
 
                                                             //get sequels
-                                                            List<Object> alternativeVersions = myAnimeListAnime.getAdaptations();
+                                                            List<MyAnimeListAnime> alternativeVersions = myAnimeListAnime.getAdaptations();
                                                             alternativeVersions.add(adaptations);
                                                         }
                                                     }
@@ -277,14 +476,17 @@ public class MyAnimeList extends WebsiteAbstract {
                                                             String linkHref = link.attr("href");
                                                             String title = link.text();
                                                             Integer id = this.getIdFromLink(linkHref);
+                                                            type = this.getTypeFromLink(linkHref);
 
                                                             if (id != null) {
                                                                 MyAnimeListAnime summary = new MyAnimeListAnime();
                                                                 summary.setId(id);
+                                                                summary.setType(type);
                                                                 summary.setTitle(title);
+                                                                summary.setParent(myAnimeListAnime);
 
                                                                 //get sequels
-                                                                List<Object> summaries = myAnimeListAnime.getSummaries();
+                                                                List<MyAnimeListAnime> summaries = myAnimeListAnime.getSummaries();
                                                                 summaries.add(summary);
                                                             }
                                                         }
@@ -346,10 +548,13 @@ public class MyAnimeList extends WebsiteAbstract {
                 List<MyAnimeListAuthor> authors = myAnimeListAnime.getAuthors();
                 for (int i = 0; i < parts.length; i = i+2) {
                     MyAnimeListAuthor author = new MyAnimeListAuthor();
-                    listItems.add(parts[i] + ", " + parts[i+1]);
-                    author.setFirstName(parts[i]);
-                    author.setLastName(parts[i + 1]);
-
+                    try{
+                        listItems.add(parts[i] + ", " + parts[i+1]);
+                        author.setFirstName(parts[i]);
+                        author.setLastName(parts[i + 1]);
+                    }catch (ArrayIndexOutOfBoundsException e){
+                        author.setFirstName(parts[i]);
+                    }
                     log.info(String.format("Add new author %s", author.toString()));
                 }
             }

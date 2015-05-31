@@ -58,4 +58,12 @@ public class ImportOptions {
     public void setType(String type) {
         this.type = type;
     }
+
+    public Boolean getDependency() {
+        return dependency;
+    }
+
+    public void setDependency(Boolean dependency) {
+        this.dependency = dependency;
+    }
 }
