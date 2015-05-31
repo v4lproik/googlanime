@@ -83,21 +83,14 @@ public class MyAnimeList extends WebsiteAbstract {
         return doc;
     }
 
-    protected Integer getIdFromLinkAbsolute(String link) {
+    protected Integer getIdFromLink(String link) {
         try {
-            return Integer.parseInt(link.split("/")[4].split("/")[0]);
+            if (link.startsWith("http") || link.startsWith("https"))
+                return Integer.parseInt(link.split("/")[4].split("/")[0]);
+            else
+                return Integer.parseInt(link.split("/")[2].split("/")[0]);
         } catch (Exception e){
-            log.debug("Error parsing id");
-        }
-
-        return null;
-    }
-
-    private Integer getIdFromLinkRelative(String link) {
-        try {
-            return Integer.parseInt(link.split("/")[2].split("/")[0]);
-        } catch (Exception e){
-            log.debug("Error parsing id");
+            log.debug(String.format("Error parsing id from link : %s", link));
         }
 
         return null;
@@ -108,7 +101,7 @@ public class MyAnimeList extends WebsiteAbstract {
         MyAnimeListAnime myAnimeListAnime = new MyAnimeListAnime();
 
         //get id
-        myAnimeListAnime.setId(this.getIdFromLinkAbsolute(url));
+        myAnimeListAnime.setId(this.getIdFromLink(url));
 
         //get main title
         myAnimeListAnime.setTitle(doc.select("h1").first().ownText());
@@ -130,7 +123,7 @@ public class MyAnimeList extends WebsiteAbstract {
                             Element link = docTmp.select("a").first();
                             String linkHref = link.attr("href");
                             String title =  link.text();
-                            Integer id = this.getIdFromLinkRelative(linkHref);
+                            Integer id = this.getIdFromLink(linkHref);
 
                             if (id != null){
                                 MyAnimeListAnime sequel = new MyAnimeListAnime();
@@ -140,8 +133,6 @@ public class MyAnimeList extends WebsiteAbstract {
                                 //get sequels
                                 List<Object> sequels = myAnimeListAnime.getSequels();
                                 sequels.add(sequel);
-
-                                myAnimeListAnime.setSequels(sequels);
                             }
                         }else {
                             if (line.startsWith("Side story:")) {
@@ -153,7 +144,7 @@ public class MyAnimeList extends WebsiteAbstract {
                                 for (Element link : links) {
                                     String linkHref = link.attr("href");
                                     String title = link.text();
-                                    Integer id = this.getIdFromLinkRelative(linkHref);
+                                    Integer id = this.getIdFromLink(linkHref);
 
                                     if (id != null) {
                                         MyAnimeListAnime sideStory = new MyAnimeListAnime();
@@ -163,8 +154,6 @@ public class MyAnimeList extends WebsiteAbstract {
                                         //get sequels
                                         List<Object> sideStories = myAnimeListAnime.getSideStories();
                                         sideStories.add(sideStory);
-
-                                        myAnimeListAnime.setSideStories(sideStories);
                                     }
                                 }
                             }else{
@@ -177,7 +166,7 @@ public class MyAnimeList extends WebsiteAbstract {
                                     for (Element link : links) {
                                         String linkHref = link.attr("href");
                                         String title = link.text();
-                                        Integer id = this.getIdFromLinkRelative(linkHref);
+                                        Integer id = this.getIdFromLink(linkHref);
 
                                         if (id != null) {
                                             MyAnimeListAnime spinOff = new MyAnimeListAnime();
@@ -187,8 +176,6 @@ public class MyAnimeList extends WebsiteAbstract {
                                             //get sequels
                                             List<Object> spinOffs = myAnimeListAnime.getSpinoff();
                                             spinOffs.add(spinOff);
-
-                                            myAnimeListAnime.setSpinoff(spinOffs);
                                         }
                                     }
                                 }else{
@@ -201,7 +188,7 @@ public class MyAnimeList extends WebsiteAbstract {
                                         for (Element link : links) {
                                             String linkHref = link.attr("href");
                                             String title = link.text();
-                                            Integer id = this.getIdFromLinkRelative(linkHref);
+                                            Integer id = this.getIdFromLink(linkHref);
 
                                             if (id != null) {
                                                 MyAnimeListAnime other = new MyAnimeListAnime();
@@ -211,13 +198,11 @@ public class MyAnimeList extends WebsiteAbstract {
                                                 //get sequels
                                                 List<Object> others = myAnimeListAnime.getOthers();
                                                 others.add(other);
-
-                                                myAnimeListAnime.setOthers(others);
                                             }
                                         }
                                     }else{
-                                        if (line.startsWith("Sequel:")) {
-                                            log.debug("Sequels have been found");
+                                        if (line.startsWith("Prequel:")) {
+                                            log.debug("Prequels have been found");
 
                                             Document docTmp = Jsoup.parse(line);
                                             Elements links = docTmp.select("a");
@@ -225,18 +210,16 @@ public class MyAnimeList extends WebsiteAbstract {
                                             for (Element link : links) {
                                                 String linkHref = link.attr("href");
                                                 String title = link.text();
-                                                Integer id = this.getIdFromLinkRelative(linkHref);
+                                                Integer id = this.getIdFromLink(linkHref);
 
                                                 if (id != null) {
-                                                    MyAnimeListAnime sequel = new MyAnimeListAnime();
-                                                    sequel.setId(id);
-                                                    sequel.setTitle(title);
+                                                    MyAnimeListAnime prequel = new MyAnimeListAnime();
+                                                    prequel.setId(id);
+                                                    prequel.setTitle(title);
 
                                                     //get sequels
-                                                    List<Object> sequels = myAnimeListAnime.getOthers();
-                                                    sequels.add(sequel);
-
-                                                    myAnimeListAnime.setSequels(sequels);
+                                                    List<Object> prequels = myAnimeListAnime.getPrequels();
+                                                    prequels.add(prequel);
                                                 }
                                             }
                                         }else{
@@ -249,7 +232,7 @@ public class MyAnimeList extends WebsiteAbstract {
                                                 for (Element link : links) {
                                                     String linkHref = link.attr("href");
                                                     String title = link.text();
-                                                    Integer id = this.getIdFromLinkRelative(linkHref);
+                                                    Integer id = this.getIdFromLink(linkHref);
 
                                                     if (id != null) {
                                                         MyAnimeListAnime alternativeVersion = new MyAnimeListAnime();
@@ -259,8 +242,52 @@ public class MyAnimeList extends WebsiteAbstract {
                                                         //get sequels
                                                         List<Object> alternativeVersions = myAnimeListAnime.getOthers();
                                                         alternativeVersions.add(alternativeVersion);
+                                                    }
+                                                }
+                                            }else {
+                                                if (line.startsWith("Adaptation")) {
+                                                    log.debug("Adaptations have been found");
 
-                                                        myAnimeListAnime.setAlternativeVersions(alternativeVersions);
+                                                    Document docTmp = Jsoup.parse(line);
+                                                    Elements links = docTmp.select("a");
+
+                                                    for (Element link : links) {
+                                                        String linkHref = link.attr("href");
+                                                        String title = link.text();
+                                                        Integer id = this.getIdFromLink(linkHref);
+
+                                                        if (id != null) {
+                                                            MyAnimeListAnime adaptations = new MyAnimeListAnime();
+                                                            adaptations.setId(id);
+                                                            adaptations.setTitle(title);
+
+                                                            //get sequels
+                                                            List<Object> alternativeVersions = myAnimeListAnime.getAdaptations();
+                                                            alternativeVersions.add(adaptations);
+                                                        }
+                                                    }
+                                                }else {
+                                                    if (line.startsWith("Summary")) {
+                                                        log.debug("Summaries have been found");
+
+                                                        Document docTmp = Jsoup.parse(line);
+                                                        Elements links = docTmp.select("a");
+
+                                                        for (Element link : links) {
+                                                            String linkHref = link.attr("href");
+                                                            String title = link.text();
+                                                            Integer id = this.getIdFromLink(linkHref);
+
+                                                            if (id != null) {
+                                                                MyAnimeListAnime summary = new MyAnimeListAnime();
+                                                                summary.setId(id);
+                                                                summary.setTitle(title);
+
+                                                                //get sequels
+                                                                List<Object> summaries = myAnimeListAnime.getSummaries();
+                                                                summaries.add(summary);
+                                                            }
+                                                        }
                                                     }
                                                 }
                                             }
