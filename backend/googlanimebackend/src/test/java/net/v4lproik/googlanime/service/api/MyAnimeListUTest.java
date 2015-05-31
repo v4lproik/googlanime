@@ -20,7 +20,7 @@ public class MyAnimeListUTest {
     private MyAnimeList myAnimeList;
 
     @Test
-    public void testCrawlById_withGoodOptions_shouldBeOK() throws Exception {
+    public void testCrawlById_withGoodOptionsManga_shouldBeOK() throws Exception {
         // Given
         ImportOptions options = new ImportOptions(11, "manga", false);
         String type = options.getType();
@@ -36,7 +36,29 @@ public class MyAnimeListUTest {
         MyAnimeListAnime response = myAnimeList.crawlById(options);
 
         //Then
+        System.out.println(response.toString());
         assertEquals("Naruto", response.getTitle());
+    }
+
+    @Test
+    public void testCrawlById_withGoodOptionsAnime_shouldBeOK() throws Exception {
+        // Given
+        ImportOptions options = new ImportOptions(2904, "anime", false);
+        String type = options.getType();
+        final String id = options.getId().toString();
+        final String url = MyAnimeList.DOMAIN + type + "/" + id;
+
+        File input = new File("src/test/resource/code-geass-r2-anime.html");
+        Document doc = Jsoup.parse(input, "UTF-8", url);
+
+        doReturn(doc).when(myAnimeList).getResultFromJSoup(url, type);
+
+        // When
+        MyAnimeListAnime response = myAnimeList.crawlById(options);
+
+        //Then
+        System.out.println(response.toString());
+        assertEquals("Code Geass: Hangyaku no Lelouch R2", response.getTitle());
     }
 
     @Test(expected = IOException.class)

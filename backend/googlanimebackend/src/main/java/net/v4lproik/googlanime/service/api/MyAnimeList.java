@@ -5,6 +5,7 @@ import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
@@ -262,35 +263,6 @@ public class MyAnimeList extends WebsiteAbstract {
                                                         myAnimeListAnime.setAlternativeVersions(alternativeVersions);
                                                     }
                                                 }
-                                            }else {
-                                                if (line.startsWith("Characters")) {
-                                                    log.debug("Characters have been found");
-
-                                                    Document docTmp = Jsoup.parse(line);
-                                                    Elements links = docTmp.select("a");
-
-                                                    for (Element link : links) {
-                                                        String linkHref = link.attr("href");
-                                                        String wholeName = link.text();
-                                                        Integer id = this.getIdFromLinkRelative(linkHref);
-
-                                                        if (id != null) {
-                                                            MyAnimeListCharacter character = new MyAnimeListCharacter();
-                                                            character.setId(id);
-
-                                                            //set first and last name
-                                                            try {
-                                                                String[] tmp2 = wholeName.split(",");
-                                                                character.setFirstName(tmp[0]);
-                                                                character.setLastName(tmp[1]);
-                                                            } catch (Exception e) {
-                                                                log.debug("Error when trying to split first and last name");
-                                                            }
-
-                                                            myAnimeListAnime.getCharacters().add(character);
-                                                        }
-                                                    }
-                                                }
                                             }
                                         }
                                     }
@@ -371,10 +343,14 @@ public class MyAnimeList extends WebsiteAbstract {
 
             if (div.text().startsWith("Type: "))
                 myAnimeListAnime.setShowType(div.text().substring(6, div.text().length()));
+
         }
+
+        pattern = type.equals("manga") ? "Add character | More charactersCharacters" : "Add character | More charactersCharacters & Voice Actors";
 
         Elements h2s = doc.select("h2");
         for (Element h2 : h2s) {
+//            log.debug(h2.text());
             if (h2.text().equals("Popular Tags")){
                 log.debug("Popular tags have been found");
                 Elements els = h2.nextElementSibling().select("span").select("a");
@@ -386,6 +362,41 @@ public class MyAnimeList extends WebsiteAbstract {
                     i++;
                 }
                 myAnimeListAnime.setTags(tags);
+            }else{
+                if (h2.text().equals(pattern)) {
+                    log.debug("Characters have been found");
+
+                    Node current = h2.nextSibling();
+
+                    while (current.outerHtml().startsWith("<table")){
+                        Element el = (Element) current;
+
+                        // Get character info
+                        MyAnimeListCharacter character = new MyAnimeListCharacter();
+                        try{
+                            String characterFullName = el.select("td").get(1).select("a").text();
+                            String role = el.select("td").get(1).select("small").text();
+
+                            String[] parts = characterFullName.split(",");
+
+                            if (parts.length == 2){
+                                character.setFirstName(parts[0]);
+                                character.setLastName(parts[1]);
+                            }else {
+                                if (parts.length == 1)
+                                    character.setLastName(characterFullName);
+                            }
+                            character.setRole(role);
+                            myAnimeListAnime.getCharacters().add(character);
+
+                            log.info(String.format("Add new character %s", character.toString()));
+                        }catch (Exception e){
+                            log.debug("Error when trying to get character's name");
+                        }
+
+                        current = current.nextSibling();
+                    }
+                }
             }
         }
 
