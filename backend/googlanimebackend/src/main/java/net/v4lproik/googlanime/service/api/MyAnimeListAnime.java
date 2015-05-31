@@ -1,6 +1,7 @@
 package net.v4lproik.googlanime.service.api;
 
-import com.google.common.base.Objects;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -263,39 +264,6 @@ public class MyAnimeListAnime {
         this.tags = tags;
     }
 
-    @Override
-    public String toString() {
-        return Objects.toStringHelper(this)
-                .add("id", id)
-                .add("title", title)
-                .add("synonyms", synonyms)
-                .add("englishTitle", englishTitle)
-                .add("japaneseTitle", japaneseTitle)
-                .add("synopsis", synopsis)
-                .add("startedAiringDate", startedAiringDate)
-                .add("rank", rank)
-                .add("popularity", popularity)
-                .add("score", score)
-                .add("producers", producers)
-                .add("genres", genres)
-                .add("finishedAiringDate", finishedAiringDate)
-                .add("ageRating", ageRating)
-                .add("episodeCount", episodeCount)
-                .add("episodeLength", episodeLength)
-                .add("showType", showType)
-                .add("posterImage", posterImage)
-                .add("authors", authors)
-                .add("tags", tags)
-                .add("sequels", sequels)
-                .add("alternativeVersions", alternativeVersions)
-                .add("prequels", prequels)
-                .add("spinoff", spinoff)
-                .add("sideStories", sideStories)
-                .add("others", others)
-                .add("characters", characters)
-                .toString();
-    }
-
     public List<MyAnimeListCharacter> getCharacters() {
         return characters;
     }
@@ -320,4 +288,36 @@ public class MyAnimeListAnime {
         this.alternativeVersions = alternativeVersions;
     }
 
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
+                .append("id", id)
+                .append("title", title)
+                .append("synonyms", synonyms)
+                .append("englishTitle", englishTitle)
+                .append("japaneseTitle", japaneseTitle)
+                .append("synopsis", synopsis)
+                .append("startedAiringDate", startedAiringDate)
+                .append("rank", rank)
+                .append("popularity", popularity)
+                .append("score", score)
+                .append("producers", producers)
+                .append("genres", genres)
+                .append("finishedAiringDate", finishedAiringDate)
+                .append("ageRating", ageRating)
+                .append("episodeCount", episodeCount)
+                .append("episodeLength", episodeLength)
+                .append("showType", showType)
+                .append("posterImage", posterImage)
+                .append("authors", authors)
+                .append("tags", tags)
+                .append("sequels", sequels)
+                .append("alternativeVersions", alternativeVersions)
+                .append("prequels", prequels)
+                .append("spinoff", spinoff)
+                .append("sideStories", sideStories)
+                .append("others", others)
+                .append("characters", characters)
+                .toString();
+    }
 }
