@@ -26,7 +26,7 @@ public class MyAnimeListUTest {
         final String id = options.getId().toString();
         final String url = MyAnimeList.DOMAIN + type + "/" + id;
 
-        File input = new File("/Users/joel/Programmation/front/googlanime/backend/googlanimebackend/src/test/resource/naruto-manga.html");
+        File input = new File("src/test/resource/naruto-manga.html");
         Document doc = Jsoup.parse(input, "UTF-8", url);
 
         doReturn(doc).when(myAnimeList).getResultFromJSoup(url, type);
