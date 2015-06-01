@@ -1,5 +1,7 @@
 package net.v4lproik.googlanime.service.api;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -11,6 +13,7 @@ import java.util.List;
 /**
  * Created by joel on 09/05/2015.
  */
+@JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="@id")
 public class MyAnimeListAnime {
 
     private Integer id;

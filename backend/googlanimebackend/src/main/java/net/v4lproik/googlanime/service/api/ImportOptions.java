@@ -35,6 +35,12 @@ public class ImportOptions {
         this.id = id;
     }
 
+    public ImportOptions(String query, String type, Boolean dependency) {
+        this.dependency = dependency;
+        this.type = type;
+        this.query = query;
+    }
+
     public Integer getId() {
         return id;
     }

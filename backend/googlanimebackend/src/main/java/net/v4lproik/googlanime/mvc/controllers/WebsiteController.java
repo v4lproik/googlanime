@@ -35,7 +35,8 @@ public class WebsiteController {
     @ResponseBody
     public JSONResponse list(@RequestParam(value = "from", required = true) String from,
                              @RequestParam(value = "type", required = true) String type,
-                             @RequestParam(value = "name", required = true) String name) throws BackendException {
+                             @RequestParam(value = "name", required = true) String name,
+                             @RequestParam(value = "dependency", required = false, defaultValue = "false") Boolean dependency) throws BackendException {
 
         JSONResponse response = new JSONResponse();
 
@@ -47,7 +48,7 @@ public class WebsiteController {
         }
 
         try{
-            MyAnimeListAnime myAnimeListAnime = website.crawl(new ImportOptions(name, type));
+            MyAnimeListAnime myAnimeListAnime = website.crawl(new ImportOptions(name, type, dependency));
             log.debug(myAnimeListAnime.toString());
             response.setAnimes(myAnimeListAnime);
 
@@ -70,7 +71,8 @@ public class WebsiteController {
     @ResponseBody
     public JSONResponse list(@RequestParam(value = "from", required = true) String from,
                              @RequestParam(value = "type", required = true) String type,
-                             @RequestParam(value = "id", required = true) Integer id) throws BackendException {
+                             @RequestParam(value = "id", required = true) Integer id,
+                             @RequestParam(value = "dependency", required = false, defaultValue = "false") Boolean dependency) throws BackendException {
 
         JSONResponse response = new JSONResponse();
 
@@ -82,7 +84,10 @@ public class WebsiteController {
         }
 
         try{
-            MyAnimeListAnime myAnimeListAnime = website.crawlById(new ImportOptions(id, type));
+            final ImportOptions opts = new ImportOptions(id, type, dependency);
+            log.debug(String.format("/import with options from=%s, type=%s, id=%s, dependency=%s", from, type, id.toString(), dependency.toString()));
+
+            MyAnimeListAnime myAnimeListAnime = website.crawlById(opts);
             log.debug(myAnimeListAnime.toString());
             response.setAnimes(myAnimeListAnime);
 

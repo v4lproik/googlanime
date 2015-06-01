@@ -35,6 +35,8 @@ public class MyAnimeListUTest {
         // When
         MyAnimeListAnime response = myAnimeList.crawlById(options);
 
+                System.out.println(response.toString());
+
         //Then
         assertEquals("Naruto", response.getTitle());
     }
@@ -63,7 +65,7 @@ public class MyAnimeListUTest {
 //    @Test
 //    public void testCrawlById_withGoodOptionsAnimeXXXXXXXXXXXXXXXXXXXXXXXX_shouldBeOK() throws Exception {
 //        // Given
-//        ImportOptions options = new ImportOptions(5081, "anime", true);
+//        ImportOptions options = new ImportOptions(24, "manga", true);
 //        String type = options.getType();
 //        final Integer id = options.getId();
 //
