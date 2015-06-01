@@ -24,8 +24,8 @@ public class MyAnimeListUTest {
         // Given
         ImportOptions options = new ImportOptions(11, "manga", false);
         String type = options.getType();
-        final String id = options.getId().toString();
-        final String url = MyAnimeList.DOMAIN + type + "/" + id;
+        final Integer id = options.getId();
+        String url = myAnimeList.createURL(id, type);
 
         File input = new File("src/test/resource/naruto-manga.html");
         Document doc = Jsoup.parse(input, "UTF-8", url);
@@ -36,7 +36,6 @@ public class MyAnimeListUTest {
         MyAnimeListAnime response = myAnimeList.crawlById(options);
 
         //Then
-        System.out.println(response.toString());
         assertEquals("Naruto", response.getTitle());
     }
 
@@ -45,8 +44,8 @@ public class MyAnimeListUTest {
         // Given
         ImportOptions options = new ImportOptions(2904, "anime", false);
         String type = options.getType();
-        final String id = options.getId().toString();
-        final String url = MyAnimeList.DOMAIN + type + "/" + id;
+        Integer id = options.getId();
+        String url = myAnimeList.createURL(id, type);
 
         File input = new File("src/test/resource/code-geass-r2-anime.html");
         Document doc = Jsoup.parse(input, "UTF-8", url);
@@ -61,14 +60,31 @@ public class MyAnimeListUTest {
         assertEquals("Code Geass: Hangyaku no Lelouch R2", response.getTitle());
     }
 
+//    @Test
+//    public void testCrawlById_withGoodOptionsAnimeXXXXXXXXXXXXXXXXXXXXXXXX_shouldBeOK() throws Exception {
+//        // Given
+//        ImportOptions options = new ImportOptions(5081, "anime", true);
+//        String type = options.getType();
+//        final Integer id = options.getId();
+//
+//        // When
+//        MyAnimeListAnime response = myAnimeList.crawlById(options);
+//
+//
+//        System.out.println("------------RESPONSE------------");
+//        System.out.println(response.toString());
+//
+//        //Then
+//        assertEquals("Code Geass: Hangyaku no Lelouch R2", response.getTitle());
+//    }
+
     @Test(expected = IOException.class)
     public void testCrawlById_withGoodOptions_withNoDataToCrawl_shouldThrowIOException() throws Exception {
         // Given
-        ImportOptions options = new ImportOptions(11, "manga", false);
+        ImportOptions options = new ImportOptions(5081, "anime", false);
         String type = options.getType();
-        final String id = options.getId().toString();
-        final String url = MyAnimeList.DOMAIN + type + "/" + id;
-
+        final Integer id = options.getId();
+        String url = myAnimeList.createURL(id, type);
 
         doReturn(null).when(myAnimeList).getResultFromJSoup(url, type);
 
@@ -81,8 +97,7 @@ public class MyAnimeListUTest {
         // Given
         ImportOptions options = new ImportOptions(11, null, false);
         String type = options.getType();
-        final String id = options.getId().toString();
-        final String url = MyAnimeList.DOMAIN + type + "/" + id;
+        final Integer id = options.getId();
 
         // When
         MyAnimeListAnime response = myAnimeList.crawlById(options);
@@ -94,7 +109,6 @@ public class MyAnimeListUTest {
         ImportOptions options = new ImportOptions(11, "", false);
         String type = options.getType();
         final String id = options.getId().toString();
-        final String url = MyAnimeList.DOMAIN + type + "/" + id;
 
         // When
         MyAnimeListAnime response = myAnimeList.crawlById(options);
