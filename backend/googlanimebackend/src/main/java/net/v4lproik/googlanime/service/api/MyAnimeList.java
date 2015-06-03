@@ -7,6 +7,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.jsoup.select.Elements;
+import org.springframework.beans.BeanUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,8 +30,13 @@ public class MyAnimeList extends WebsiteAbstract {
     public static final String USER_AGENT = "iMAL-iOS";
     public static final String[] URL_GRAB = new String[]{"characters", "characters#staff"};
 
+    public static final String[] IGNORE_PROPERTIES = {"sequels", "alternativeVersions", "prequels", "spinoff", "sideStories", "others", "summaries", "adaptations" };
+
+
     private List<Integer> animeScrapped = new ArrayList<Integer>();
     private List<Integer> animeErrorScrapped = new ArrayList<Integer>();
+
+    private List<MyAnimeListAnimeDependency> animes = new ArrayList<>();
 
     private MyAnimeListAnime root;
 
@@ -49,7 +55,7 @@ public class MyAnimeList extends WebsiteAbstract {
         //get list or anime ?
         if(response.url().toString().startsWith(DOMAIN + type + "/") && countMatches(response.url().toString(), "/") == 5){
             Document doc = response.parse();
-            myAnimeListAnime = scrapGeneralInformation(doc, url, type, null);
+            scrapGeneralInformation(doc, url, type, null);
         }
 
         return myAnimeListAnime;
@@ -88,7 +94,30 @@ public class MyAnimeList extends WebsiteAbstract {
             return root;
         }
 
-        return letsScrap(root, true);
+        letsScrap(root, true);
+
+        return root;
+    }
+
+    @Override
+    public List<MyAnimeListAnimeDependency> crawlByIdList(ImportOptions opts) throws IOException {
+
+        final String type = opts.getType();
+        final Integer id = opts.getId();
+
+        if (type == null || id == null)
+            throw new IllegalArgumentException("Both type and id argument cannot be null");
+
+        if (type.isEmpty() || id.toString().isEmpty())
+            throw new IllegalArgumentException("Both type and id argument cannot be empty");
+
+        // Set the root here so it gets never overwritten
+        root = new MyAnimeListAnime(id);
+        root.setType(type);
+
+        letsScrap(root, true);
+
+        return animes;
     }
 
     protected MyAnimeListAnime letsScrap(MyAnimeListAnime toScrap, Boolean first) throws IOException {
@@ -118,6 +147,10 @@ public class MyAnimeList extends WebsiteAbstract {
                 } else {
                     scrapGeneralInformation(doc, url, type, toScrap);
                     animeScrapped.add(id);
+
+                    MyAnimeListAnimeDependency myAnimeListAnimeDependency = convertIntoDependencyObject(toScrap);
+
+                    animes.add(myAnimeListAnimeDependency);
                 }
 
                 log.debug(toScrap.toString());
@@ -140,7 +173,8 @@ public class MyAnimeList extends WebsiteAbstract {
         log.debug("Trying to get result from " + url);
 
         try {
-            long delay = (5 + new Random().nextInt(5)) * 1000;
+            //delay between 0 and 5s
+            long delay = (0 + new Random().nextInt(5)) * 1000;
             Integer seconds = (int) (delay / 1000) % 60 ;
             log.debug(String.format("Delay : %ss", seconds.toString()));
             Thread.sleep(delay);
@@ -233,8 +267,50 @@ public class MyAnimeList extends WebsiteAbstract {
         return null;
     }
 
-    protected void addAnimeIntoAnotherAnime(MyAnimeListAnime root, MyAnimeListAnime find){
+    protected MyAnimeListAnimeDependency convertIntoDependencyObject(MyAnimeListAnime from){
 
+        MyAnimeListAnimeDependency myAnimeListAnimeDependency = new MyAnimeListAnimeDependency();
+        Integer id;
+
+        //Copy value into MyAnimeListDependency
+        BeanUtils.copyProperties(from, myAnimeListAnimeDependency, IGNORE_PROPERTIES);
+
+        for (MyAnimeListAnime anime : from.getAdaptations()){
+            id = anime.getId();
+            myAnimeListAnimeDependency.getAdaptations().add(new MyAnimeListAnimeDependencyId(id));
+        }
+
+        for (MyAnimeListAnime anime : from.getAlternativeVersions()){
+            id = anime.getId();
+            myAnimeListAnimeDependency.getAlternativeVersions().add(new MyAnimeListAnimeDependencyId(id));
+        }
+
+        for (MyAnimeListAnime anime : from.getPrequels()){
+            id = anime.getId();
+            myAnimeListAnimeDependency.getPrequels().add(new MyAnimeListAnimeDependencyId(id));
+        }
+
+        for (MyAnimeListAnime anime : from.getSequels()){
+            id = anime.getId();
+            myAnimeListAnimeDependency.getSequels().add(new MyAnimeListAnimeDependencyId(id));
+        }
+
+        for (MyAnimeListAnime anime : from.getSideStories()){
+            id = anime.getId();
+            myAnimeListAnimeDependency.getSideStories().add(new MyAnimeListAnimeDependencyId(id));
+        }
+
+        for (MyAnimeListAnime anime : from.getOthers()){
+            id = anime.getId();
+            myAnimeListAnimeDependency.getOthers().add(new MyAnimeListAnimeDependencyId(id));
+        }
+
+        for (MyAnimeListAnime anime : from.getSummaries()){
+            id = anime.getId();
+            myAnimeListAnimeDependency.getSummaries().add(new MyAnimeListAnimeDependencyId(id));
+        }
+
+        return myAnimeListAnimeDependency;
     }
 
     protected Integer getIdFromLink(String link) {
@@ -357,7 +433,6 @@ public class MyAnimeList extends WebsiteAbstract {
                                             spinOff.setType(type);
                                             spinOff.setTitle(title);
                                             spinOff.setParent(myAnimeListAnime);
-
 
                                             //get sequels
                                             List<MyAnimeListAnime> spinOffs = myAnimeListAnime.getSpinoff();
@@ -678,10 +753,5 @@ public class MyAnimeList extends WebsiteAbstract {
     @Override
     public void call() {
 
-    }
-
-    public String test(){
-        System.out.println("You have called test");
-        return "original test";
     }
 }

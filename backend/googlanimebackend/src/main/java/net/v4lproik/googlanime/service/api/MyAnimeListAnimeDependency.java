@@ -10,8 +10,11 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Created by joel on 09/05/2015.
+ */
 @JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="@id")
-public class MyAnimeListAnime {
+public class MyAnimeListAnimeDependency {
 
     private Integer id;
 
@@ -51,35 +54,35 @@ public class MyAnimeListAnime {
 
     private String posterImage;
 
-    private MyAnimeListAnime parent;
+    private MyAnimeListAnimeDependency parent;
 
     private List<MyAnimeListAuthor> authors = new ArrayList<MyAnimeListAuthor>();
 
     private String[] tags;
 
-    private List<MyAnimeListAnime> sequels = new ArrayList<MyAnimeListAnime>();
+    private List<MyAnimeListAnimeDependencyId> sequels = new ArrayList<MyAnimeListAnimeDependencyId>();
 
-    private List<MyAnimeListAnime> alternativeVersions = new ArrayList<MyAnimeListAnime>();
+    private List<MyAnimeListAnimeDependencyId> alternativeVersions = new ArrayList<MyAnimeListAnimeDependencyId>();
 
-    private List<MyAnimeListAnime> prequels = new ArrayList<MyAnimeListAnime>();
+    private List<MyAnimeListAnimeDependencyId> prequels = new ArrayList<MyAnimeListAnimeDependencyId>();
 
-    private List<MyAnimeListAnime> spinoff = new ArrayList<MyAnimeListAnime>();
+    private List<MyAnimeListAnimeDependencyId> spinoff = new ArrayList<MyAnimeListAnimeDependencyId>();
 
-    private List<MyAnimeListAnime> sideStories = new ArrayList<MyAnimeListAnime>();
+    private List<MyAnimeListAnimeDependencyId> sideStories = new ArrayList<MyAnimeListAnimeDependencyId>();
 
-    private List<MyAnimeListAnime> others = new ArrayList<MyAnimeListAnime>();
+    private List<MyAnimeListAnimeDependencyId> others = new ArrayList<MyAnimeListAnimeDependencyId>();
 
-    private List<MyAnimeListAnime> summaries = new ArrayList<MyAnimeListAnime>();
+    private List<MyAnimeListAnimeDependencyId> summaries = new ArrayList<MyAnimeListAnimeDependencyId>();
 
-    private List<MyAnimeListAnime> adaptations = new ArrayList<MyAnimeListAnime>();
+    private List<MyAnimeListAnimeDependencyId> adaptations = new ArrayList<MyAnimeListAnimeDependencyId>();
 
     private List<MyAnimeListCharacter> characters = new ArrayList<MyAnimeListCharacter>();
 
-    public MyAnimeListAnime(Integer id) {
+    public MyAnimeListAnimeDependency(Integer id) {
         this.id = id;
     }
 
-    public MyAnimeListAnime() {
+    public MyAnimeListAnimeDependency() {
     }
 
     public Integer getId() {
@@ -250,67 +253,67 @@ public class MyAnimeListAnime {
         this.authors = authors;
     }
 
-    public List<MyAnimeListAnime> getSequels() {
+    public List<MyAnimeListAnimeDependencyId> getSequels() {
         return sequels;
     }
 
-    public void setSequels(List<MyAnimeListAnime> sequels) {
+    public void setSequels(List<MyAnimeListAnimeDependencyId> sequels) {
         this.sequels = sequels;
     }
 
-    public List<MyAnimeListAnime> getAlternativeVersions() {
+    public List<MyAnimeListAnimeDependencyId> getAlternativeVersions() {
         return alternativeVersions;
     }
 
-    public void setAlternativeVersions(List<MyAnimeListAnime> alternativeVersions) {
+    public void setAlternativeVersions(List<MyAnimeListAnimeDependencyId> alternativeVersions) {
         this.alternativeVersions = alternativeVersions;
     }
 
-    public List<MyAnimeListAnime> getPrequels() {
+    public List<MyAnimeListAnimeDependencyId> getPrequels() {
         return prequels;
     }
 
-    public void setPrequels(List<MyAnimeListAnime> prequels) {
+    public void setPrequels(List<MyAnimeListAnimeDependencyId> prequels) {
         this.prequels = prequels;
     }
 
-    public List<MyAnimeListAnime> getSpinoff() {
+    public List<MyAnimeListAnimeDependencyId> getSpinoff() {
         return spinoff;
     }
 
-    public void setSpinoff(List<MyAnimeListAnime> spinoff) {
+    public void setSpinoff(List<MyAnimeListAnimeDependencyId> spinoff) {
         this.spinoff = spinoff;
     }
 
-    public List<MyAnimeListAnime> getSideStories() {
+    public List<MyAnimeListAnimeDependencyId> getSideStories() {
         return sideStories;
     }
 
-    public void setSideStories(List<MyAnimeListAnime> sideStories) {
+    public void setSideStories(List<MyAnimeListAnimeDependencyId> sideStories) {
         this.sideStories = sideStories;
     }
 
-    public List<MyAnimeListAnime> getOthers() {
+    public List<MyAnimeListAnimeDependencyId> getOthers() {
         return others;
     }
 
-    public void setOthers(List<MyAnimeListAnime> others) {
+    public void setOthers(List<MyAnimeListAnimeDependencyId> others) {
         this.others = others;
     }
 
-    public List<MyAnimeListAnime> getSummaries() {
+    public List<MyAnimeListAnimeDependencyId> getSummaries() {
         return summaries;
     }
 
-    public void setSummaries(List<MyAnimeListAnime> summaries) {
+    public void setSummaries(List<MyAnimeListAnimeDependencyId> summaries) {
         this.summaries = summaries;
     }
 
-    public List<MyAnimeListAnime> getAdaptations() {
+    public List<MyAnimeListAnimeDependencyId> getAdaptations() {
         return adaptations;
     }
 
-    public void setAdaptations(List<MyAnimeListAnime> adaptations) {
+    public void setAdaptations(List<MyAnimeListAnimeDependencyId> adaptations) {
         this.adaptations = adaptations;
     }
 
@@ -322,11 +325,11 @@ public class MyAnimeListAnime {
         this.type = type;
     }
 
-    public MyAnimeListAnime getParent() {
+    public MyAnimeListAnimeDependency getParent() {
         return parent;
     }
 
-    public void setParent(MyAnimeListAnime parent) {
+    public void setParent(MyAnimeListAnimeDependency parent) {
         this.parent = parent;
     }
 
@@ -336,7 +339,7 @@ public class MyAnimeListAnime {
 
         if (o == null || getClass() != o.getClass()) return false;
 
-        MyAnimeListAnime that = (MyAnimeListAnime) o;
+        MyAnimeListAnimeDependency that = (MyAnimeListAnimeDependency) o;
 
         return new EqualsBuilder()
                 .append(id, that.id)

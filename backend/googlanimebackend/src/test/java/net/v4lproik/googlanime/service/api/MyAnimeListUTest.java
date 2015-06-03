@@ -35,8 +35,6 @@ public class MyAnimeListUTest {
         // When
         MyAnimeListAnime response = myAnimeList.crawlById(options);
 
-                System.out.println(response.toString());
-
         //Then
         assertEquals("Naruto", response.getTitle());
     }
