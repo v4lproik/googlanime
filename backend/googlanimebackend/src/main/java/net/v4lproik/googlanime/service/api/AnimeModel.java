@@ -1,14 +1,9 @@
 package net.v4lproik.googlanime.service.api;
-/**
- * Created by joel on 30/04/2015.
- */
-
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.util.List;
 import java.util.Map;
-
 
 @Entity
 public class AnimeModel {
