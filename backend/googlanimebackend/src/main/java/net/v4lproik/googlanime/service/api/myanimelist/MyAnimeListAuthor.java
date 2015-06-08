@@ -1,11 +1,8 @@
-package net.v4lproik.googlanime.service.api;
+package net.v4lproik.googlanime.service.api.myanimelist;
 
 import com.google.common.base.Objects;
 
-/**
- * Created by joel on 29/05/2015.
- */
-public class MyAnimeListCharacter {
+public class MyAnimeListAuthor {
 
     private Integer id;
 
@@ -13,9 +10,18 @@ public class MyAnimeListCharacter {
 
     private String lastName;
 
-    private String japaneseName;
+    private String[] job;
 
-    private String role;
+    public MyAnimeListAuthor() {
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public String getFirstName() {
         return firstName;
@@ -33,29 +39,14 @@ public class MyAnimeListCharacter {
         this.lastName = lastName;
     }
 
-    public String getRole() {
-        return role;
+    public String[] getJob() {
+        return job;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setJob(String[] job) {
+        this.job = job;
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getJapaneseName() {
-        return japaneseName;
-    }
-
-    public void setJapaneseName(String japaneseName) {
-        this.japaneseName = japaneseName;
-    }
 
     @Override
     public String toString() {
@@ -63,8 +54,7 @@ public class MyAnimeListCharacter {
                 .add("id", id)
                 .add("firstName", firstName)
                 .add("lastName", lastName)
-                .add("japaneseName", japaneseName)
-                .add("role", role)
+                .add("job", job)
                 .toString();
     }
 }

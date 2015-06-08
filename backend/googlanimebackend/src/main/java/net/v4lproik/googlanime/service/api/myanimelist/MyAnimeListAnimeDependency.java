@@ -1,4 +1,4 @@
-package net.v4lproik.googlanime.service.api;
+package net.v4lproik.googlanime.service.api.myanimelist;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -83,6 +83,40 @@ public class MyAnimeListAnimeDependency {
     }
 
     public MyAnimeListAnimeDependency() {
+    }
+
+    public MyAnimeListAnimeDependency(Integer id, String type, String title, String[] synonyms, String englishTitle, String japaneseTitle, String synopsis, String startedAiringDate, String rank, String popularity, String score, String[] producers, String[] genres, String finishedAiringDate, String ageRating, String episodeCount, String episodeLength, String showType, String posterImage, MyAnimeListAnimeDependency parent, List<MyAnimeListAuthor> authors, String[] tags, List<MyAnimeListAnimeDependencyId> sequels, List<MyAnimeListAnimeDependencyId> alternativeVersions, List<MyAnimeListAnimeDependencyId> prequels, List<MyAnimeListAnimeDependencyId> spinoff, List<MyAnimeListAnimeDependencyId> sideStories, List<MyAnimeListAnimeDependencyId> others, List<MyAnimeListAnimeDependencyId> summaries, List<MyAnimeListAnimeDependencyId> adaptations, List<MyAnimeListCharacter> characters) {
+        this.id = id;
+        this.type = type;
+        this.title = title;
+        this.synonyms = synonyms;
+        this.englishTitle = englishTitle;
+        this.japaneseTitle = japaneseTitle;
+        this.synopsis = synopsis;
+        this.startedAiringDate = startedAiringDate;
+        this.rank = rank;
+        this.popularity = popularity;
+        this.score = score;
+        this.producers = producers;
+        this.genres = genres;
+        this.finishedAiringDate = finishedAiringDate;
+        this.ageRating = ageRating;
+        this.episodeCount = episodeCount;
+        this.episodeLength = episodeLength;
+        this.showType = showType;
+        this.posterImage = posterImage;
+        this.parent = parent;
+        this.authors = authors;
+        this.tags = tags;
+        this.sequels = sequels;
+        this.alternativeVersions = alternativeVersions;
+        this.prequels = prequels;
+        this.spinoff = spinoff;
+        this.sideStories = sideStories;
+        this.others = others;
+        this.summaries = summaries;
+        this.adaptations = adaptations;
+        this.characters = characters;
     }
 
     public Integer getId() {

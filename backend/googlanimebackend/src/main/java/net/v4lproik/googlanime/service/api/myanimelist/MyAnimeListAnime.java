@@ -1,4 +1,4 @@
-package net.v4lproik.googlanime.service.api;
+package net.v4lproik.googlanime.service.api.myanimelist;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
