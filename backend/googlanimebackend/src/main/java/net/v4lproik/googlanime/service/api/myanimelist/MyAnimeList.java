@@ -1,5 +1,7 @@
-package net.v4lproik.googlanime.service.api;
+package net.v4lproik.googlanime.service.api.myanimelist;
 
+import net.v4lproik.googlanime.service.api.ImportOptions;
+import net.v4lproik.googlanime.service.api.WebsiteAbstract;
 import org.apache.log4j.Logger;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
