@@ -7,9 +7,9 @@ import net.v4lproik.googlanime.mvc.models.JSONResponse;
 import net.v4lproik.googlanime.mvc.models.Website;
 import net.v4lproik.googlanime.mvc.models.WebsiteFactory;
 import net.v4lproik.googlanime.service.api.ImportOptions;
-import net.v4lproik.googlanime.service.api.MyAnimeListAnime;
-import net.v4lproik.googlanime.service.api.MyAnimeListAnimeDependency;
 import net.v4lproik.googlanime.service.api.WebsiteAbstract;
+import net.v4lproik.googlanime.service.api.myanimelist.MyAnimeListAnime;
+import net.v4lproik.googlanime.service.api.myanimelist.MyAnimeListAnimeDependency;
 import org.apache.log4j.Logger;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.transport.TransportClient;
@@ -26,8 +26,6 @@ import java.util.List;
 public class WebsiteController {
 
     static Logger log = Logger.getLogger(WebsiteController.class.getName());
-
-    final Boolean STORE_LOCALLY = true;
 
     @Autowired
     private WebsiteFactory websiteFactory;
@@ -56,11 +54,6 @@ public class WebsiteController {
             MyAnimeListAnime myAnimeListAnime = website.crawl(new ImportOptions(name, type, dependency));
             log.debug(myAnimeListAnime.toString());
             response.setAnimes(myAnimeListAnime);
-
-            //store in the database
-            if (STORE_LOCALLY){
-
-            }
 
             return response;
         }catch (IOException e){

@@ -1,5 +1,8 @@
 package net.v4lproik.googlanime.service.api;
 
+import net.v4lproik.googlanime.service.api.myanimelist.MyAnimeListAnime;
+import net.v4lproik.googlanime.service.api.myanimelist.MyAnimeListAnimeDependency;
+
 import java.io.IOException;
 import java.util.List;
 
