@@ -110,7 +110,7 @@ public class WebsiteController {
 
         TransportClient client = config.node();
 
-        WebsiteAbstract website = websiteFactory.getWebsite(Website.containsValue(from.toUpperCase()));
+        WebsiteAbstract website = websiteFactory.getWebsite(Website.containsValue(from));
 
         if (website == null) {
             response.setError(String.format("Website enum %s not found", from));

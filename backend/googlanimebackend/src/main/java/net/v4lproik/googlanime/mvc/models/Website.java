@@ -26,7 +26,7 @@ public enum Website{
 
     public static Website containsValue(String value) {
         try {
-            return Website.valueOf(value);
+            return Website.valueOf(value.toUpperCase());
         } catch (IllegalArgumentException e){
             return null;
         }
