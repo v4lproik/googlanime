@@ -1,7 +1,5 @@
 package net.v4lproik.googlanime.service.api;
 
-import net.v4lproik.googlanime.mvc.models.AnimeModel;
-
 import java.util.List;
 
 /**

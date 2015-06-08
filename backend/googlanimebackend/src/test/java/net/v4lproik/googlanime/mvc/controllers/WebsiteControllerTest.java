@@ -5,7 +5,7 @@ import net.v4lproik.googlanime.mvc.models.Website;
 import net.v4lproik.googlanime.mvc.models.WebsiteFactory;
 import net.v4lproik.googlanime.service.api.ImportOptions;
 import net.v4lproik.googlanime.service.api.WebsiteAbstract;
-import net.v4lproik.googlanime.service.api.myanimelist.MyAnimeListAnime;
+import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListAnime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

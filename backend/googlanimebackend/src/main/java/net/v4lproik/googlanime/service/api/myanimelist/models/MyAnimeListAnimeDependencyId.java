@@ -1,4 +1,4 @@
-package net.v4lproik.googlanime.service.api.myanimelist;
+package net.v4lproik.googlanime.service.api.myanimelist.models;
 
 /**
  * Created by joel on 04/06/2015.

@@ -1,4 +1,4 @@
-package net.v4lproik.googlanime.mvc.models;
+package net.v4lproik.googlanime.service.api;
 /**
  * Created by joel on 30/04/2015.
  */

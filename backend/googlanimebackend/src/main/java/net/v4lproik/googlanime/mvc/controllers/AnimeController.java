@@ -1,7 +1,7 @@
 package net.v4lproik.googlanime.mvc.controllers;
 
-import net.v4lproik.googlanime.mvc.models.AnimeModel;
 import net.v4lproik.googlanime.mvc.models.JSONResponse;
+import net.v4lproik.googlanime.service.api.AnimeModel;
 import net.v4lproik.googlanime.service.api.AnimeService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

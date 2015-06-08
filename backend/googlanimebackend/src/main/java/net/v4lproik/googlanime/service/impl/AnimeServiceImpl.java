@@ -1,6 +1,6 @@
 package net.v4lproik.googlanime.service.impl;
 import com.google.gson.Gson;
-import net.v4lproik.googlanime.mvc.models.AnimeModel;
+import net.v4lproik.googlanime.service.api.AnimeModel;
 import net.v4lproik.googlanime.service.api.AnimeService;
 import org.apache.log4j.Logger;
 import org.elasticsearch.action.search.SearchResponse;
