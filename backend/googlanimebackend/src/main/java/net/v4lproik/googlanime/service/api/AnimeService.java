@@ -9,6 +9,6 @@ import java.util.List;
  */
 public interface AnimeService {
     List<AnimeModel> findBySlug(String query);
-    List<AnimeModel> find(String query, String[] fields);
-    List<?> find(String query, String[] fields, Class<? extends MyAnimeListAnimeDependency> toCast) throws IllegalAccessException, InstantiationException;
+    List<AnimeModel> find(String query, String[] type, String[] fields);
+    List<?> find(String query, String[] type, String[] fields, Class<? extends MyAnimeListAnimeDependency> toCast) throws IllegalAccessException, InstantiationException;
 }

@@ -35,7 +35,7 @@ public class AnimeServiceImpl implements AnimeService {
     }
 
     @Override
-    public List<AnimeModel> find(String query, String[] fields) {
+    public List<AnimeModel> find(String query, String[] type, String[] fields) {
 
         log.debug(String.format("trying to get information from elasticsearch node with %s, %s", query, Arrays.asList(fields)));
 
@@ -47,7 +47,7 @@ public class AnimeServiceImpl implements AnimeService {
         );
 
         SearchResponse responseElastic = client.prepareSearch("animes", "mangas")
-                .setTypes("anime", "manga")
+                .setTypes(type)
                 .setQuery(qb)
                 .execute()
                 .actionGet();
@@ -64,7 +64,7 @@ public class AnimeServiceImpl implements AnimeService {
     }
 
     @Override
-    public List<?> find(String query, String[] fields, Class<? extends MyAnimeListAnimeDependency> toCast) throws IllegalAccessException, InstantiationException {
+    public List<?> find(String query, String[] type, String[] fields, Class<? extends MyAnimeListAnimeDependency> toCast) throws IllegalAccessException, InstantiationException {
 
         log.debug(String.format("trying to get information from elasticsearch node with %s, %s", query, Arrays.asList(fields)));
 
@@ -76,7 +76,7 @@ public class AnimeServiceImpl implements AnimeService {
         );
 
         SearchResponse responseElastic = client.prepareSearch("animes", "mangas")
-                .setTypes("anime", "manga")
+                .setTypes(type)
                 .setQuery(qb)
                 .execute()
                 .actionGet();

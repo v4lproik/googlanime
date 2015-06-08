@@ -27,6 +27,7 @@ public class AnimeController {
     @ResponseStatus(value = HttpStatus.OK)
     @ResponseBody
     public JSONResponse list(@RequestParam(value = "query", required = true) String query,
+                             @RequestParam(value = "type", required = true) String[] type,
                              @RequestParam(value = "fields", required = true) String[] fields,
                              @RequestParam(value = "render", required = false) String render) throws IOException {
 
@@ -44,7 +45,7 @@ public class AnimeController {
         }
 
         try {
-            List<?> animes = service.find(query, fields, toCast);
+            List<?> animes = service.find(query, type, fields, toCast);
             response.setAnimes(animes);
         } catch (Exception e) {
             log.error(e.getMessage());
