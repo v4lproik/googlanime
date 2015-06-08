@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Created by joel on 30/04/2015.
  */
-public interface AnimeRepository {
+public interface AnimeService {
     List<AnimeModel> findBySlug(String query);
-    List<AnimeModel> find(Integer id);
+    List<AnimeModel> find(String query, String[] fields);
 }
