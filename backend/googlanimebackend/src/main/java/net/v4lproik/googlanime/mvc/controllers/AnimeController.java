@@ -1,8 +1,8 @@
 package net.v4lproik.googlanime.mvc.controllers;
 
 import net.v4lproik.googlanime.mvc.models.JSONResponse;
-import net.v4lproik.googlanime.service.api.AnimeModel;
 import net.v4lproik.googlanime.service.api.AnimeService;
+import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListAnimeDependency;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,7 +21,7 @@ public class AnimeController {
     @Autowired
     private AnimeService service;
 
-    @RequestMapping(value = "", method = RequestMethod.GET, params = {"query", "fields"})
+    @RequestMapping(value = "/mal", method = RequestMethod.GET, params = {"query", "fields"})
     @ResponseStatus(value = HttpStatus.OK)
     @ResponseBody
     public JSONResponse list(@RequestParam(value = "query", required = true) String query,
@@ -29,7 +29,13 @@ public class AnimeController {
 
         JSONResponse response = new JSONResponse();
 
-        List<AnimeModel> animes = service.find(query, fields);
+        try {
+            List<?> animes = service.find(query, fields, MyAnimeListAnimeDependency.class);
+            response.setAnimes(animes);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            response.setError(e.getMessage());
+        }
 
         return response;
     }
