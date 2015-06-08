@@ -2,6 +2,7 @@ package net.v4lproik.googlanime.service.impl;
 import com.google.gson.Gson;
 import net.v4lproik.googlanime.service.api.AnimeModel;
 import net.v4lproik.googlanime.service.api.AnimeService;
+import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListAnimeDependency;
 import org.apache.log4j.Logger;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
@@ -56,6 +57,35 @@ public class AnimeServiceImpl implements AnimeService {
 
         for (SearchHit hit : responseElastic.getHits()){
             anime = gson.fromJson(hit.getSourceAsString(), AnimeModel.class);
+            animes.add(anime);
+        }
+
+        return animes;
+    }
+
+    @Override
+    public List<?> find(String query, String[] fields, Class<? extends MyAnimeListAnimeDependency> toCast) throws IllegalAccessException, InstantiationException {
+
+        log.debug(String.format("trying to get information from elasticsearch node with %s, %s", query, Arrays.asList(fields)));
+
+        List<Object> animes = new ArrayList<>();
+
+        MultiMatchQueryBuilder qb = multiMatchQuery(
+                query,
+                fields
+        );
+
+        SearchResponse responseElastic = client.prepareSearch("animes", "mangas")
+                .setTypes("anime", "manga")
+                .setQuery(qb)
+                .execute()
+                .actionGet();
+
+        Object anime = toCast.newInstance();
+        Gson gson = new Gson();
+
+        for (SearchHit hit : responseElastic.getHits()){
+            anime = gson.fromJson(hit.getSourceAsString(), toCast);
             animes.add(anime);
         }
 
