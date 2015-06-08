@@ -22,12 +22,14 @@ export default Ember.Route.extend({
 
     this.controllerFor("search").set("query", params.query);
     this.controllerFor("search").set("type", params.type);
+    this.controllerFor("search").set("fields", params.fields);
+    this.controllerFor("search").set("render", params.render);
 
     switch(params.type) {
       case "anime":
         //set the first object of the list to selectedAnime so we won't have an ugly empty display
         var controller = this.controllerFor("search");
-        return this.store.find('anime', {n : params.query}).then(
+        return this.store.find('anime', {query : params.query, type: params.type, fields: params.fields, render: params.render}).then(
           function(animes){
 
             //item = animes.get("firstObject").get("titles");

@@ -2,9 +2,11 @@ import Ember from 'ember';
 
 export default Ember.Controller.extend({
 
-  queryParams: ['query', 'type'],
+  queryParams: ['query', 'type', 'fields', 'render'],
   query: null,
   type: null,
+  fields: null,
+  render: null,
 
   layoutList: false,
 
