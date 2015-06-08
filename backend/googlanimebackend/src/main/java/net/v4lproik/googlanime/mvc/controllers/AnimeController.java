@@ -2,13 +2,13 @@ package net.v4lproik.googlanime.mvc.controllers;
 
 import net.v4lproik.googlanime.mvc.models.AnimeModel;
 import net.v4lproik.googlanime.mvc.models.JSONResponse;
-import net.v4lproik.googlanime.service.api.AnimeRepository;
+import net.v4lproik.googlanime.service.api.AnimeService;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
 
@@ -16,25 +16,21 @@ import java.util.List;
 @RequestMapping(value = "/animes")
 public class AnimeController {
 
-    @Autowired
-    private HttpServletRequest request;
+    static Logger log = Logger.getLogger(AnimeController.class.getName());
 
     @Autowired
-    private AnimeRepository repository;
+    private AnimeService service;
 
-    @RequestMapping(value = "", method = RequestMethod.GET, params={"n"})
+    @RequestMapping(value = "", method = RequestMethod.GET, params = {"query", "fields"})
     @ResponseStatus(value = HttpStatus.OK)
     @ResponseBody
-    public JSONResponse list(@RequestParam("n") String str) throws IOException {
+    public JSONResponse list(@RequestParam(value = "query", required = true) String query,
+                             @RequestParam(value = "fields", required = true) String[] fields) throws IOException {
+
         JSONResponse response = new JSONResponse();
-        response.setAnimes(repository.findBySlug(str));
-        return response;
-    }
 
-    @RequestMapping(value = "", method = RequestMethod.GET)
-    @ResponseStatus(value = HttpStatus.OK)
-    @ResponseBody
-    public List<AnimeModel> list() {
-        return repository.find(3);
+        List<AnimeModel> animes = service.find(query, fields);
+
+        return response;
     }
 }
