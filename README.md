@@ -24,4 +24,5 @@ Backend :
 ### Overview
 
 ![overview](https://raw.githubusercontent.com/v4lproik/googlanime/master/frontend/screenshots/overview-1.png)
+![overview](https://raw.githubusercontent.com/v4lproik/googlanime/master/frontend/screenshots/overview_anime_search.png)
 
