@@ -1,5 +1,6 @@
 <script type="text/javascript">
 
+    //Default tab selector
     var type = "Anime";
 
     $('#search').keypress(function(e){
@@ -134,8 +135,8 @@
         {{#each anime in model}}
           {{model.titles.canonical}}
             <div class="col-xs-1" style="margin: 0;padding: 0">
-                <a href="#" class="thumbnail" style="margin: 0;padding: 0">
-                    <img {{action "updateSeriePanel" anime on="mouseEnter"}} class="serie-poster-image" src="{{anime.posterImage}}" alt="125x125">
+                <a href="#" class="thumbnail" style="margin: 0;padding: 0;">
+                    <img {{action "updateSeriePanel" anime on="mouseEnter"}} class="serie-poster-image" src="{{anime.posterImage}}" style="background-size:cover;height: 200px;">
                     <div class="serie-hidden" style="display: none">
                         <div class="serie-title-canonical">{{anime.canonicalTitle}}</div>
                         <div class="serie-title-romaji">{{anime.romajiTitle}}</div>
