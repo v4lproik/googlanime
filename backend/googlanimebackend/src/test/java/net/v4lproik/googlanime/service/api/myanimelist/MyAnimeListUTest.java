@@ -37,8 +37,10 @@ public class MyAnimeListUTest {
         // When
         MyAnimeListAnime response = myAnimeList.crawlById(options);
 
+        System.out.println(response.getPosterImage());
         //Then
         assertEquals("Naruto", response.getTitle());
+        assertEquals("http://cdn.myanimelist.net/images/manga/3/117681l.jpg", response.getPosterImage());
     }
 
     @Test
