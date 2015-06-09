@@ -360,6 +360,9 @@ public class MyAnimeList extends WebsiteAbstract {
         //get main title
         myAnimeListAnime.setTitle(doc.select("h1").first().ownText());
 
+        //get image
+        myAnimeListAnime.setPosterImage(doc.select("meta[property=og:image]").attr("content"));
+
         //parse for general information - work in porgress
         Elements tds = doc.select("td");
         for (Element td : tds) {
@@ -584,6 +587,7 @@ public class MyAnimeList extends WebsiteAbstract {
         Elements divs = doc.select("div");
 
         for (Element div : divs) {
+
             if (div.text().startsWith("Synopsis: "))
                 myAnimeListAnime.setSynopsis(div.text().substring(9, div.text().length()));
 
