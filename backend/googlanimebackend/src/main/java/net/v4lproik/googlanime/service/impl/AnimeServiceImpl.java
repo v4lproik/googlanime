@@ -2,7 +2,6 @@ package net.v4lproik.googlanime.service.impl;
 import com.google.gson.Gson;
 import net.v4lproik.googlanime.service.api.AnimeModel;
 import net.v4lproik.googlanime.service.api.AnimeService;
-import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListAnimeDependency;
 import org.apache.log4j.Logger;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
@@ -64,9 +63,9 @@ public class AnimeServiceImpl implements AnimeService {
     }
 
     @Override
-    public List<?> find(String query, String[] type, String[] fields, Class<? extends MyAnimeListAnimeDependency> toCast) throws IllegalAccessException, InstantiationException {
+    public List<?> find(String query, String[] type, String[] fields, Class<?> toCast) throws IllegalAccessException, InstantiationException {
 
-        log.debug(String.format("trying to get information from elasticsearch node with %s, %s", query, Arrays.asList(fields)));
+        log.debug(String.format("Trying to get information from elasticsearch node with %s, %s", query, Arrays.asList(fields)));
 
         List<Object> animes = new ArrayList<>();
 

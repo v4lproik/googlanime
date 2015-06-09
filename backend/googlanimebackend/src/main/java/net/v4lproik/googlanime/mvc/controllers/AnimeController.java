@@ -2,6 +2,7 @@ package net.v4lproik.googlanime.mvc.controllers;
 
 import net.v4lproik.googlanime.mvc.models.JSONResponse;
 import net.v4lproik.googlanime.mvc.models.Website;
+import net.v4lproik.googlanime.service.api.AnimeModel;
 import net.v4lproik.googlanime.service.api.AnimeService;
 import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListAnimeDependency;
 import org.apache.log4j.Logger;
@@ -31,9 +32,9 @@ public class AnimeController {
                              @RequestParam(value = "fields", required = true) String[] fields,
                              @RequestParam(value = "render", required = false) String render) throws IOException {
 
-        log.debug(String.format("/animes?query=%s&fields=%s&render=%s", query, Arrays.asList(fields),render));
+        log.debug(String.format("/animes?query=%s&fields=%s&render=%s", query, Arrays.asList(fields), render));
 
-        Class<? extends MyAnimeListAnimeDependency> toCast = MyAnimeListAnimeDependency.class;
+        Class<?> toCast = AnimeModel.class;
         JSONResponse response = new JSONResponse();
 
         if (Website.containsValue(render) != null){

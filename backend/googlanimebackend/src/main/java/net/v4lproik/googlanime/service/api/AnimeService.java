@@ -1,7 +1,5 @@
 package net.v4lproik.googlanime.service.api;
 
-import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListAnimeDependency;
-
 import java.util.List;
 
 /**
@@ -10,5 +8,5 @@ import java.util.List;
 public interface AnimeService {
     List<AnimeModel> findBySlug(String query);
     List<AnimeModel> find(String query, String[] type, String[] fields);
-    List<?> find(String query, String[] type, String[] fields, Class<? extends MyAnimeListAnimeDependency> toCast) throws IllegalAccessException, InstantiationException;
+    List<?> find(String query, String[] type, String[] fields, Class<?> toCast) throws IllegalAccessException, InstantiationException;
 }
