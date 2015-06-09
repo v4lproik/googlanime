@@ -4,4 +4,3 @@ machine:
     
 general:
     build_dir: backend/googlanimebackend/
-    build_dir: frontend/
