@@ -5,8 +5,8 @@ export default Ember.Controller.extend({
   queryParams: ['query', 'type', 'fields', 'render'],
   query: null,
   type: null,
-  fields: null,
-  render: null,
+  fields: "title",
+  render: "",
 
   layoutList: false,
 
