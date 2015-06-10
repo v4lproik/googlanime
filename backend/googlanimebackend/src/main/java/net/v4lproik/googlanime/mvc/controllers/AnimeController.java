@@ -24,7 +24,7 @@ public class AnimeController {
     @Autowired
     private AnimeService service;
 
-    @RequestMapping(value = "", method = RequestMethod.GET, params = {"query", "fields", "render"})
+    @RequestMapping(value = "", method = RequestMethod.GET, params = {"query", "fields", "type", "render"})
     @ResponseStatus(value = HttpStatus.OK)
     @ResponseBody
     public JSONResponse list(@RequestParam(value = "query", required = true) String query,
@@ -32,7 +32,7 @@ public class AnimeController {
                              @RequestParam(value = "fields", required = true) String[] fields,
                              @RequestParam(value = "render", required = false) String render) throws IOException {
 
-        log.debug(String.format("/animes?query=%s&fields=%s&render=%s", query, Arrays.asList(fields), render));
+        log.debug(String.format("/animes?query=%s&fields=%s&type=%s&render=%s", query, Arrays.asList(fields), Arrays.asList(type), render));
 
         Class<?> toCast = AnimeModel.class;
         JSONResponse response = new JSONResponse();

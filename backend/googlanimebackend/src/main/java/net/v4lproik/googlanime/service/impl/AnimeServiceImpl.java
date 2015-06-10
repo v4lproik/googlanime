@@ -16,13 +16,12 @@ import java.util.List;
 
 import static org.elasticsearch.index.query.QueryBuilders.multiMatchQuery;
 
-/**
- * Created by joel on 06/05/2015.
- */
 @Service
 public class AnimeServiceImpl implements AnimeService {
 
     static Logger log = Logger.getLogger(AnimeServiceImpl.class.getName());
+
+    public static final int MAX_SIZE = 20;
 
     @Autowired
     private Client client;
@@ -48,6 +47,7 @@ public class AnimeServiceImpl implements AnimeService {
         SearchResponse responseElastic = client.prepareSearch("animes", "mangas")
                 .setTypes(type)
                 .setQuery(qb)
+                .setSize(MAX_SIZE)
                 .execute()
                 .actionGet();
 
@@ -65,7 +65,7 @@ public class AnimeServiceImpl implements AnimeService {
     @Override
     public List<?> find(String query, String[] type, String[] fields, Class<?> toCast) throws IllegalAccessException, InstantiationException {
 
-        log.debug(String.format("Trying to get information from elasticsearch node with %s, %s", query, Arrays.asList(fields)));
+        log.debug(String.format("/animes?query=%s&fields=%s&type=%s&render=%s", query, Arrays.asList(fields), Arrays.asList(type), toCast.toString()));
 
         List<Object> animes = new ArrayList<>();
 
@@ -77,6 +77,7 @@ public class AnimeServiceImpl implements AnimeService {
         SearchResponse responseElastic = client.prepareSearch("animes", "mangas")
                 .setTypes(type)
                 .setQuery(qb)
+                .setSize(MAX_SIZE)
                 .execute()
                 .actionGet();
 
