@@ -6,7 +6,7 @@ export default Ember.Controller.extend({
   query: null,
   type: null,
   fields: "title",
-  render: "",
+  render: "mal",
 
   layoutList: false,
 
