@@ -1,8 +1,8 @@
-curl -XDELETE 'http://sandbox:9200/animes'
-curl -XPUT 'sandbox:9200/animes/?pretty'
-curl -XDELETE 'http://sandbox:9200/mangas'
-curl -XPUT 'sandbox:9200/mangas/?pretty'
-curl -XPUT http://sandbox:9200/animes/_mapping/anime -d '
+curl -XDELETE 'http://es.googlanime:9200/animes'
+curl -XPUT 'http://es.googlanime:9200/animes/?pretty'
+curl -XDELETE 'http://es.googlanime:9200/mangas'
+curl -XPUT 'http://es.googlanime:9200/mangas/?pretty'
+curl -XPUT http://es.googlanime:9200/animes/_mapping/anime -d '
 {
       "anime": {
         "_id" : {
@@ -228,7 +228,7 @@ curl -XPUT http://sandbox:9200/animes/_mapping/anime -d '
       }
     }'
 
-curl -XPUT http://sandbox:9200/mangas/_mapping/manga -d '
+curl -XPUT http://es.googlanime:9200/mangas/_mapping/manga -d '
 {
       "manga": {
         "_id" : {
