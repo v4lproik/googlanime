@@ -26,8 +26,9 @@ This is a Simple interface using Ember.JS that allows a user to search for anime
 2. `cd` to the created directory.
 3. Get all Node dependencies through [npm](https://npmjs.org/): `npm install`
 4. Get all client dependencies through [bower](http://bower.io/): `bower install`
-5. Start the application `ember server`
-6. Browse to http://localhost:4200/search
+5. Install ember-cli `npm install -g ember-cli`
+6. Start the application `ember server`
+7. Browse to http://localhost:4200/search
 
 ## Overview
 
