@@ -7,9 +7,9 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
-@Configuration
+@Component
 public class Config {
 
     @Value("${elasticsearch.host}")
@@ -21,7 +21,7 @@ public class Config {
                 .put("cluster.name", "elasticsearch").build();
 
         if (ELASTICSEARCH_HOST == null)
-            throw new IllegalArgumentException("The environment variable ELASTICSEARCH_HOST has not been set");
+            throw new IllegalArgumentException("ElasticSearch host cannot be found. Check that the active profile provided a file that contains the variable elasticsearch.host ");
 
         return new TransportClient(settings).addTransportAddress(new InetSocketTransportAddress(ELASTICSEARCH_HOST, 9300));
     }

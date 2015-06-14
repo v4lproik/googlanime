@@ -12,14 +12,12 @@
 		http://www.springframework.org/schema/mvc
 		http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
-
-    <!-- needed for @autowired -->
     <context:component-scan base-package="net.v4lproik.googlanime"/>
 
     <context:annotation-config/>
     <mvc:annotation-driven/>
     <tx:annotation-driven/>
 
-    <context:property-placeholder location="classpath:default.properties"/>
-
+    <context:property-placeholder
+            location="classpath:properties/app-default.properties, classpath:properties/app-${spring.profiles.active}.properties"/>
 </beans>
