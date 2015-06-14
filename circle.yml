@@ -1,6 +1,12 @@
 machine:
   java:
     version: openjdk7
-    
+  services:
+      - docker
+
 general:
     build_dir: backend/
+
+dependencies:
+  override:
+    - docker run -d -p 9200:9200 -p 9300:9300 itzg/elasticsearch
