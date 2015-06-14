@@ -3,4 +3,4 @@ machine:
     version: openjdk7
     
 general:
-    build_dir: backend/googlanimebackend/
+    build_dir: backend/
