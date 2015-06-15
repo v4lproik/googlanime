@@ -2,7 +2,9 @@ machine:
   java:
     version: openjdk7
   services:
-      - docker
+    - docker
+  hosts:
+    es.googlanime: 127.0.0.1
 
 general:
     build_dir: backend/
@@ -10,3 +12,10 @@ general:
 dependencies:
   override:
     - docker run -d -p 9200:9200 -p 9300:9300 itzg/elasticsearch
+
+test:
+  pre:
+    - curl -k -L -o mapping.sh https://raw.githubusercontent.com/v4lproik/googlanime/master/backend/scripts/mapping-anime.sh
+    - sh mapping.sh
+  override:
+  - mvn clean install test -Dspring.profiles.active="dev"
