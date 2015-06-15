@@ -15,13 +15,13 @@
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
 
-    <!-- load spring dispatcher-config.xml -->
+    <!-- load spring application-context.xml -->
     <servlet>
         <servlet-name>Spring MVC Dispatcher Servlet</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
         <init-param>
             <param-name>contextConfigLocation</param-name>
-            <param-value>classpath:dispatcher-config.xml</param-value>
+            <param-value>classpath:application-context.xml</param-value>
         </init-param>
         <init-param>
             <param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name>
@@ -43,10 +43,4 @@
         <filter-name>cross-origin</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
-
-    <context-param>
-        <param-name>spring.profiles.default</param-name>
-        <param-value>dev</param-value>
-    </context-param>
-
 </web-app>
