@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:tx="http://www.springframework.org/schema/tx" xmlns:mvc="http://www.springframework.org/schema/mvc"
@@ -17,7 +18,4 @@
     <context:annotation-config/>
     <mvc:annotation-driven/>
     <tx:annotation-driven/>
-
-    <context:property-placeholder
-            location="classpath:properties/app-default.properties, classpath:properties/app-${spring.profiles.active}.properties"/>
 </beans>
