@@ -8,16 +8,6 @@ export default Ember.Route.extend({
     }
   },
 
-  actions: {
-    changeLayoutToList: function(){
-      this.controllerFor("search").set('layoutList', true);
-    }.observes('controller.layoutList'),
-
-    changeLayoutToThumbnail: function(){
-      this.controllerFor("search").set('layoutList', false);
-    }.observes('controller.layoutList')
-  },
-
   model: function(params) {
 
     this.controllerFor("search").set("query", params.query);
@@ -28,14 +18,24 @@ export default Ember.Route.extend({
 
     //set the first object of the list to selectedAnime so we won't have an ugly empty display
     var controller = this.controllerFor("search");
+
     return this.store.find('anime', {query : params.query, type: params.type, fields: params.fields, render: params.render}).then(
       function(animes){
         console.log("Parsing result from backend");
 
         console.debug(Ember.inspect(animes.get("firstObject")));
         controller.set("animeSelected", animes.get("firstObject"));
-        return animes;
 
+        return animes;
       });
+  },
+
+  actions: {
+    callBackend: function (valueQuery) {
+
+      if(valueQuery != "")
+        this.refresh();
+    }
   }
+
 });

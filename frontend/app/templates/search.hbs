@@ -50,37 +50,9 @@
     });
 </script>
 {{#if controller.query}}
-    <div class="navbar subnav" role="navigation">
-        <div class="navbar-left">
-            <ul class="pager subnav-pager ">
-                <div class="col-xs-5">
-                    <div class="input-group">
-                        <div class="container-4 input-group-btn right-addon">
-                          {{input id="search2" required="true" type="text" class="form-control" placeholder="Search for..." value=controller.query}}
-                            <span class="icon"><i class="fa fa-search"></i></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xs-2">
-                    <div class="pull-right" >
-                        <button href="#Foo" class="btn btn-default btn btn-filter" data-toggle="collapse">
-                            <span class="glyphicon glyphicon-filter" ></span>
-                        </button>
-                    </div>
-                    <div class="pull-right" style="margin-left:0px;">
-                        <button type="button" class="btn btn-default" aria-label="Left Align" style="" {{action "changeLayoutToThumbnail"}}>
-                            <span class="glyphicon glyphicon-th" aria-hidden="true"></span>
-                        </button>
-                    </div>
-                    <div class="pull-right">
-                        <button type="button" class="btn btn-default" aria-label="Left Align" style="" {{action "changeLayoutToList"}}>
-                            <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
-                        </button>
-                    </div>
-                </div>
-            </ul>
-        </div>
-    </div>
+
+  {{partial "partials/navbar_search"}}
+
     <div class="container-fluid container-search-result">
       {{#unless model}}
         No result...
@@ -164,34 +136,5 @@
       {{/unless}}
     </div>
 {{else}}
-    <div class="container">
-        <div class="container vertical-center">
-            <div class="row " >
-                <div class="col-xs-12 center-block container-brand">
-                    GooglAnime
-                </div>
-                <div style="height: 30px;" class="col-xs-12 center-block">
-                </div>
-                <div class="col-xs-8 center-block">
-                    <nav>
-                        <ul class="search-type pagination custom">
-                            <li><a class="default" href="#">Anime</a></li>
-                            <li><a href="#">Manga</a></li>
-                            <li><a href="#">Mangaka</a></li>
-                            <li><a href="#">Character</a></li>
-                            <li><a href="#">Podcast</a></li>
-                        </ul>
-                    </nav>
-                </div>
-                <div class="col-xs-8 center-block">
-                    <div class="input-group">
-                        <div class="container-4 input-group-btn right-addon">
-                          {{input id="search" required="true" type="text" class="form-control" placeholder="Search for..." value=searchValue}}
-                            <span class="icon"><i class="fa fa-search"></i></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+   {{partial "partials/home_search"}}
 {{/if}}
