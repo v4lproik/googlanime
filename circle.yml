@@ -17,7 +17,6 @@ test:
   pre:
     - curl -k -L -o mapping.sh https://raw.githubusercontent.com/v4lproik/googlanime/master/backend/scripts/mapping-anime.sh
     - sh mapping.sh
-    - curl -XPUT 'http://localhost:9200/animes/?pretty'
-    - curl -XPUT 'http://localhost:9300/animes/?pretty'
+    - curl -k -XPUT 'http://localhost:9200/animes/?pretty'
   override:
   - mvn clean install test -Dspring.profiles.active="dev"
