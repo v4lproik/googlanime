@@ -11,7 +11,7 @@ general:
 
 dependencies:
   override:
-    - docker run -d -p 9200:9200 -p 9300:9300 itzg/elasticsearch
+    - docker run -d -p 9200:9200 -p 9300:9300 -e PUBLISH_AS=127.0.0.1:9300 itzg/elasticsearch
 
 test:
   override:
