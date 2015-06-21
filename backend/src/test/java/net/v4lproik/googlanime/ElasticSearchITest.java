@@ -42,7 +42,18 @@ public class ElasticSearchITest extends TestCase {
                     .execute()
                     .actionGet();
         }catch (Exception e){
-            e.printStackTrace();
+            fail();
+        }
+
+    }
+
+    @Test
+    public void elasticsearch_getInformation_fromMangasIndex_shouldBeOk(){
+        try {
+            client.prepareGet("mangas", "manga", "1")
+                    .execute()
+                    .actionGet();
+        }catch (Exception e){
             fail();
         }
 
