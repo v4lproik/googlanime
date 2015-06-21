@@ -1,4 +1,4 @@
-package net.v4lproik.googlanime;
+package net.v4lproik.googlanime.client.elasticsearch;
 
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
@@ -18,7 +18,7 @@ import org.springframework.core.env.Environment;
 @PropertySources(@PropertySource("classpath:properties/app-${spring.profiles.active}.properties"))
 public class Config {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Config.class);
+    private static final Logger log = LoggerFactory.getLogger(Config.class);
 
     @Autowired
     private Environment env;
