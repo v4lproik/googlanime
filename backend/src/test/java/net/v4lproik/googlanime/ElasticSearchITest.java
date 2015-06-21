@@ -42,6 +42,7 @@ public class ElasticSearchITest extends TestCase {
                     .execute()
                     .actionGet();
         }catch (Exception e){
+            e.printStackTrace();
             fail();
         }
 

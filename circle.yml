@@ -9,10 +9,7 @@ machine:
 general:
     build_dir: backend/
 
-dependencies:
-  override:
-    - docker run -d -p 9200:9200 -p 9300:9300 -e PUBLISH_AS=127.0.0.1:9300 itzg/elasticsearch
-
 test:
   override:
+  - docker run -d -p 9200:9200 -p 9300:9300 -e PUBLISH_AS=127.0.0.1:9300 itzg/elasticsearch; sleep 10
   - mvn clean install test -Dspring.profiles.active="dev"
