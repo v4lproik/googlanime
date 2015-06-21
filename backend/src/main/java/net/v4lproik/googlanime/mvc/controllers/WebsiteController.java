@@ -1,7 +1,7 @@
 package net.v4lproik.googlanime.mvc.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.v4lproik.googlanime.Config;
+import net.v4lproik.googlanime.client.elasticsearch.Config;
 import net.v4lproik.googlanime.mvc.models.BackendException;
 import net.v4lproik.googlanime.mvc.models.JSONResponse;
 import net.v4lproik.googlanime.mvc.models.Website;
