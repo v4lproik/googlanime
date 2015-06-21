@@ -14,9 +14,5 @@ dependencies:
     - docker run -d -p 9200:9200 -p 9300:9300 itzg/elasticsearch
 
 test:
-  pre:
-    - curl -k -L -o mapping.sh https://raw.githubusercontent.com/v4lproik/googlanime/master/backend/scripts/mapping-anime.sh
-    - sh mapping.sh
-    - curl -X PUT 'http://127.0.0.1:9200/animes/?pretty'
   override:
   - mvn clean install test -Dspring.profiles.active="dev"
