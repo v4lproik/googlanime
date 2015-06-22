@@ -38,9 +38,12 @@ public class ElasticsearchIndexInitializer {
                 removeIndex(index);
 
                 for (String indice : indices){
-                    client.admin ().cluster ().prepareHealth(index).setWaitForGreenStatus().execute().actionGet();
                     CreateIndexRequestBuilder cirb = client.admin().indices().prepareCreate(index).addMapping(indice, getIndexFieldMapping(index, indice));
                     cirb.execute().actionGet();
+
+                    // Fix CurrentState[POST_RECOVERY] operations only allowed when started/relocated Exception
+                    waitES();
+                    refreshES(index);
                 }
             }
         }
@@ -76,10 +79,6 @@ public class ElasticsearchIndexInitializer {
         } catch (Exception e) {
             // nothing
         }
-
-        // Fix CurrentState[POST_RECOVERY] operations only allowed when started/relocated Exception
-        waitES();
-        refreshES(index);
     }
 
     private String getIndexFieldMapping(String index, String indice) throws IOException {

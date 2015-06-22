@@ -1,6 +1,5 @@
 package net.v4lproik.googlanime;
 
-import junit.framework.TestCase;
 import net.v4lproik.googlanime.client.elasticsearch.ElasticsearchIndexInitializer;
 import net.v4lproik.googlanime.client.elasticsearch.ElasticsearchTestConfiguration;
 import org.elasticsearch.client.Client;
@@ -13,13 +12,15 @@ import org.springframework.context.annotation.ImportResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import static org.junit.Assert.fail;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(
         classes = {
                 ElasticsearchTestConfiguration.class
         })
 @ImportResource("classpath*  : application-context.xml")
-public class ElasticSearchITest extends TestCase {
+public class ElasticSearchITest {
 
     @Autowired
     private ElasticsearchIndexInitializer elasticsearchIndexInitializer;
@@ -30,7 +31,11 @@ public class ElasticSearchITest extends TestCase {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        elasticsearchIndexInitializer.createIndex();
+        try {
+            elasticsearchIndexInitializer.createIndex();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
 
@@ -38,6 +43,8 @@ public class ElasticSearchITest extends TestCase {
     @Test
     public void elasticsearch_getInformation_fromAnimesIndex_shouldBeOk(){
         try {
+            client.admin ().cluster ().prepareHealth("animes").setWaitForGreenStatus().execute().actionGet();
+
             client.prepareGet("animes", "anime", "1")
                     .execute()
                     .actionGet();
@@ -50,6 +57,8 @@ public class ElasticSearchITest extends TestCase {
     @Test
     public void elasticsearch_getInformation_fromMangasIndex_shouldBeOk(){
         try {
+            client.admin ().cluster ().prepareHealth("mangas").setWaitForGreenStatus().execute().actionGet();
+
             client.prepareGet("mangas", "manga", "2")
                     .execute()
                     .actionGet();
