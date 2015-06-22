@@ -3,6 +3,7 @@ package net.v4lproik.googlanime.client.elasticsearch;
 import org.apache.commons.io.IOUtils;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequestBuilder;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.common.unit.TimeValue;
 
 import javax.validation.constraints.NotNull;
 import java.io.File;
@@ -37,6 +38,7 @@ public class ElasticsearchIndexInitializer {
                 removeIndex(index);
 
                 for (String indice : indices){
+                    client.admin ().cluster ().prepareHealth(index).setWaitForGreenStatus().execute().actionGet();
                     CreateIndexRequestBuilder cirb = client.admin().indices().prepareCreate(index).addMapping(indice, getIndexFieldMapping(index, indice));
                     cirb.execute().actionGet();
                 }
@@ -74,9 +76,21 @@ public class ElasticsearchIndexInitializer {
         } catch (Exception e) {
             // nothing
         }
+
+        // Fix CurrentState[POST_RECOVERY] operations only allowed when started/relocated Exception
+        waitES();
+        refreshES(index);
     }
 
     private String getIndexFieldMapping(String index, String indice) throws IOException {
         return IOUtils.toString(getClass().getClassLoader().getResourceAsStream(CONF_ELASTICSEARCH_BASE_FOLDER + index + "/" + indice + ".json"));
+    }
+
+    private void waitES() {
+        client.admin().cluster().prepareHealth().setWaitForYellowStatus().setTimeout(TimeValue.timeValueSeconds(5)).get();
+    }
+
+    private void refreshES(String index) {
+        client.admin().indices().prepareRefresh(index).get();
     }
 }

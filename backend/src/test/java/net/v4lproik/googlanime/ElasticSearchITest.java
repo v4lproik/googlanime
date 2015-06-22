@@ -50,7 +50,7 @@ public class ElasticSearchITest extends TestCase {
     @Test
     public void elasticsearch_getInformation_fromMangasIndex_shouldBeOk(){
         try {
-            client.prepareGet("mangas", "manga", "1")
+            client.prepareGet("mangas", "manga", "2")
                     .execute()
                     .actionGet();
         }catch (Exception e){
