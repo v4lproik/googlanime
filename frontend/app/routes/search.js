@@ -24,7 +24,6 @@ export default Ember.Route.extend({
 
     return this.store.find('anime', {query : params.query, type: params.type, fields: params.fields, render: params.render}).then(
       function(animes){
-        //console.log("Parsing result from backend");
 
         if (animes.get("firstObject")){
           controller.set("animeSelected", animes.get("firstObject"));

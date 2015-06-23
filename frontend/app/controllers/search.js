@@ -21,7 +21,6 @@ export default Ember.Controller.extend({
     },
 
     updateSeriePanel: function (anime) {
-      console.debug("changing serie panel value" + anime.get("titles.romaji"));
       this.set("animeSelected", anime);
     },
 
