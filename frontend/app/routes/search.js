@@ -26,10 +26,12 @@ export default Ember.Route.extend({
       function(animes){
         //console.log("Parsing result from backend");
 
-        if (animes)
+        if (animes.get("firstObject")){
           controller.set("animeSelected", animes.get("firstObject"));
-        else
+          controller.set("error", null);
+        }else{
           controller.set("error", "We were not able to find any entries with the criterias you provided.");
+        }
 
         return animes;
       }, function() {
