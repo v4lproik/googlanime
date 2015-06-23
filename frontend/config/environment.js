@@ -24,7 +24,7 @@ module.exports = function(environment) {
       'script-src': "'self' http://localhost:8080",
       'font-src': "'self' data: use.typekit.net http://localhost:8080",
       'connect-src': "'self' http://localhost:8080",
-      'img-src': "'self' http://localhost:8080 www.facebook.com p.typekit.net",
+      'img-src': "'self' http://localhost:8080 www.facebook.com p.typekit.net http://cdn.myanimelist.net",
       'style-src': "'self' 'unsafe-inline' http://localhost:8080 use.typekit.net"
     },
 
