@@ -1,11 +1,12 @@
 package net.v4lproik.googlanime.service.impl;
+
 import com.google.gson.Gson;
 import net.v4lproik.googlanime.service.api.AnimeModel;
 import net.v4lproik.googlanime.service.api.AnimeService;
 import org.apache.log4j.Logger;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
-import org.elasticsearch.index.query.MultiMatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.elasticsearch.index.query.QueryBuilders.multiMatchQuery;
+import static org.elasticsearch.index.query.QueryBuilders.fuzzyLikeThisQuery;
 
 @Service
 public class AnimeServiceImpl implements AnimeService {
@@ -39,10 +40,9 @@ public class AnimeServiceImpl implements AnimeService {
 
         List<AnimeModel> animes = new ArrayList<>();
 
-        MultiMatchQueryBuilder qb = multiMatchQuery(
-                query,
-                fields
-        );
+        QueryBuilder qb = fuzzyLikeThisQuery(fields)
+                .likeText(query)
+                .maxQueryTerms(12);
 
         SearchResponse responseElastic = client.prepareSearch("animes", "mangas")
                 .setTypes(type)
@@ -69,10 +69,9 @@ public class AnimeServiceImpl implements AnimeService {
 
         List<Object> animes = new ArrayList<>();
 
-        MultiMatchQueryBuilder qb = multiMatchQuery(
-                query,
-                fields
-        );
+        QueryBuilder qb = fuzzyLikeThisQuery(fields)
+                .likeText(query)
+                .maxQueryTerms(12);
 
         SearchResponse responseElastic = client.prepareSearch("animes", "mangas")
                 .setTypes(type)
