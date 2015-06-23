@@ -1,0 +1,28 @@
+<div id="series-panel" class="col-md-2" style="padding-right: 30px;">
+    <div class="row">
+        <img id="serie-poster" src="{{animeSelected.posterImage}}" style="background-size:cover;height: 100%;width: 100%;max-height: 400px;max-width: 100%">
+    </div>
+    <div class="row">
+        <div id="serie-info">
+            <h4 style="text-align: left;padding-bottom:5px;border-bottom: 1px solid black">
+                Titles
+            </h4>
+            <div id="serie-titles">
+                <div id="serie-title-romaji-left">Romaji: {{animeSelected.romajiTitle}}</div>
+                <div id="serie-title-japanese-left">Japanese: {{animeSelected.japaneseTitle}}</div>
+            </div>
+            <h4 id="serie-information" style="text-align: left;padding-bottom:5px;border-bottom: 1px solid black">
+                Information
+            </h4>
+            <div id="serie-metadata">
+                <div id="serie-started-airing-date-left">Aired: {{animeSelected.startedAiringDate}}</div>
+                <div id="serie-finished-airing-date-left">To: {{animeSelected.finishedAiringDate}}</div>
+                <div id="serie-youtube-video-id-left">Trailer: http://youtube.com/{{animeSelected.youtubeVideoId}}</div>
+                <div id="serie-age-rating-left">Rating: {{animeSelected.ageRating}}</div>
+                <div id="serie-episode-count-left">Episodes: {{animeSelected.episodeCount}}</div>
+                <div id="serie-episode-length-left">Duration: {{animeSelected.episodeLength}}</div>
+                <div id="serie-show-type-left">Type: {{animeSelected.showType}}</div>
+            </div>
+        </div>
+    </div>
+</div>

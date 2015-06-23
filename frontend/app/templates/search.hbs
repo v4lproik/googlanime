@@ -54,8 +54,14 @@
   {{partial "partials/navbar_search"}}
 
     <div class="container-fluid container-search-result">
+        {{#if controller.error}}
+          <div class="alert alert-danger" role="alert">
+              <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+              <span class="sr-only">Error:</span>
+              {{controller.error}}
+          </div>
+      {{/if}}
       {{#unless model}}
-        No result...
       {{else}}
         {{#if layoutList}}
           {{#each anime in model}}

@@ -7,6 +7,7 @@ export default Ember.Controller.extend({
   type: null,
   fields: "title",
   render: "mal",
+  error: "",
 
   layoutList: false,
 

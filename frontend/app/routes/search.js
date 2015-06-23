@@ -24,13 +24,18 @@ export default Ember.Route.extend({
 
     return this.store.find('anime', {query : params.query, type: params.type, fields: params.fields, render: params.render}).then(
       function(animes){
-        console.log("Parsing result from backend");
+        //console.log("Parsing result from backend");
 
-        console.debug(Ember.inspect(animes.get("firstObject")));
-        controller.set("animeSelected", animes.get("firstObject"));
+        if (animes)
+          controller.set("animeSelected", animes.get("firstObject"));
+        else
+          controller.set("error", "We were not able to find any entries with the criterias you provided.");
 
         return animes;
-      });
+      }, function() {
+        controller.set("error", "The server seems to be down... Please try once more or come back later.");
+      }
+    );
   },
 
   actions: {
