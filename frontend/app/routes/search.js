@@ -8,7 +8,7 @@ export default Ember.Route.extend({
     }
   },
 
-  model: function(params) {
+  model: function (params) {
 
     if (!params.query)
       return
@@ -25,18 +25,23 @@ export default Ember.Route.extend({
     //set the first object of the list to selectedAnime so we won't have an ugly empty display
     var controller = this.controllerFor("search");
 
-    return this.store.find('anime', {query : params.query, type: params.type, fields: params.fields, render: params.render}).then(
-      function(animes){
+    return this.store.find('anime', {
+      query: params.query,
+      type: params.type,
+      fields: params.fields,
+      render: params.render
+    }).then(
+      function (animes) {
 
-        if (animes.get("firstObject")){
+        if (animes.get("firstObject")) {
           controller.set("animeSelected", animes.get("firstObject"));
           controller.set("error", null);
-        }else{
+        } else {
           controller.set("error", "We were not able to find any entries with the criterias you provided.");
         }
 
         return animes;
-      }, function() {
+      }, function () {
         controller.set("error", "The server seems to be down... Please try once more or come back later.");
       }
     );
@@ -45,9 +50,20 @@ export default Ember.Route.extend({
   actions: {
     callBackend: function (valueQuery) {
 
-      if(valueQuery != "")
-        this.refresh();
+      var timeout = this.controllerFor("search").get("timeout");
+      var callback = this;
+
+      if (timeout) {
+        clearTimeout(timeout);
+      }
+
+      timeout = setTimeout(function () {
+        if (valueQuery != "") {
+          callback.refresh();
+        }
+      }, 800);
+
+      this.controllerFor("search").set("timeout", timeout);
     }
   }
-
 });

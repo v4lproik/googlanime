@@ -9,6 +9,7 @@ export default Ember.Controller.extend({
   fields: "title",
   render: "mal",
   error: "",
+  timeout: 0,
 
   layoutList: false,
 
