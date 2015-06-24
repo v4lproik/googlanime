@@ -13,6 +13,9 @@ export default Ember.Route.extend({
     if (!params.query)
       return
 
+
+    this.controllerFor("search").set("search", true);
+
     this.controllerFor("search").set("query", params.query);
     this.controllerFor("search").set("type", params.type);
     this.controllerFor("search").set("fields", params.fields);
