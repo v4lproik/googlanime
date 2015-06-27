@@ -29,7 +29,7 @@ public class MyAnimeListUTest {
         final Integer id = options.getId();
         String url = myAnimeList.createURL(id, type);
 
-        File input = new File("src/test/resource/naruto-manga.html");
+        File input = new File("src/test/resource/naruto.manga");
         Document doc = Jsoup.parse(input, "UTF-8", url);
 
         doReturn(doc).when(myAnimeList).getResultFromJSoup(url, type);
@@ -51,7 +51,7 @@ public class MyAnimeListUTest {
         Integer id = options.getId();
         String url = myAnimeList.createURL(id, type);
 
-        File input = new File("src/test/resource/code-geass-r2-anime.html");
+        File input = new File("src/test/resource/code-geass-r2.anime");
         Document doc = Jsoup.parse(input, "UTF-8", url);
 
         doReturn(doc).when(myAnimeList).getResultFromJSoup(url, type);
