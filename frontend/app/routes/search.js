@@ -13,17 +13,13 @@ export default Ember.Route.extend({
     if (!params.query)
       return
 
-
-    this.controllerFor("search").set("search", true);
-
-    this.controllerFor("search").set("query", params.query);
-    this.controllerFor("search").set("type", params.type);
-    this.controllerFor("search").set("fields", params.fields);
-    this.controllerFor("search").set("render", params.render);
-
-
-    //set the first object of the list to selectedAnime so we won't have an ugly empty display
     var controller = this.controllerFor("search");
+
+    controller.set("search", true);
+    controller.set("query", params.query);
+    controller.set("type", params.type);
+    controller.set("fields", params.fields);
+    controller.set("render", params.render);
 
     return this.store.find('anime', {
       query: params.query,
@@ -49,6 +45,7 @@ export default Ember.Route.extend({
 
   actions: {
     callBackend: function (valueQuery) {
+
 
       var timeout = this.controllerFor("search").get("timeout");
       var callback = this;
