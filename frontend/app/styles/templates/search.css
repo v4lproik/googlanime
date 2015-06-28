@@ -140,3 +140,17 @@
 .centering {
   text-align: center;
 }
+
+.checkbox-inline.no_indent,
+.checkbox-inline.no_indent+.checkbox-inline.no_indent {
+  margin-left: 0;
+  margin-right: 10px;
+  width: 120px;
+}
+.checkbox-inline.no_indent:last-child {
+  margin-right: 0;
+}
+
+.pull-left {
+  float: left !important;
+}

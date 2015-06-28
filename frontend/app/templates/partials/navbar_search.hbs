@@ -3,15 +3,15 @@
         <ul class="pager subnav-pager ">
             <div class="col-xs-5">
                 <div class="input-group">
-                    <div class="container-4 input-group-btn right-addon">
-                      {{input key-up='callBackend' id="search2" required="true" type="text" class="form-control" placeholder="Search for..." value=controller.query}}
-                        <span class="icon"><i class="fa fa-search"></i></span>
-                    </div>
+                  {{input key-up='callBackend' id="search2" required="true" type="text" class="form-control" placeholder="Search for..." value=controller.query}}
+                  <span class="input-group-btn">
+                    <button {{action 'callBackend'}} class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
+                  </span>
                 </div>
             </div>
-            <div class="col-xs-1" style="width: auto">
+            <div class="col-xs-1" style="width: auto;">
                 <div class="pull-right" >
-                    <button href="#Foo" class="btn btn-default btn btn-filter" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                    <button class="btn btn-default btn btn-filter" data-toggle="collapse" data-target="#collapseAdvancedFilter" aria-expanded="false" aria-controls="collapseAdvancedFilter">
                         <span class="glyphicon glyphicon-filter" ></span>
                     </button>
                 </div>
