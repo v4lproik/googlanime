@@ -13,13 +13,40 @@ export default Ember.Route.extend({
     if (!params.query)
       return
 
+
     var controller = this.controllerFor("search");
 
     controller.set("search", true);
+
     controller.set("query", params.query);
+
+    var types = params.type.split(',');
+
+    if(types.indexOf("anime") > -1){
+      controller.set("isAnimeType", true);
+    }
+    if(types.indexOf("manga") > -1){
+      controller.set("isMangaType", true);
+    }
+
+    if(types.indexOf("character") > -1){
+      controller.set("isCharacterType", true);
+    }
+
+    if(types.indexOf("podcast") > -1){
+      controller.set("isPodcastType", true);
+    }
+
+    if(types.indexOf("mangaka") > -1){
+      controller.set("isMangakaType", true);
+    }
+
     controller.set("type", params.type);
+
     controller.set("fields", params.fields);
+
     controller.set("render", params.render);
+
 
     return this.store.find('anime', {
       query: params.query,
@@ -45,7 +72,6 @@ export default Ember.Route.extend({
 
   actions: {
     callBackend: function (valueQuery) {
-
 
       var timeout = this.controllerFor("search").get("timeout");
       var callback = this;
