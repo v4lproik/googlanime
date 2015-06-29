@@ -37,9 +37,7 @@ public class ElasticSearchITest {
             e.printStackTrace();
         }
     }
-
-
-
+    
     @Test
     public void elasticsearch_getInformation_fromAnimesIndex_shouldBeOk(){
         try {

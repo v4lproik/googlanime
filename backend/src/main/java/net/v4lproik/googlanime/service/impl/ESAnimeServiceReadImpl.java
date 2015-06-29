@@ -1,8 +1,8 @@
 package net.v4lproik.googlanime.service.impl;
 
 import com.google.gson.Gson;
-import net.v4lproik.googlanime.service.api.AnimeModel;
-import net.v4lproik.googlanime.service.api.AnimeService;
+import net.v4lproik.googlanime.service.api.models.AnimeModel;
+import net.v4lproik.googlanime.service.api.AnimeServiceRead;
 import org.apache.log4j.Logger;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
@@ -18,20 +18,14 @@ import java.util.List;
 import static org.elasticsearch.index.query.QueryBuilders.fuzzyLikeThisQuery;
 
 @Service
-public class AnimeServiceImpl implements AnimeService {
+public class ESAnimeServiceReadImpl implements AnimeServiceRead {
 
-    static Logger log = Logger.getLogger(AnimeServiceImpl.class.getName());
+    static Logger log = Logger.getLogger(ESAnimeServiceReadImpl.class.getName());
 
-    public static final int MAX_SIZE = 20;
+    public static final int MAX_RETURN_SIZE = 20;
 
     @Autowired
     private Client client;
-
-    @Override
-    public List<AnimeModel> findBySlug(String value) {
-
-        return null;
-    }
 
     @Override
     public List<AnimeModel> find(String query, String[] type, String[] fields) {
@@ -47,7 +41,7 @@ public class AnimeServiceImpl implements AnimeService {
         SearchResponse responseElastic = client.prepareSearch("animes", "mangas")
                 .setTypes(type)
                 .setQuery(qb)
-                .setSize(MAX_SIZE)
+                .setSize(MAX_RETURN_SIZE)
                 .execute()
                 .actionGet();
 
@@ -76,7 +70,7 @@ public class AnimeServiceImpl implements AnimeService {
         SearchResponse responseElastic = client.prepareSearch("animes", "mangas")
                 .setTypes(type)
                 .setQuery(qb)
-                .setSize(MAX_SIZE)
+                .setSize(MAX_RETURN_SIZE)
                 .execute()
                 .actionGet();
 

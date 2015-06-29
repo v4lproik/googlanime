@@ -1,6 +1,7 @@
 package net.v4lproik.googlanime.mvc.controllers;
 
 import com.jayway.jsonpath.JsonPath;
+import net.v4lproik.googlanime.client.elasticsearch.Config;
 import net.v4lproik.googlanime.mvc.models.Website;
 import net.v4lproik.googlanime.mvc.models.WebsiteFactory;
 import net.v4lproik.googlanime.service.api.ImportOptions;
@@ -12,6 +13,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.context.annotation.ImportResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -29,12 +31,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {
-        "classpath*  :application-context.xml",
-        "classpath*  :dispatcher-config.xml"
-})
+@ContextConfiguration(
+        classes = {
+                Config.class
+        })
+@ImportResource("classpath*  : application-context.xml")
 @WebAppConfiguration
-public class WebsiteControllerTest {
+public class WebsiteControllerUTest {
 
     @Mock
     WebsiteAbstract websiteAbstract;
@@ -101,9 +104,6 @@ public class WebsiteControllerTest {
         String errorMsg = JsonPath.read(content, "$.error");
         assertTrue(errorMsg.startsWith("Website enum"));
     }
-
-
-    //first list function tests
 
     @Test
     public void testGetAnimeFromMALWithNoDependency_withNoDependencyOnUrl_withData_shouldReturnAnime() throws Exception {

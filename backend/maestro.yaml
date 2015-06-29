@@ -16,6 +16,7 @@ services:
           mysql: 3306
         env:
           MYSQL_ROOT_PASSWORD: s3cretP4ssword123456789OverrideInPipeline
+          MYSQL_DATABASE: googlanime
 
   elasticsearch:
     image: "itzg/elasticsearch:latest"

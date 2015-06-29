@@ -2,8 +2,8 @@ package net.v4lproik.googlanime.mvc.controllers;
 
 import net.v4lproik.googlanime.mvc.models.JSONResponse;
 import net.v4lproik.googlanime.mvc.models.Website;
-import net.v4lproik.googlanime.service.api.AnimeModel;
-import net.v4lproik.googlanime.service.api.AnimeService;
+import net.v4lproik.googlanime.service.api.models.AnimeModel;
+import net.v4lproik.googlanime.service.api.AnimeServiceRead;
 import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListAnimeDependency;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ public class AnimeController {
     static Logger log = Logger.getLogger(AnimeController.class.getName());
 
     @Autowired
-    private AnimeService service;
+    private AnimeServiceRead service;
 
     @RequestMapping(value = "", method = RequestMethod.GET, params = {"query", "fields", "type", "render"})
     @ResponseStatus(value = HttpStatus.OK)
