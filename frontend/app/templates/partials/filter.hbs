@@ -1,43 +1,12 @@
 <div class="row" style="padding-top: 20px;">
-    <div class="collapse" id="collapseAdvancedFilter">
+    <!--<div class="collapse" id="collapseAdvancedFilter">-->
+    <div class="" id="collapseAdvancedFilter">
         <div class="well row col-sm-12">
-            <div class="col-sm-1">
-                <div class="checkbox">
-                    <label>
-                      {{input type='checkbox' checked=isAnimeType}}
-                        Anime
-                    </label>
-                </div>
-                <div class="checkbox">
-                    <label>
-                      {{input type='checkbox' checked=isMangaType}}
-                        Manga
-                    </label>
-                </div>
-                <div class="checkbox">
-                    <label>
-                      {{input type='checkbox' checked=isMangakaType}}
-                        Mangaka
-                    </label>
-                </div>
-                <div class="checkbox">
-                    <label>
-                      {{input type='checkbox' checked=isCharacterType}}
-                        Character
-                    </label>
-                </div>
-                <div class="checkbox">
-                    <label>
-                      {{input type='checkbox' checked=isPodcastType}}
-                        Podcast
-                    </label>
-                </div>
-            </div>
-            <div class="col-sm-2" style="border-right: 1px solid lightgrey;border-left: 1px solid lightgrey;">
+            <div class="col-xs-2" style="border-right: 1px solid lightgrey;border-left: 1px solid lightgrey;">
                 <form class="form-horizontal" role="form">
                     <div class="input-group input-group-xs">
                         <label class="col-xs-1 control-label" for="Type">Type</label>
-                        <div class="col-xs-8">
+                        <div class="col-xs-12">
                             <select id="Type" name="Type" class="form-control">
                                 <option value="">TV</option>
                                 <option value="">Movie</option>
@@ -50,7 +19,7 @@
 
                     <div class="input-group input-group-xs">
                         <label class="col-xs-1 control-label" for="Score">Score</label>
-                        <div class="col-xs-8">
+                        <div class="col-xs-12">
                             <select id="Score" name="Score" class="form-control">
                                 <option value="1">0</option>
                                 <option value="2">1</option>
@@ -69,7 +38,7 @@
 
                     <div class="input-group input-group-xs">
                         <label class="col-xs-1 control-label" for="Status">Status</label>
-                        <div class="col-xs-8">
+                        <div class="col-xs-12">
                             <select id="Status" name="Status" class="form-control">
                                 <option value="">Finished</option>
                                 <option value="">Airing</option>
@@ -80,7 +49,7 @@
 
                     <div class="input-group input-group-xs">
                         <label class="col-xs-1 control-label" for="Producer">Producer</label>
-                        <div class="col-xs-8">
+                        <div class="col-xs-12">
                             <select id="Producer" name="Producer" class="form-control">
                                 <option value="">Producer 1</option>
                             </select>
@@ -89,7 +58,7 @@
 
                     <div class="input-group input-group-xs">
                         <label class="col-xs-1 control-label" for="Rated">rated</label>
-                        <div class="col-xs-8">
+                        <div class="col-xs-12">
                             <select id="Rated" name="Rated" class="form-control">
                                 <option value="">PG 13</option>
                             </select>
@@ -98,181 +67,217 @@
                 </form>
             </div>
 
-            <div class="col-sm-6" >
-                <div class="form-group">
-                    <div class="col-md-10">
-                        <label class="checkbox-inline no_indent" for="checkboxes-0">
-                            <input type="checkbox" name="checkboxes" id="checkboxes-0" value="">
-                            Action
-                        </label>
-                        <label class="checkbox-inline no_indent" for="checkboxes-1">
-                            <input type="checkbox" name="checkboxes" id="checkboxes-1" value="">
-                            Adventure
-                        </label>
-                        <label class="checkbox-inline no_indent" for="checkboxes-2">
-                            <input type="checkbox" name="checkboxes" id="checkboxes-2" value="">
-                            Cars
-                        </label>
-                        <label class="checkbox-inline no_indent" for="checkboxes-3">
-                            <input type="checkbox" name="checkboxes" id="checkboxes-3" value="">
-                            Comedy
-                        </label>
-                        <label class="checkbox-inline no_indent" for="checkboxes-4">
-                            <input type="checkbox" name="checkboxes" id="checkboxes-4" value="">
-                            Dementia
-                        </label>
-                        <label class="checkbox-inline no_indent" for="checkboxes-5">
-                            <input type="checkbox" name="checkboxes" id="checkboxes-5" value="">
-                            Demons
-                        </label>
-                        <label class="checkbox-inline no_indent" for="checkboxes-6">
-                            <input type="checkbox" name="checkboxes" id="checkboxes-6" value="">
-                            Drama
-                        </label>
-                        <label class="checkbox-inline no_indent" for="checkboxes-7">
-                            <input type="checkbox" name="checkboxes" id="checkboxes-7" value="">
-                            Ecchi
-                        </label>
-                        <label class="checkbox-inline no_indent" for="checkboxes-8">
-                            <input type="checkbox" name="checkboxes" id="checkboxes-8" value="">
-                            Fantasy
-                        </label>
-                        <label class="checkbox-inline no_indent" for="checkboxes-9">
-                            <input type="checkbox" name="checkboxes" id="checkboxes-9" value="">
-                            Game
-                        </label>
-                        <label class="checkbox-inline no_indent" for="checkboxes-10">
-                            <input type="checkbox" name="checkboxes" id="checkboxes-10" value="">
-                            Harem
-                        </label>
-                        <label class="checkbox-inline no_indent" for="checkboxes-11">
-                            <input type="checkbox" name="checkboxes" id="checkboxes-11" value="">
-                            Hentai
-                        </label>
-                        <label class="checkbox-inline no_indent" for="checkboxes-12">
-                            <input type="checkbox" name="checkboxes" id="checkboxes-12" value="">
-                            Historical
-                        </label>
-                        <label class="checkbox-inline no_indent" for="checkboxes-13">
-                            <input type="checkbox" name="checkboxes" id="checkboxes-13" value="">
-                            Horror
-                        </label>
-                        <label class="checkbox-inline no_indent" for="checkboxes-14">
-                            <input type="checkbox" name="checkboxes" id="checkboxes-14" value="">
-                            Josei
-                        </label>
-                        <label class="checkbox-inline no_indent" for="checkboxes-15">
-                            <input type="checkbox" name="checkboxes" id="checkboxes-15" value="">
-                            Kids
-                        </label>
-                        <label class="checkbox-inline no_indent" for="checkboxes-16">
-                            <input type="checkbox" name="checkboxes" id="checkboxes-16" value="">
-                            Magic
-                        </label>
-                        <label class="checkbox-inline no_indent" for="checkboxes-17">
-                            <input type="checkbox" name="checkboxes" id="checkboxes-17" value="">
-                            Martial Arts
-                        </label>
-                        <label class="checkbox-inline no_indent" for="checkboxes-18">
-                            <input type="checkbox" name="checkboxes" id="checkboxes-18" value="">
-                            Mecha
-                        </label>
-                        <label class="checkbox-inline no_indent" for="checkboxes-19">
-                            <input type="checkbox" name="checkboxes" id="checkboxes-19" value="">
-                            Military
-                        </label>
-                        <label class="checkbox-inline no_indent" for="checkboxes-20">
-                            <input type="checkbox" name="checkboxes" id="checkboxes-20" value="">
-                            Music
-                        </label>
-                        <label class="checkbox-inline no_indent" for="checkboxes-21">
-                            <input type="checkbox" name="checkboxes" id="checkboxes-21" value="">
-                            Mystery
-                        </label>
-                        <label class="checkbox-inline no_indent" for="checkboxes-22">
-                            <input type="checkbox" name="checkboxes" id="checkboxes-22" value="">
-                            Parody
-                        </label>
-                        <label class="checkbox-inline no_indent" for="checkboxes-23">
-                            <input type="checkbox" name="checkboxes" id="checkboxes-23" value="">
-                            Police
-                        </label>
-                        <label class="checkbox-inline no_indent" for="checkboxes-24">
-                            <input type="checkbox" name="checkboxes" id="checkboxes-24" value="">
-                            Psychological
-                        </label>
-                        <label class="checkbox-inline no_indent" for="checkboxes-25">
-                            <input type="checkbox" name="checkboxes" id="checkboxes-25" value="">
-                            Romance
-                        </label>
-                        <label class="checkbox-inline no_indent" for="checkboxes-26">
-                            <input type="checkbox" name="checkboxes" id="checkboxes-26" value="">
-                            Samurai
-                        </label>
-                        <label class="checkbox-inline no_indent" for="checkboxes-27">
-                            <input type="checkbox" name="checkboxes" id="checkboxes-27" value="">
-                            School
-                        </label>
-                        <label class="checkbox-inline no_indent" for="checkboxes-28">
-                            <input type="checkbox" name="checkboxes" id="checkboxes-28" value="">
-                            Sci-Fi
-                        </label>
-                        <label class="checkbox-inline no_indent" for="checkboxes-29">
-                            <input type="checkbox" name="checkboxes" id="checkboxes-29" value="">
-                            Seinen
-                        </label>
-                        <label class="checkbox-inline no_indent" for="checkboxes-30">
-                            <input type="checkbox" name="checkboxes" id="checkboxes-30" value="">
-                            Shoujo
-                        </label>
-                        <label class="checkbox-inline no_indent" for="checkboxes-31">
-                            <input type="checkbox" name="checkboxes" id="checkboxes-31" value="">
-                            Shoujo Ai
-                        </label>
-                        <label class="checkbox-inline no_indent" for="checkboxes-32">
-                            <input type="checkbox" name="checkboxes" id="checkboxes-32" value="">
-                            Shounen
-                        </label>
-                        <label class="checkbox-inline no_indent" for="checkboxes-33">
-                            <input type="checkbox" name="checkboxes" id="checkboxes-33" value="">
-                            Shounen Ai
-                        </label>
-                        <label class="checkbox-inline no_indent" for="checkboxes-34">
-                            <input type="checkbox" name="checkboxes" id="checkboxes-34" value="">
-                            Slice of Life
-                        </label>
-                        <label class="checkbox-inline no_indent" for="checkboxes-35">
-                            <input type="checkbox" name="checkboxes" id="checkboxes-35" value="">
-                            Space
-                        </label>
-                        <label class="checkbox-inline no_indent" for="checkboxes-36">
-                            <input type="checkbox" name="checkboxes" id="checkboxes-36" value="">
-                            Sports
-                        </label>
-                        <label class="checkbox-inline no_indent" for="checkboxes-37">
-                            <input type="checkbox" name="checkboxes" id="checkboxes-37" value="">
-                            Super Power
-                        </label>
-                        <label class="checkbox-inline no_indent" for="checkboxes-38">
-                            <input type="checkbox" name="checkboxes" id="checkboxes-38" value="">
-                            Supernatural
-                        </label>
-                        <label class="checkbox-inline no_indent" for="checkboxes-39">
-                            <input type="checkbox" name="checkboxes" id="checkboxes-39" value="">
-                            Thriller
-                        </label>
-                        <label class="checkbox-inline no_indent" for="checkboxes-40">
-                            <input type="checkbox" name="checkboxes" id="checkboxes-40" value="">
-                            Vampire
-                        </label>
-                        <label class="checkbox-inline no_indent" for="checkboxes-41">
-                            <input type="checkbox" name="checkboxes" id="checkboxes-41" value="">
-                            Yaoi
-                        </label>
-                        <label class="checkbox-inline no_indent" for="checkboxes-42">
-                            <input type="checkbox" name="checkboxes" id="checkboxes-42" value="">
-                            Yuri
-                        </label>
+            <div class="col-sm-6">
+                <div class="row">
+                    <label class="col-xs-1 control-label" for="Score" style="padding-top: 10px">Genre</label>
+                </div>
+                <div class="row">
+                    <div class="input-group">
+                        <div class="col-md-12">
+                            <label class="checkbox-inline no_indent" for="checkboxes-0">
+                                <input type="checkbox" name="checkboxes" id="checkboxes-0" value="">
+                                Action
+                            </label>
+                            <label class="checkbox-inline no_indent" for="checkboxes-1">
+                                <input type="checkbox" name="checkboxes" id="checkboxes-1" value="">
+                                Adventure
+                            </label>
+                            <label class="checkbox-inline no_indent" for="checkboxes-2">
+                                <input type="checkbox" name="checkboxes" id="checkboxes-2" value="">
+                                Cars
+                            </label>
+                            <label class="checkbox-inline no_indent" for="checkboxes-3">
+                                <input type="checkbox" name="checkboxes" id="checkboxes-3" value="">
+                                Comedy
+                            </label>
+                            <label class="checkbox-inline no_indent" for="checkboxes-4">
+                                <input type="checkbox" name="checkboxes" id="checkboxes-4" value="">
+                                Dementia
+                            </label>
+                            <label class="checkbox-inline no_indent" for="checkboxes-5">
+                                <input type="checkbox" name="checkboxes" id="checkboxes-5" value="">
+                                Demons
+                            </label>
+                            <label class="checkbox-inline no_indent" for="checkboxes-6">
+                                <input type="checkbox" name="checkboxes" id="checkboxes-6" value="">
+                                Drama
+                            </label>
+                            <label class="checkbox-inline no_indent" for="checkboxes-7">
+                                <input type="checkbox" name="checkboxes" id="checkboxes-7" value="">
+                                Ecchi
+                            </label>
+                            <label class="checkbox-inline no_indent" for="checkboxes-8">
+                                <input type="checkbox" name="checkboxes" id="checkboxes-8" value="">
+                                Fantasy
+                            </label>
+                            <label class="checkbox-inline no_indent" for="checkboxes-9">
+                                <input type="checkbox" name="checkboxes" id="checkboxes-9" value="">
+                                Game
+                            </label>
+                            <label class="checkbox-inline no_indent" for="checkboxes-10">
+                                <input type="checkbox" name="checkboxes" id="checkboxes-10" value="">
+                                Harem
+                            </label>
+                            <label class="checkbox-inline no_indent" for="checkboxes-11">
+                                <input type="checkbox" name="checkboxes" id="checkboxes-11" value="">
+                                Hentai
+                            </label>
+                            <label class="checkbox-inline no_indent" for="checkboxes-12">
+                                <input type="checkbox" name="checkboxes" id="checkboxes-12" value="">
+                                Historical
+                            </label>
+                            <label class="checkbox-inline no_indent" for="checkboxes-13">
+                                <input type="checkbox" name="checkboxes" id="checkboxes-13" value="">
+                                Horror
+                            </label>
+                            <label class="checkbox-inline no_indent" for="checkboxes-14">
+                                <input type="checkbox" name="checkboxes" id="checkboxes-14" value="">
+                                Josei
+                            </label>
+                            <label class="checkbox-inline no_indent" for="checkboxes-15">
+                                <input type="checkbox" name="checkboxes" id="checkboxes-15" value="">
+                                Kids
+                            </label>
+                            <label class="checkbox-inline no_indent" for="checkboxes-16">
+                                <input type="checkbox" name="checkboxes" id="checkboxes-16" value="">
+                                Magic
+                            </label>
+                            <label class="checkbox-inline no_indent" for="checkboxes-17">
+                                <input type="checkbox" name="checkboxes" id="checkboxes-17" value="">
+                                Martial Arts
+                            </label>
+                            <label class="checkbox-inline no_indent" for="checkboxes-18">
+                                <input type="checkbox" name="checkboxes" id="checkboxes-18" value="">
+                                Mecha
+                            </label>
+                            <label class="checkbox-inline no_indent" for="checkboxes-19">
+                                <input type="checkbox" name="checkboxes" id="checkboxes-19" value="">
+                                Military
+                            </label>
+                            <label class="checkbox-inline no_indent" for="checkboxes-20">
+                                <input type="checkbox" name="checkboxes" id="checkboxes-20" value="">
+                                Music
+                            </label>
+                            <label class="checkbox-inline no_indent" for="checkboxes-21">
+                                <input type="checkbox" name="checkboxes" id="checkboxes-21" value="">
+                                Mystery
+                            </label>
+                            <label class="checkbox-inline no_indent" for="checkboxes-22">
+                                <input type="checkbox" name="checkboxes" id="checkboxes-22" value="">
+                                Parody
+                            </label>
+                            <label class="checkbox-inline no_indent" for="checkboxes-23">
+                                <input type="checkbox" name="checkboxes" id="checkboxes-23" value="">
+                                Police
+                            </label>
+                            <label class="checkbox-inline no_indent" for="checkboxes-24">
+                                <input type="checkbox" name="checkboxes" id="checkboxes-24" value="">
+                                Psychological
+                            </label>
+                            <label class="checkbox-inline no_indent" for="checkboxes-25">
+                                <input type="checkbox" name="checkboxes" id="checkboxes-25" value="">
+                                Romance
+                            </label>
+                            <label class="checkbox-inline no_indent" for="checkboxes-26">
+                                <input type="checkbox" name="checkboxes" id="checkboxes-26" value="">
+                                Samurai
+                            </label>
+                            <label class="checkbox-inline no_indent" for="checkboxes-27">
+                                <input type="checkbox" name="checkboxes" id="checkboxes-27" value="">
+                                School
+                            </label>
+                            <label class="checkbox-inline no_indent" for="checkboxes-28">
+                                <input type="checkbox" name="checkboxes" id="checkboxes-28" value="">
+                                Sci-Fi
+                            </label>
+                            <label class="checkbox-inline no_indent" for="checkboxes-29">
+                                <input type="checkbox" name="checkboxes" id="checkboxes-29" value="">
+                                Seinen
+                            </label>
+                            <label class="checkbox-inline no_indent" for="checkboxes-30">
+                                <input type="checkbox" name="checkboxes" id="checkboxes-30" value="">
+                                Shoujo
+                            </label>
+                            <label class="checkbox-inline no_indent" for="checkboxes-31">
+                                <input type="checkbox" name="checkboxes" id="checkboxes-31" value="">
+                                Shoujo Ai
+                            </label>
+                            <label class="checkbox-inline no_indent" for="checkboxes-32">
+                                <input type="checkbox" name="checkboxes" id="checkboxes-32" value="">
+                                Shounen
+                            </label>
+                            <label class="checkbox-inline no_indent" for="checkboxes-33">
+                                <input type="checkbox" name="checkboxes" id="checkboxes-33" value="">
+                                Shounen Ai
+                            </label>
+                            <label class="checkbox-inline no_indent" for="checkboxes-34">
+                                <input type="checkbox" name="checkboxes" id="checkboxes-34" value="">
+                                Slice of Life
+                            </label>
+                            <label class="checkbox-inline no_indent" for="checkboxes-35">
+                                <input type="checkbox" name="checkboxes" id="checkboxes-35" value="">
+                                Space
+                            </label>
+                            <label class="checkbox-inline no_indent" for="checkboxes-36">
+                                <input type="checkbox" name="checkboxes" id="checkboxes-36" value="">
+                                Sports
+                            </label>
+                            <label class="checkbox-inline no_indent" for="checkboxes-37">
+                                <input type="checkbox" name="checkboxes" id="checkboxes-37" value="">
+                                Super Power
+                            </label>
+                            <label class="checkbox-inline no_indent" for="checkboxes-38">
+                                <input type="checkbox" name="checkboxes" id="checkboxes-38" value="">
+                                Supernatural
+                            </label>
+                            <label class="checkbox-inline no_indent" for="checkboxes-39">
+                                <input type="checkbox" name="checkboxes" id="checkboxes-39" value="">
+                                Thriller
+                            </label>
+                            <label class="checkbox-inline no_indent" for="checkboxes-40">
+                                <input type="checkbox" name="checkboxes" id="checkboxes-40" value="">
+                                Vampire
+                            </label>
+                            <label class="checkbox-inline no_indent" for="checkboxes-41">
+                                <input type="checkbox" name="checkboxes" id="checkboxes-41" value="">
+                                Yaoi
+                            </label>
+                            <label class="checkbox-inline no_indent" for="checkboxes-42">
+                                <input type="checkbox" name="checkboxes" id="checkboxes-42" value="">
+                                Yuri
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="input-group" style="padding-top: 20px;padding-left: 15px">
+                        <div class="col-sm-12" style="border-top: 1px solid lightgray;padding-top: 20px;">
+                            <div class="row">
+                                <label class="col-xs-1 control-label" for="Score" style="padding: 0">Include</label>
+                            </div>
+                            <div class="row">
+
+                                <label class="checkbox-inline no_indent" for="checkboxes-42">
+                                  {{input type='checkbox' checked=isAnimeType}}
+                                    Anime
+                                </label>
+                                <label class="checkbox-inline no_indent" for="checkboxes-42">
+                                  {{input type='checkbox' checked=isMangaType}}
+                                    Manga
+                                </label>
+                                <label class="checkbox-inline no_indent" for="checkboxes-42">
+                                  {{input type='checkbox' checked=isMangakaType}}
+                                    Mangaka
+                                </label>
+                                <label class="checkbox-inline no_indent" for="checkboxes-42">
+                                  {{input type='checkbox' checked=isCharacterType}}
+                                    Character
+                                </label>
+                                <label class="checkbox-inline no_indent" for="checkboxes-42">
+                                  {{input type='checkbox' checked=isPodcastType}}
+                                    Podcast
+                                </label>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
