@@ -1,4 +1,4 @@
-package net.v4lproik.googlanime.service.api.models;
+package net.v4lproik.googlanime.service.api.entities;
 
 import com.google.common.base.Objects;
 
@@ -20,6 +20,9 @@ public class CharacterModel {
     private String japaneseName;
 
     private String role;
+
+    public CharacterModel() {
+    }
 
     public String getFirstName() {
         return firstName;
@@ -59,9 +62,6 @@ public class CharacterModel {
 
     public void setJapaneseName(String japaneseName) {
         this.japaneseName = japaneseName;
-    }
-
-    public CharacterModel() {
     }
 
     @Override

@@ -1,10 +1,10 @@
-package net.v4lproik.googlanime.service.api.models;
+package net.v4lproik.googlanime.service.api.entities;
 
 import javax.persistence.*;
 
 @Entity
-@Table(name="Producer")
-public class ProducerModel {
+@Table(name = "Genre")
+public class GenreModel {
 
     @Id
     @GeneratedValue
@@ -13,16 +13,19 @@ public class ProducerModel {
 
     private String name;
 
+    public GenreModel() {
+    }
+
+    public GenreModel(String name) {
+        this.name = name;
+    }
+
     public Integer getId() {
         return id;
     }
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public ProducerModel(String name) {
-        this.name = name;
     }
 
     public String getName() {

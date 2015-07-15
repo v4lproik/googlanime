@@ -5,8 +5,10 @@ import net.v4lproik.googlanime.client.mysql.SqlDatabaseInitializer;
 import net.v4lproik.googlanime.dao.api.AnimeDAO;
 import net.v4lproik.googlanime.dao.repositories.AnimeRepository;
 import net.v4lproik.googlanime.service.api.AnimeServiceWrite;
-import net.v4lproik.googlanime.service.api.models.AnimeModel;
-import net.v4lproik.googlanime.service.api.models.GenreModel;
+import net.v4lproik.googlanime.service.api.entities.AnimeModel;
+import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListAnimeDependency;
+import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListAnimeDependencyId;
+import net.v4lproik.googlanime.service.api.utils.TransformAnimeMapper;
 import org.hibernate.SessionFactory;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,32 +49,28 @@ public class DBAnimeServiceWriteImplITest {
         }
 
         AnimeDAO animeDAO = new AnimeRepository(AnimeModel.class, sessionFactoryConfig);
-        service = new DBAnimeServiceWriteImpl(animeDAO);
+        TransformAnimeMapper animeMapper = new TransformAnimeMapper();
+
+        service = new DBAnimeServiceWriteImpl(animeDAO, animeMapper);
     }
 
     @Test
     public void test_saveMysql_withGoodGenre_shouldBeInserted() {
-        AnimeModel adaptation = new AnimeModel(new Long(2));
-        adaptation.setTitle("adaptation");
+        MyAnimeListAnimeDependency anime = new MyAnimeListAnimeDependency(2);
+        anime.setTitle("main anime");
+        anime.setEnglishTitle("main anime english title");
+        anime.setJapaneseTitle("main anime japanese title");
+        anime.setType("anime");
+
+        MyAnimeListAnimeDependencyId adaptation = new MyAnimeListAnimeDependencyId(4);
         adaptation.setEnglishTitle("adaptation english title");
-        adaptation.setJapaneseTitle("adaptation japanese title");
-        adaptation.setType("horror");
-        List<AnimeModel> adaptations = new ArrayList<>();
+        adaptation.setType("manga");
+        List<MyAnimeListAnimeDependencyId> adaptations = new ArrayList<>();
         adaptations.add(adaptation);
 
-        GenreModel genre = new GenreModel("anime");
-        List<GenreModel> genres = new ArrayList<GenreModel>();
-        genres.add(genre);
-
-        AnimeModel anime = new AnimeModel(new Long(2));
-        anime.setTitle("title");
-        anime.setEnglishTitle("english title");
-        anime.setJapaneseTitle("japanese title");
-        anime.setType("horror");
-        anime.setGenres(genres);
+        anime.setAdaptations(adaptations);
 
         service.saveAnime(anime);
-        service.delete(anime);
 
     }
 }

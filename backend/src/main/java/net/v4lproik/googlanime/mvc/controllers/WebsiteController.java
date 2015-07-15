@@ -1,13 +1,12 @@
 package net.v4lproik.googlanime.mvc.controllers;
 
-import net.v4lproik.googlanime.client.elasticsearch.Config;
 import net.v4lproik.googlanime.mvc.models.BackendException;
 import net.v4lproik.googlanime.mvc.models.JSONResponse;
 import net.v4lproik.googlanime.mvc.models.Website;
 import net.v4lproik.googlanime.mvc.models.WebsiteFactory;
 import net.v4lproik.googlanime.service.api.AnimeServiceWrite;
-import net.v4lproik.googlanime.service.api.ImportOptions;
-import net.v4lproik.googlanime.service.api.WebsiteAbstract;
+import net.v4lproik.googlanime.service.api.common.ImportOptions;
+import net.v4lproik.googlanime.service.api.common.WebsiteAbstract;
 import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListAnime;
 import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListAnimeDependency;
 import org.apache.log4j.Logger;
@@ -27,9 +26,6 @@ public class WebsiteController {
 
     @Autowired
     private WebsiteFactory websiteFactory;
-
-    @Autowired
-    private Config config;
 
     @Autowired
     private AnimeServiceWrite animeServiceWrite;
@@ -109,8 +105,6 @@ public class WebsiteController {
 
         JSONResponse response = new JSONResponse();
 
-        //TransportClient client = config.node();
-
         WebsiteAbstract website = websiteFactory.getWebsite(Website.containsValue(from));
 
         if (website == null) {
@@ -122,20 +116,18 @@ public class WebsiteController {
             final ImportOptions opts = new ImportOptions(id, type, dependency);
             log.debug(String.format("/import/store with options from=%s, type=%s, id=%s, dependency=%s", from, type, id.toString(), dependency.toString()));
 
-            // List of animes or mangas
             List<MyAnimeListAnimeDependency> animes = website.crawlByIdList(opts);
             response.setAnimes(animes);
 
             for (MyAnimeListAnimeDependency entity : animes){
 
+                //TODO
                 if (entity.getType().equals("anime")){
-//                    animeServiceWrite.saveAnime(entity);
-
+                    animeServiceWrite.saveAnime(entity);
                 }else
                 {
-//                    animeServiceWrite.saveManga(entity);
+                    animeServiceWrite.saveAnime(entity);
                 }
-
             }
 
         }catch (IOException e){

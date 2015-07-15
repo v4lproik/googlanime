@@ -1,7 +1,7 @@
 package net.v4lproik.googlanime.dao.repositories;
 
 import net.v4lproik.googlanime.dao.api.AnimeDAO;
-import net.v4lproik.googlanime.service.api.models.AnimeModel;
+import net.v4lproik.googlanime.service.api.entities.AnimeModel;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 

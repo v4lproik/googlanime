@@ -1,6 +1,6 @@
 package net.v4lproik.googlanime.dao.api;
 
-import net.v4lproik.googlanime.service.api.models.AnimeModel;
+import net.v4lproik.googlanime.service.api.entities.AnimeModel;
 
 public interface AnimeDAO {
     Long save(AnimeModel anime);

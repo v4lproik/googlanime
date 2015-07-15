@@ -1,6 +1,6 @@
 package net.v4lproik.googlanime.mvc.models;
 
-import net.v4lproik.googlanime.service.api.WebsiteAbstract;
+import net.v4lproik.googlanime.service.api.common.WebsiteAbstract;
 import net.v4lproik.googlanime.service.api.myanimelist.MyAnimeList;
 import org.springframework.stereotype.Service;
 

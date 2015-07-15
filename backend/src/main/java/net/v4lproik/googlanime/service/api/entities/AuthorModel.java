@@ -1,4 +1,4 @@
-package net.v4lproik.googlanime.service.api.models;
+package net.v4lproik.googlanime.service.api.entities;
 
 import com.google.common.base.Objects;
 

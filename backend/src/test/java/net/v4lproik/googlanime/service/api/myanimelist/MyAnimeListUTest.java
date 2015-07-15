@@ -1,6 +1,6 @@
 package net.v4lproik.googlanime.service.api.myanimelist;
 
-import net.v4lproik.googlanime.service.api.ImportOptions;
+import net.v4lproik.googlanime.service.api.common.ImportOptions;
 import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListAnime;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

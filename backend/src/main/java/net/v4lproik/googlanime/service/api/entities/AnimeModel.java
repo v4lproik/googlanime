@@ -1,4 +1,4 @@
-package net.v4lproik.googlanime.service.api.models;
+package net.v4lproik.googlanime.service.api.entities;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;

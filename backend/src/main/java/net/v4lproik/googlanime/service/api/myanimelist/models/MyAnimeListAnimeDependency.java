@@ -10,9 +10,6 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by joel on 09/05/2015.
- */
 @JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="@id")
 public class MyAnimeListAnimeDependency {
 

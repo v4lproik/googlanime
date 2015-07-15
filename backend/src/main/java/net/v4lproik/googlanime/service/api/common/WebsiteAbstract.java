@@ -1,4 +1,4 @@
-package net.v4lproik.googlanime.service.api;
+package net.v4lproik.googlanime.service.api.common;
 
 import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListAnime;
 import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListAnimeDependency;

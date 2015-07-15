@@ -1,7 +1,7 @@
 package net.v4lproik.googlanime.client.mysql;
 
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
-import net.v4lproik.googlanime.service.api.models.*;
+import net.v4lproik.googlanime.service.api.entities.*;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.slf4j.Logger;

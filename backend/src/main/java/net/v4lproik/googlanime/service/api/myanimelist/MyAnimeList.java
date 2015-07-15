@@ -1,7 +1,7 @@
 package net.v4lproik.googlanime.service.api.myanimelist;
 
-import net.v4lproik.googlanime.service.api.ImportOptions;
-import net.v4lproik.googlanime.service.api.WebsiteAbstract;
+import net.v4lproik.googlanime.service.api.common.ImportOptions;
+import net.v4lproik.googlanime.service.api.common.WebsiteAbstract;
 import net.v4lproik.googlanime.service.api.myanimelist.models.*;
 import org.apache.log4j.Logger;
 import org.jsoup.Connection;
@@ -26,16 +26,12 @@ import static org.elasticsearch.common.lang3.StringUtils.substringBetween;
  */
 public class MyAnimeList extends WebsiteAbstract {
 
-    static Logger log = Logger.getLogger(MyAnimeList.class.getName());
-
     public static final String DOMAIN = "http://myanimelist.net/";
     public static final String API = "";
     public static final String USER_AGENT = "iMAL-iOS";
     public static final String[] URL_GRAB = new String[]{"characters", "characters#staff"};
-
     public static final String[] IGNORE_PROPERTIES = {"sequels", "alternativeVersions", "prequels", "spinoff", "sideStories", "others", "summaries", "adaptations" };
-
-
+    static Logger log = Logger.getLogger(MyAnimeList.class.getName());
     private List<Integer> animeScrapped = new ArrayList<Integer>();
     private List<Integer> animeErrorScrapped = new ArrayList<Integer>();
 
@@ -273,44 +269,97 @@ public class MyAnimeList extends WebsiteAbstract {
     protected MyAnimeListAnimeDependency convertIntoDependencyObject(MyAnimeListAnime from){
 
         MyAnimeListAnimeDependency myAnimeListAnimeDependency = new MyAnimeListAnimeDependency();
+        MyAnimeListAnimeDependencyId myAnimeListAnimeDependencyId = new MyAnimeListAnimeDependencyId();
         Integer id;
+        String title;
+        String type;
 
         //Copy value into MyAnimeListDependency
         BeanUtils.copyProperties(from, myAnimeListAnimeDependency, IGNORE_PROPERTIES);
 
         for (MyAnimeListAnime anime : from.getAdaptations()){
             id = anime.getId();
-            myAnimeListAnimeDependency.getAdaptations().add(new MyAnimeListAnimeDependencyId(id));
+            title = anime.getEnglishTitle();
+            type = anime.getType();
+
+            myAnimeListAnimeDependencyId.setId(id);
+            myAnimeListAnimeDependencyId.setEnglishTitle(title);
+            myAnimeListAnimeDependencyId.setType(type);
+
+            myAnimeListAnimeDependency.getAdaptations().add(myAnimeListAnimeDependencyId);
+
         }
 
         for (MyAnimeListAnime anime : from.getAlternativeVersions()){
             id = anime.getId();
-            myAnimeListAnimeDependency.getAlternativeVersions().add(new MyAnimeListAnimeDependencyId(id));
+            title = anime.getEnglishTitle();
+            type = anime.getType();
+
+            myAnimeListAnimeDependencyId.setId(id);
+            myAnimeListAnimeDependencyId.setEnglishTitle(title);
+            myAnimeListAnimeDependencyId.setType(type);
+
+            myAnimeListAnimeDependency.getAlternativeVersions().add(myAnimeListAnimeDependencyId);
         }
 
         for (MyAnimeListAnime anime : from.getPrequels()){
             id = anime.getId();
-            myAnimeListAnimeDependency.getPrequels().add(new MyAnimeListAnimeDependencyId(id));
+            title = anime.getEnglishTitle();
+            type = anime.getType();
+
+            myAnimeListAnimeDependencyId.setId(id);
+            myAnimeListAnimeDependencyId.setEnglishTitle(title);
+            myAnimeListAnimeDependencyId.setType(type);
+
+            myAnimeListAnimeDependency.getPrequels().add(myAnimeListAnimeDependencyId);
         }
 
         for (MyAnimeListAnime anime : from.getSequels()){
             id = anime.getId();
-            myAnimeListAnimeDependency.getSequels().add(new MyAnimeListAnimeDependencyId(id));
+            title = anime.getEnglishTitle();
+            type = anime.getType();
+
+            myAnimeListAnimeDependencyId.setId(id);
+            myAnimeListAnimeDependencyId.setEnglishTitle(title);
+            myAnimeListAnimeDependencyId.setType(type);
+
+            myAnimeListAnimeDependency.getSequels().add(myAnimeListAnimeDependencyId);
         }
 
         for (MyAnimeListAnime anime : from.getSideStories()){
             id = anime.getId();
-            myAnimeListAnimeDependency.getSideStories().add(new MyAnimeListAnimeDependencyId(id));
+            title = anime.getEnglishTitle();
+            type = anime.getType();
+
+            myAnimeListAnimeDependencyId.setId(id);
+            myAnimeListAnimeDependencyId.setEnglishTitle(title);
+            myAnimeListAnimeDependencyId.setType(type);
+
+            myAnimeListAnimeDependency.getSideStories().add(myAnimeListAnimeDependencyId);
         }
 
-        for (MyAnimeListAnime anime : from.getOthers()){
+        for (MyAnimeListAnime anime : from.getOthers()) {
             id = anime.getId();
-            myAnimeListAnimeDependency.getOthers().add(new MyAnimeListAnimeDependencyId(id));
+            title = anime.getEnglishTitle();
+            type = anime.getType();
+
+            myAnimeListAnimeDependencyId.setId(id);
+            myAnimeListAnimeDependencyId.setEnglishTitle(title);
+            myAnimeListAnimeDependencyId.setType(type);
+
+            myAnimeListAnimeDependency.getOthers().add(myAnimeListAnimeDependencyId);
         }
 
-        for (MyAnimeListAnime anime : from.getSummaries()){
+        for (MyAnimeListAnime anime : from.getSummaries()) {
             id = anime.getId();
-            myAnimeListAnimeDependency.getSummaries().add(new MyAnimeListAnimeDependencyId(id));
+            title = anime.getEnglishTitle();
+            type = anime.getType();
+
+            myAnimeListAnimeDependencyId.setId(id);
+            myAnimeListAnimeDependencyId.setEnglishTitle(title);
+            myAnimeListAnimeDependencyId.setType(type);
+
+            myAnimeListAnimeDependency.getSummaries().add(myAnimeListAnimeDependencyId);
         }
 
         return myAnimeListAnimeDependency;

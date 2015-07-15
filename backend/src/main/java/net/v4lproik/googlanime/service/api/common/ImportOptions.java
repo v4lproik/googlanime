@@ -1,4 +1,4 @@
-package net.v4lproik.googlanime.service.api;
+package net.v4lproik.googlanime.service.api.common;
 
 /**
  * Created by joel on 13/05/2015.

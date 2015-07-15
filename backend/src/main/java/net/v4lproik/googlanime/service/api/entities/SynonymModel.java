@@ -1,4 +1,4 @@
-package net.v4lproik.googlanime.service.api.models;
+package net.v4lproik.googlanime.service.api.entities;
 
 import javax.persistence.*;
 
@@ -13,16 +13,19 @@ public class SynonymModel {
 
     private String title;
 
+    public SynonymModel() {
+    }
+
+    public SynonymModel(String title) {
+        this.title = title;
+    }
+
     public Integer getId() {
         return id;
     }
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public SynonymModel(String title) {
-        this.title = title;
     }
 
     public String getTitle() {
