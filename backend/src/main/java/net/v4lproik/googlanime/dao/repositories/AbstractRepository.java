@@ -23,6 +23,10 @@ public abstract class AbstractRepository<E, I extends Serializable> {
         this.sessionFactory = sessionFactory;
     }
 
+    public AbstractRepository() {
+        this.klazz = null;
+    }
+
     public List<E> list() {
         return currentSession().createCriteria(klazz).list();
     }

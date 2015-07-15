@@ -12,5 +12,9 @@ public class AnimeRepository extends AbstractRepository<AnimeModel, Long> implem
         super(klazz, sessionFactory);
     }
 
+    public AnimeRepository(){
+        super();
+    }
+
 }
 
