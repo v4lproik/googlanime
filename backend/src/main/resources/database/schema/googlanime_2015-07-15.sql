@@ -7,7 +7,7 @@
 #
 # Host: 192.168.59.103 (MySQL 5.7.7-rc)
 # Database: googlanime
-# Generation Time: 2015-07-15 19:53:01 +0000
+# Generation Time: 2015-07-16 11:38:52 +0000
 # ************************************************************
 
 
@@ -19,11 +19,33 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
+# Dump of table Anime
+# ------------------------------------------------------------
+
+CREATE TABLE `Anime` (
+  `id` int(11) NOT NULL,
+  `type` varchar(50) NOT NULL,
+  `title` varchar(50) DEFAULT '',
+  `englishTitle` varchar(50) DEFAULT '',
+  `japaneseTitle` varchar(50) DEFAULT '',
+  `synopsis` text DEFAULT '',
+  `startedAiringDate` date DEFAULT NULL,
+  `finishedAiringDate` date DEFAULT NULL,
+  `rank` varchar(50) DEFAULT '',
+  `popularity` varchar(50) DEFAULT '',
+  `score` varchar(50) DEFAULT NULL,
+  `ageRating` varchar(50) DEFAULT '',
+  `episodeCount` int(11) DEFAULT NULL,
+  `episodeLength` varchar(50) DEFAULT '',
+  `showType` varchar(50) DEFAULT '',
+  `posterImage` varchar(300) DEFAULT '',
+  `parent` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 
 # Dump of table Adaptations
 # ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `Adaptations`;
 
 CREATE TABLE `Adaptations` (
   `idAnime` int(11) NOT NULL,
@@ -34,21 +56,9 @@ CREATE TABLE `Adaptations` (
   CONSTRAINT `Adaptations_ibfk_2` FOREIGN KEY (`idAdaptation`) REFERENCES `Anime` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-LOCK TABLES `Adaptations` WRITE;
-/*!40000 ALTER TABLE `Adaptations` DISABLE KEYS */;
-
-INSERT INTO `Adaptations` (`idAnime`, `idAdaptation`)
-VALUES
-	(2,4);
-
-/*!40000 ALTER TABLE `Adaptations` ENABLE KEYS */;
-UNLOCK TABLES;
-
 
 # Dump of table Alternatives
 # ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `Alternatives`;
 
 CREATE TABLE `Alternatives` (
   `idAnime` int(11) NOT NULL,
@@ -60,49 +70,8 @@ CREATE TABLE `Alternatives` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
-
-# Dump of table Anime
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `Anime`;
-
-CREATE TABLE `Anime` (
-  `id` int(11) NOT NULL,
-  `type` varchar(50) NOT NULL,
-  `title` varchar(50) DEFAULT '',
-  `englishTitle` varchar(50) DEFAULT '',
-  `japaneseTitle` varchar(50) DEFAULT '',
-  `synopsis` varchar(500) DEFAULT '',
-  `startedAiringDate` date DEFAULT NULL,
-  `finishedAiringDate` date DEFAULT NULL,
-  `rank` varchar(50) DEFAULT '',
-  `popularity` varchar(50) DEFAULT '',
-  `score` double(1,1) DEFAULT NULL,
-  `ageRating` varchar(50) DEFAULT '',
-  `episodeCount` int(11) DEFAULT NULL,
-  `episodeLength` varchar(50) DEFAULT '',
-  `showType` varchar(50) DEFAULT '',
-  `posterImage` varchar(50) DEFAULT '',
-  `parent` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-LOCK TABLES `Anime` WRITE;
-/*!40000 ALTER TABLE `Anime` DISABLE KEYS */;
-
-INSERT INTO `Anime` (`id`, `type`, `title`, `englishTitle`, `japaneseTitle`, `synopsis`, `startedAiringDate`, `finishedAiringDate`, `rank`, `popularity`, `score`, `ageRating`, `episodeCount`, `episodeLength`, `showType`, `posterImage`, `parent`)
-VALUES
-	(2,'anime','main anime','main anime english title','main anime japanese title',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),
-	(4,'manga','adaptation english title','adaptation english title',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
-
-/*!40000 ALTER TABLE `Anime` ENABLE KEYS */;
-UNLOCK TABLES;
-
-
 # Dump of table Anime_has_Author
 # ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `Anime_has_Author`;
 
 CREATE TABLE `Anime_has_Author` (
   `idAnime` int(11) NOT NULL,
@@ -119,8 +88,6 @@ CREATE TABLE `Anime_has_Author` (
 # Dump of table Anime_has_Character
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `Anime_has_Character`;
-
 CREATE TABLE `Anime_has_Character` (
   `idAnime` int(11) NOT NULL,
   `idCharacter` int(11) NOT NULL,
@@ -136,8 +103,6 @@ CREATE TABLE `Anime_has_Character` (
 # Dump of table Anime_has_Genre
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `Anime_has_Genre`;
-
 CREATE TABLE `Anime_has_Genre` (
   `idAnime` int(11) NOT NULL,
   `idGenre` int(11) NOT NULL,
@@ -151,8 +116,6 @@ CREATE TABLE `Anime_has_Genre` (
 
 # Dump of table Anime_has_Producer
 # ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `Anime_has_Producer`;
 
 CREATE TABLE `Anime_has_Producer` (
   `idAnime` int(11) NOT NULL,
@@ -168,8 +131,6 @@ CREATE TABLE `Anime_has_Producer` (
 # Dump of table Anime_has_Tag
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `Anime_has_Tag`;
-
 CREATE TABLE `Anime_has_Tag` (
   `nameTag` varchar(30) NOT NULL DEFAULT '',
   `idAnime` int(11) NOT NULL,
@@ -184,8 +145,6 @@ CREATE TABLE `Anime_has_Tag` (
 # Dump of table Author
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `Author`;
-
 CREATE TABLE `Author` (
   `id` int(11) NOT NULL,
   `firstName` varchar(50) NOT NULL,
@@ -198,8 +157,6 @@ CREATE TABLE `Author` (
 
 # Dump of table Character
 # ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `Character`;
 
 CREATE TABLE `Character` (
   `id` int(11) NOT NULL,
@@ -218,8 +175,6 @@ CREATE TABLE `Character` (
 # Dump of table Episode
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `Episode`;
-
 CREATE TABLE `Episode` (
   `id` int(11) NOT NULL,
   `title` varchar(200) NOT NULL,
@@ -235,8 +190,6 @@ CREATE TABLE `Episode` (
 # Dump of table Genre
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `Genre`;
-
 CREATE TABLE `Genre` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(20) NOT NULL,
@@ -247,8 +200,6 @@ CREATE TABLE `Genre` (
 
 # Dump of table Others
 # ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `Others`;
 
 CREATE TABLE `Others` (
   `idAnime` int(11) NOT NULL,
@@ -264,8 +215,6 @@ CREATE TABLE `Others` (
 # Dump of table Prequels
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `Prequels`;
-
 CREATE TABLE `Prequels` (
   `idAnime` int(11) NOT NULL,
   `idPrequel` int(11) NOT NULL,
@@ -280,8 +229,6 @@ CREATE TABLE `Prequels` (
 # Dump of table Producer
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `Producer`;
-
 CREATE TABLE `Producer` (
   `id` int(11) NOT NULL,
   `name` varchar(200) NOT NULL,
@@ -292,8 +239,6 @@ CREATE TABLE `Producer` (
 
 # Dump of table Sequels
 # ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `Sequels`;
 
 CREATE TABLE `Sequels` (
   `idAnime` int(11) NOT NULL,
@@ -309,8 +254,6 @@ CREATE TABLE `Sequels` (
 # Dump of table SideStories
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `SideStories`;
-
 CREATE TABLE `SideStories` (
   `idAnime` int(11) NOT NULL,
   `idSideStory` int(11) NOT NULL,
@@ -324,8 +267,6 @@ CREATE TABLE `SideStories` (
 
 # Dump of table SpinOffs
 # ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `SpinOffs`;
 
 CREATE TABLE `SpinOffs` (
   `idAnime` int(11) NOT NULL,
@@ -341,8 +282,6 @@ CREATE TABLE `SpinOffs` (
 # Dump of table Summaries
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `Summaries`;
-
 CREATE TABLE `Summaries` (
   `idAnime` int(11) NOT NULL,
   `idSummary` int(11) NOT NULL,
@@ -357,8 +296,6 @@ CREATE TABLE `Summaries` (
 # Dump of table Synonym
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `Synonym`;
-
 CREATE TABLE `Synonym` (
   `title` varchar(200) NOT NULL,
   `idAnime` int(11) NOT NULL,
@@ -372,8 +309,6 @@ CREATE TABLE `Synonym` (
 
 # Dump of table Tag
 # ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `Tag`;
 
 CREATE TABLE `Tag` (
   `id` int(50) NOT NULL,
