@@ -67,7 +67,8 @@ public class AnimeModel {
     @JoinTable(name="Anime_has_Author",
             joinColumns={@JoinColumn(name="idAnime", referencedColumnName="id")},
             inverseJoinColumns={@JoinColumn(name="idAuthor", referencedColumnName="id")
-            })    private List<AuthorModel> authors;
+            })
+    private List<AuthorModel> authors;
 
     @ManyToMany(cascade=CascadeType.ALL)
     @JoinTable(name="Anime_has_Tag",
@@ -407,14 +408,14 @@ public class AnimeModel {
                 .append("rank", rank)
                 .append("popularity", popularity)
                 .append("score", score)
-                .append("producers", producers)
-                .append("genres", genres)
                 .append("finishedAiringDate", finishedAiringDate)
                 .append("ageRating", ageRating)
                 .append("episodeCount", episodeCount)
                 .append("episodeLength", episodeLength)
                 .append("showType", showType)
                 .append("posterImage", posterImage)
+                .append("producers", producers)
+                .append("genres", genres)
                 .append("authors", authors)
                 .append("tags", tags)
                 .append("sequels", sequels)

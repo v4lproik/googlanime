@@ -1,8 +1,9 @@
 package net.v4lproik.googlanime.service.api.entities;
 
-import com.google.common.base.Objects;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "Author")
@@ -17,7 +18,8 @@ public class AuthorModel {
 
     private String lastName;
 
-    private String[] job;
+    @Transient
+    private List<String> jobs;
 
     public AuthorModel() {
     }
@@ -46,22 +48,21 @@ public class AuthorModel {
         this.lastName = lastName;
     }
 
-    public String[] getJob() {
-        return job;
+    public List<String> getJobs() {
+        return jobs;
     }
 
-    public void setJob(String[] job) {
-        this.job = job;
+    public void setJobs(List<String> jobs) {
+        this.jobs = jobs;
     }
-
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
-                .add("id", id)
-                .add("firstName", firstName)
-                .add("lastName", lastName)
-                .add("job", job)
+        return new ToStringBuilder(this)
+                .append("id", id)
+                .append("firstName", firstName)
+                .append("lastName", lastName)
+                .append("jobs", jobs)
                 .toString();
     }
 }

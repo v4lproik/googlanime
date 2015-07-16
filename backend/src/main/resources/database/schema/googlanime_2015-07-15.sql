@@ -7,7 +7,7 @@
 #
 # Host: 192.168.59.103 (MySQL 5.7.7-rc)
 # Database: googlanime
-# Generation Time: 2015-07-16 11:38:52 +0000
+# Generation Time: 2015-07-16 12:51:25 +0000
 # ************************************************************
 
 
@@ -22,13 +22,15 @@
 # Dump of table Anime
 # ------------------------------------------------------------
 
+DROP TABLE IF EXISTS `Anime`;
+
 CREATE TABLE `Anime` (
   `id` int(11) NOT NULL,
   `type` varchar(50) NOT NULL,
   `title` varchar(50) DEFAULT '',
   `englishTitle` varchar(50) DEFAULT '',
   `japaneseTitle` varchar(50) DEFAULT '',
-  `synopsis` text DEFAULT '',
+  `synopsis` text,
   `startedAiringDate` date DEFAULT NULL,
   `finishedAiringDate` date DEFAULT NULL,
   `rank` varchar(50) DEFAULT '',
@@ -47,6 +49,8 @@ CREATE TABLE `Anime` (
 # Dump of table Adaptations
 # ------------------------------------------------------------
 
+DROP TABLE IF EXISTS `Adaptations`;
+
 CREATE TABLE `Adaptations` (
   `idAnime` int(11) NOT NULL,
   `idAdaptation` int(11) NOT NULL,
@@ -60,6 +64,8 @@ CREATE TABLE `Adaptations` (
 # Dump of table Alternatives
 # ------------------------------------------------------------
 
+DROP TABLE IF EXISTS `Alternatives`;
+
 CREATE TABLE `Alternatives` (
   `idAnime` int(11) NOT NULL,
   `idAlternative` int(11) NOT NULL,
@@ -70,86 +76,16 @@ CREATE TABLE `Alternatives` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
-# Dump of table Anime_has_Author
-# ------------------------------------------------------------
-
-CREATE TABLE `Anime_has_Author` (
-  `idAnime` int(11) NOT NULL,
-  `idAuthor` int(11) NOT NULL,
-  `job` varchar(50) NOT NULL,
-  PRIMARY KEY (`idAnime`,`idAuthor`),
-  KEY `idAuthor` (`idAuthor`),
-  CONSTRAINT `Anime_has_Author_ibfk_1` FOREIGN KEY (`idAnime`) REFERENCES `Anime` (`id`),
-  CONSTRAINT `Anime_has_Author_ibfk_2` FOREIGN KEY (`idAuthor`) REFERENCES `Author` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-
-
-# Dump of table Anime_has_Character
-# ------------------------------------------------------------
-
-CREATE TABLE `Anime_has_Character` (
-  `idAnime` int(11) NOT NULL,
-  `idCharacter` int(11) NOT NULL,
-  `role` varchar(50) NOT NULL,
-  PRIMARY KEY (`idAnime`,`idCharacter`),
-  KEY `idCharacter` (`idCharacter`),
-  CONSTRAINT `Anime_has_Character_ibfk_1` FOREIGN KEY (`idAnime`) REFERENCES `Anime` (`id`),
-  CONSTRAINT `Anime_has_Character_ibfk_2` FOREIGN KEY (`idCharacter`) REFERENCES `Character` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-
-
-# Dump of table Anime_has_Genre
-# ------------------------------------------------------------
-
-CREATE TABLE `Anime_has_Genre` (
-  `idAnime` int(11) NOT NULL,
-  `idGenre` int(11) NOT NULL,
-  PRIMARY KEY (`idAnime`),
-  KEY `idGenre` (`idGenre`),
-  CONSTRAINT `Anime_has_Genre_ibfk_1` FOREIGN KEY (`idAnime`) REFERENCES `Anime` (`id`),
-  CONSTRAINT `Anime_has_Genre_ibfk_2` FOREIGN KEY (`idGenre`) REFERENCES `Genre` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-
-
-# Dump of table Anime_has_Producer
-# ------------------------------------------------------------
-
-CREATE TABLE `Anime_has_Producer` (
-  `idAnime` int(11) NOT NULL,
-  `idProducer` int(11) NOT NULL,
-  PRIMARY KEY (`idAnime`,`idProducer`),
-  KEY `idProducer` (`idProducer`),
-  CONSTRAINT `Anime_has_Producer_ibfk_1` FOREIGN KEY (`idAnime`) REFERENCES `Anime` (`id`),
-  CONSTRAINT `Anime_has_Producer_ibfk_2` FOREIGN KEY (`idProducer`) REFERENCES `Producer` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-
-
-# Dump of table Anime_has_Tag
-# ------------------------------------------------------------
-
-CREATE TABLE `Anime_has_Tag` (
-  `nameTag` varchar(30) NOT NULL DEFAULT '',
-  `idAnime` int(11) NOT NULL,
-  PRIMARY KEY (`nameTag`,`idAnime`),
-  KEY `idAnime` (`idAnime`),
-  CONSTRAINT `Anime_has_Tag_ibfk_1` FOREIGN KEY (`nameTag`) REFERENCES `Tag` (`name`),
-  CONSTRAINT `Anime_has_Tag_ibfk_2` FOREIGN KEY (`idAnime`) REFERENCES `Anime` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-
-
 # Dump of table Author
 # ------------------------------------------------------------
 
+DROP TABLE IF EXISTS `Author`;
+
 CREATE TABLE `Author` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `firstName` varchar(50) NOT NULL,
   `lastName` varchar(50) NOT NULL,
-  `biography` varchar(500) NOT NULL,
+  `biography` varchar(500) DEFAULT '',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -157,6 +93,8 @@ CREATE TABLE `Author` (
 
 # Dump of table Character
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `Character`;
 
 CREATE TABLE `Character` (
   `id` int(11) NOT NULL,
@@ -175,6 +113,8 @@ CREATE TABLE `Character` (
 # Dump of table Episode
 # ------------------------------------------------------------
 
+DROP TABLE IF EXISTS `Episode`;
+
 CREATE TABLE `Episode` (
   `id` int(11) NOT NULL,
   `title` varchar(200) NOT NULL,
@@ -190,6 +130,8 @@ CREATE TABLE `Episode` (
 # Dump of table Genre
 # ------------------------------------------------------------
 
+DROP TABLE IF EXISTS `Genre`;
+
 CREATE TABLE `Genre` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(20) NOT NULL,
@@ -197,9 +139,10 @@ CREATE TABLE `Genre` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
-
 # Dump of table Others
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `Others`;
 
 CREATE TABLE `Others` (
   `idAnime` int(11) NOT NULL,
@@ -215,6 +158,8 @@ CREATE TABLE `Others` (
 # Dump of table Prequels
 # ------------------------------------------------------------
 
+DROP TABLE IF EXISTS `Prequels`;
+
 CREATE TABLE `Prequels` (
   `idAnime` int(11) NOT NULL,
   `idPrequel` int(11) NOT NULL,
@@ -229,8 +174,10 @@ CREATE TABLE `Prequels` (
 # Dump of table Producer
 # ------------------------------------------------------------
 
+DROP TABLE IF EXISTS `Producer`;
+
 CREATE TABLE `Producer` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -239,6 +186,8 @@ CREATE TABLE `Producer` (
 
 # Dump of table Sequels
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `Sequels`;
 
 CREATE TABLE `Sequels` (
   `idAnime` int(11) NOT NULL,
@@ -254,6 +203,8 @@ CREATE TABLE `Sequels` (
 # Dump of table SideStories
 # ------------------------------------------------------------
 
+DROP TABLE IF EXISTS `SideStories`;
+
 CREATE TABLE `SideStories` (
   `idAnime` int(11) NOT NULL,
   `idSideStory` int(11) NOT NULL,
@@ -267,6 +218,8 @@ CREATE TABLE `SideStories` (
 
 # Dump of table SpinOffs
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `SpinOffs`;
 
 CREATE TABLE `SpinOffs` (
   `idAnime` int(11) NOT NULL,
@@ -282,6 +235,8 @@ CREATE TABLE `SpinOffs` (
 # Dump of table Summaries
 # ------------------------------------------------------------
 
+DROP TABLE IF EXISTS `Summaries`;
+
 CREATE TABLE `Summaries` (
   `idAnime` int(11) NOT NULL,
   `idSummary` int(11) NOT NULL,
@@ -295,6 +250,8 @@ CREATE TABLE `Summaries` (
 
 # Dump of table Synonym
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `Synonym`;
 
 CREATE TABLE `Synonym` (
   `title` varchar(200) NOT NULL,
@@ -310,14 +267,88 @@ CREATE TABLE `Synonym` (
 # Dump of table Tag
 # ------------------------------------------------------------
 
+DROP TABLE IF EXISTS `Tag`;
+
 CREATE TABLE `Tag` (
   `id` int(50) NOT NULL,
   `name` varchar(30) NOT NULL DEFAULT '',
-  PRIMARY KEY (`name`)
+  PRIMARY KEY (`name`),
+  KEY `id` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+# Dump of table Anime_has_Author
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `Anime_has_Author`;
+
+CREATE TABLE `Anime_has_Author` (
+  `idAnime` int(11) NOT NULL,
+  `idAuthor` int(11) NOT NULL,
+  `job` varchar(100) NOT NULL DEFAULT '',
+  PRIMARY KEY (`idAnime`,`idAuthor`),
+  CONSTRAINT `Anime_has_Author_ibfk_1` FOREIGN KEY (`idAnime`) REFERENCES `Anime` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
 
+# Dump of table Anime_has_Character
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `Anime_has_Character`;
+
+CREATE TABLE `Anime_has_Character` (
+  `idAnime` int(11) NOT NULL,
+  `idCharacter` int(11) NOT NULL,
+  `role` varchar(50) NOT NULL,
+  PRIMARY KEY (`idAnime`,`idCharacter`),
+  KEY `idCharacter` (`idCharacter`),
+  CONSTRAINT `Anime_has_Character_ibfk_1` FOREIGN KEY (`idAnime`) REFERENCES `Anime` (`id`),
+  CONSTRAINT `Anime_has_Character_ibfk_2` FOREIGN KEY (`idCharacter`) REFERENCES `Character` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+
+# Dump of table Anime_has_Genre
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `Anime_has_Genre`;
+
+CREATE TABLE `Anime_has_Genre` (
+  `idAnime` int(11) NOT NULL,
+  `idGenre` int(11) NOT NULL,
+  PRIMARY KEY (`idAnime`,`idGenre`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+# Dump of table Anime_has_Producer
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `Anime_has_Producer`;
+
+CREATE TABLE `Anime_has_Producer` (
+  `idAnime` int(11) NOT NULL,
+  `idProducer` int(11) NOT NULL,
+  PRIMARY KEY (`idAnime`,`idProducer`),
+  CONSTRAINT `Anime_has_Producer_ibfk_1` FOREIGN KEY (`idAnime`) REFERENCES `Anime` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+
+# Dump of table Anime_has_Tag
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `Anime_has_Tag`;
+
+CREATE TABLE `Anime_has_Tag` (
+  `idAnime` int(11) NOT NULL,
+  `idTag` int(11) NOT NULL,
+  PRIMARY KEY (`idAnime`),
+  KEY `idAnime` (`idAnime`),
+  KEY `idTag` (`idTag`),
+  CONSTRAINT `Anime_has_Tag_ibfk_2` FOREIGN KEY (`idAnime`) REFERENCES `Anime` (`id`),
+  CONSTRAINT `Anime_has_Tag_ibfk_3` FOREIGN KEY (`idTag`) REFERENCES `Tag` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

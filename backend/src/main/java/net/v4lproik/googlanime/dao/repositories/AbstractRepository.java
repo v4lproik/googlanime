@@ -5,26 +5,24 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.io.Serializable;
 import java.util.List;
 
+@Deprecated
 @Repository
 public abstract class AbstractRepository<E, I extends Serializable> {
 
     private final Class<E> klazz;
 
-    public SessionFactory sessionFactory;
+    @Autowired
+    public SessionFactory sessionFactoryConfig;
 
-    public AbstractRepository(final Class<E> klazz, final SessionFactory sessionFactory) {
+    public AbstractRepository(final Class<E> klazz) {
         this.klazz = klazz;
         this.klazz.getName();
-        this.sessionFactory = sessionFactory;
-    }
-
-    public AbstractRepository() {
-        this.klazz = null;
     }
 
     public List<E> list() {
@@ -65,6 +63,6 @@ public abstract class AbstractRepository<E, I extends Serializable> {
     }
 
     private Session currentSession() {
-        return sessionFactory.getCurrentSession();
+        return sessionFactoryConfig.getCurrentSession();
     }
 }

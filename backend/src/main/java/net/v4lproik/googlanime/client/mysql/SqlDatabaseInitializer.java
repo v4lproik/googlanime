@@ -5,12 +5,14 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.jdbc.datasource.init.DataSourceInitializer;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
 import javax.validation.constraints.NotNull;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+@Transactional
 public class SqlDatabaseInitializer {
 
     @NotNull

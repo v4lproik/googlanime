@@ -7,11 +7,10 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.context.annotation.PropertySources;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
+import org.springframework.orm.hibernate4.HibernateTransactionManager;
 
 import javax.sql.DataSource;
 
@@ -88,5 +87,16 @@ public class ConfigMysql {
         mysqlDS.setPassword(PWD);
 
         return mysqlDS;
+    }
+
+
+    @Bean
+    @Qualifier("transactionManager")
+    public HibernateTransactionManager transactionManagerSessionFactory(SessionFactory sessionFactoryConfig, DataSource mysqlDataSource) {
+        HibernateTransactionManager txManager = new HibernateTransactionManager();
+        txManager.setSessionFactory(sessionFactoryConfig);
+        txManager.setDataSource(mysqlDataSource);
+
+        return txManager;
     }
 }

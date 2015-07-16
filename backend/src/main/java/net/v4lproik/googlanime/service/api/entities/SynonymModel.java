@@ -1,5 +1,7 @@
 package net.v4lproik.googlanime.service.api.entities;
 
+import com.google.common.base.Objects;
+
 import javax.persistence.*;
 
 @Entity
@@ -34,5 +36,13 @@ public class SynonymModel {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this)
+                .add("id", id)
+                .add("title", title)
+                .toString();
     }
 }

@@ -5,11 +5,9 @@ import net.v4lproik.googlanime.client.mysql.SqlDatabaseInitializer;
 import net.v4lproik.googlanime.dao.api.AnimeDAO;
 import net.v4lproik.googlanime.dao.repositories.AnimeRepository;
 import net.v4lproik.googlanime.service.api.AnimeServiceWrite;
-import net.v4lproik.googlanime.service.api.entities.AnimeModel;
 import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListAnimeDependency;
 import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListAnimeDependencyId;
 import net.v4lproik.googlanime.service.api.utils.TransformAnimeMapper;
-import org.hibernate.SessionFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,13 +27,11 @@ import java.util.List;
                 DatabaseTestConfiguration.class,
         })
 @ImportResource("classpath*  : application-context.xml")
+@WebAppConfiguration
 public class DBAnimeServiceWriteImplITest {
 
     @Autowired
     SqlDatabaseInitializer databaseInitializer;
-
-    @Autowired
-    SessionFactory sessionFactoryConfig;
 
     AnimeServiceWrite service;
 
@@ -48,7 +45,7 @@ public class DBAnimeServiceWriteImplITest {
             // Something went wrong while importing the database schema
         }
 
-        AnimeDAO animeDAO = new AnimeRepository(AnimeModel.class, sessionFactoryConfig);
+        AnimeDAO animeDAO = new AnimeRepository();
         TransformAnimeMapper animeMapper = new TransformAnimeMapper();
 
         service = new DBAnimeServiceWriteImpl(animeDAO, animeMapper);
