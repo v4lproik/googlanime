@@ -31,6 +31,10 @@ public class DBAnimeServiceWriteImpl implements AnimeServiceWrite {
     @Override
     public void saveAnime(MyAnimeListAnimeDependency anime) {
         AnimeModel entity = animeMapper.transformMyAnimeListAnimeDependencyToDAO(anime);
+        if (!isSavable(entity)){
+            return;
+        }
+
         log.debug(entity.toString());
         animeDAO.saveOrUpdate(entity);
     }
@@ -48,5 +52,9 @@ public class DBAnimeServiceWriteImpl implements AnimeServiceWrite {
     public void delete(MyAnimeListAnime anime) {
         AnimeModel entity = animeMapper.transformMyAnimeListAnimeToDAO(anime);
         animeDAO.delete(entity);
+    }
+
+    private boolean isSavable(AnimeModel anime){
+        return anime.getTitle() != null ? true : false;
     }
 }
