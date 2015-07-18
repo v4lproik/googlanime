@@ -12,7 +12,6 @@ import java.util.List;
 
 @JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="@id")
 public class MyAnimeListAnimeDependency {
-
     private Integer id;
 
     private String type;

@@ -1,5 +1,7 @@
 package net.v4lproik.googlanime.service.api.myanimelist.models;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 public class MyAnimeListAnimeDependencyId {
 
     private int id;
@@ -37,5 +39,14 @@ public class MyAnimeListAnimeDependencyId {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("id", id)
+                .append("englishTitle", englishTitle)
+                .append("type", type)
+                .toString();
     }
 }

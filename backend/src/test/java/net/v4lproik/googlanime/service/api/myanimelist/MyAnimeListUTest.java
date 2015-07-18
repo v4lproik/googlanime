@@ -60,7 +60,6 @@ public class MyAnimeListUTest {
         MyAnimeListAnime response = myAnimeList.crawlById(options);
 
         //Then
-        System.out.println(response.toString());
         assertEquals("Code Geass: Hangyaku no Lelouch R2", response.getTitle());
     }
 

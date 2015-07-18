@@ -2,9 +2,6 @@ package net.v4lproik.googlanime.service.api.myanimelist.models;
 
 import com.google.common.base.Objects;
 
-/**
- * Created by joel on 29/05/2015.
- */
 public class MyAnimeListCharacter {
 
     private Integer id;

@@ -746,8 +746,8 @@ public class MyAnimeList extends WebsiteAbstract {
                             String[] parts = characterFullName.split(",");
 
                             if (parts.length == 2){
-                                character.setFirstName(parts[0]);
-                                character.setLastName(parts[1]);
+                                character.setFirstName(parts[1]);
+                                character.setLastName(parts[0]);
                             }else {
                                 if (parts.length == 1)
                                     character.setLastName(characterFullName);
