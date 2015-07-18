@@ -1,24 +1,27 @@
-package net.v4lproik.googlanime.service.impl;
+package net.v4lproik.googlanime.dao.repositories;
 
 import net.v4lproik.googlanime.client.mysql.DatabaseTestConfiguration;
 import net.v4lproik.googlanime.client.mysql.SqlDatabaseInitializer;
 import net.v4lproik.googlanime.dao.api.AnimeDAO;
-import net.v4lproik.googlanime.dao.repositories.AnimeRepository;
 import net.v4lproik.googlanime.service.api.AnimeServiceWrite;
+import net.v4lproik.googlanime.service.api.common.ImportOptions;
+import net.v4lproik.googlanime.service.api.entities.AnimeModel;
+import net.v4lproik.googlanime.service.api.myanimelist.MyAnimeList;
 import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListAnimeDependency;
-import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListAnimeDependencyId;
 import net.v4lproik.googlanime.service.api.utils.TransformAnimeMapper;
+import org.hibernate.SessionFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -28,12 +31,18 @@ import java.util.List;
         })
 @ImportResource("classpath*  : application-context.xml")
 @WebAppConfiguration
-public class DBAnimeServiceWriteImplITest {
+@TransactionConfiguration
+public class AnimeRepositoryITest {
 
     @Autowired
     SqlDatabaseInitializer databaseInitializer;
 
+    @Autowired
+    SessionFactory sessionFactoryConfig;
+    AnimeDAO animeDAO;
     AnimeServiceWrite service;
+    @Spy
+    private MyAnimeList myAnimeList;
 
     @Before
     public void setUp() throws Exception {
@@ -45,29 +54,32 @@ public class DBAnimeServiceWriteImplITest {
             // Something went wrong while importing the database schema
         }
 
-        AnimeDAO animeDAO = new AnimeRepository();
+        animeDAO = new AnimeRepository(sessionFactoryConfig);
+
         TransformAnimeMapper animeMapper = new TransformAnimeMapper();
 
-        service = new DBAnimeServiceWriteImpl(animeDAO, animeMapper);
     }
 
     @Test
-    public void test_saveMysql_withGoodGenre_shouldBeInserted() {
-        MyAnimeListAnimeDependency anime = new MyAnimeListAnimeDependency(2);
-        anime.setTitle("main anime");
-        anime.setEnglishTitle("main anime english title");
-        anime.setJapaneseTitle("main anime japanese title");
-        anime.setType("anime");
+    public void test_saveMysql_withGoodGenre_shouldBeInserted() throws Exception {
 
-        MyAnimeListAnimeDependencyId adaptation = new MyAnimeListAnimeDependencyId(4);
-        adaptation.setEnglishTitle("adaptation english title");
-        adaptation.setType("manga");
-        List<MyAnimeListAnimeDependencyId> adaptations = new ArrayList<>();
-        adaptations.add(adaptation);
+        //Given
+        ImportOptions options = new ImportOptions(24, "manga", true);
+        String type = options.getType();
+        final Integer id = options.getId();
 
-        anime.setAdaptations(adaptations);
+        // When
+        List<MyAnimeListAnimeDependency> response = myAnimeList.crawlByIdList(options);
 
-        service.saveAnime(anime);
+        for (MyAnimeListAnimeDependency anime : response) {
 
+            TransformAnimeMapper mapper = new TransformAnimeMapper();
+
+            AnimeModel animeRes = mapper.transformMyAnimeListAnimeDependencyToDAO(anime);
+
+            if (anime.getTitle() != null) {
+                animeDAO.saveOrUpdate(animeRes);
+            }
+        }
     }
 }

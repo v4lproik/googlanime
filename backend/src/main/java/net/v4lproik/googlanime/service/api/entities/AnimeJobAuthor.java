@@ -7,10 +7,11 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.io.Serializable;
 
 @Entity
 @Table( name = "Anime_has_Author")
-public class AnimeJobAuthor {
+public class AnimeJobAuthor implements Serializable {
 
     @Id
     private Long idAnime;

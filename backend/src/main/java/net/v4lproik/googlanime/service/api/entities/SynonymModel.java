@@ -15,6 +15,10 @@ public class SynonymModel {
 
     private String title;
 
+    @ManyToOne
+    @JoinColumn(name="idAnime")
+    private AnimeModel anime;
+
     public SynonymModel() {
     }
 
@@ -36,6 +40,14 @@ public class SynonymModel {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public AnimeModel getAnime() {
+        return anime;
+    }
+
+    public void setAnime(AnimeModel anime) {
+        this.anime = anime;
     }
 
     @Override

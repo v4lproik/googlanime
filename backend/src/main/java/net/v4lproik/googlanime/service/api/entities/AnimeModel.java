@@ -19,10 +19,6 @@ public class AnimeModel {
 
     private String title;
 
-    @OneToMany
-    @JoinColumn(name = "id")
-    private List<SynonymModel> synonyms;
-
     private String englishTitle;
 
     private String japaneseTitle;
@@ -49,96 +45,70 @@ public class AnimeModel {
 
     private String posterImage;
 
-    @ManyToMany(cascade=CascadeType.ALL)
+    @OneToMany(cascade=CascadeType.ALL)
     @JoinTable(name="Anime_has_Producer",
             joinColumns={@JoinColumn(name="idAnime", referencedColumnName="id")},
             inverseJoinColumns={@JoinColumn(name="idProducer", referencedColumnName="id")
             })
     private List<ProducerModel> producers;
 
-    @ManyToMany(cascade=CascadeType.ALL)
+    @OneToMany(cascade=CascadeType.ALL, mappedBy = "anime")
+    private List<SynonymModel> synonyms;
+
+    @OneToMany(cascade=CascadeType.ALL)
     @JoinTable(name="Anime_has_Genre",
             joinColumns={@JoinColumn(name="idAnime", referencedColumnName="id")},
             inverseJoinColumns={@JoinColumn(name="idGenre", referencedColumnName="id")
             })
     private List<GenreModel> genres;
 
-    @ManyToMany(cascade=CascadeType.ALL)
+    @ManyToMany(cascade=CascadeType.MERGE)
     @JoinTable(name="Anime_has_Author",
             joinColumns={@JoinColumn(name="idAnime", referencedColumnName="id")},
             inverseJoinColumns={@JoinColumn(name="idAuthor", referencedColumnName="id")
             })
     private List<AuthorModel> authors;
 
-    @ManyToMany(cascade=CascadeType.ALL)
+    @ManyToMany(cascade=CascadeType.MERGE)
     @JoinTable(name="Anime_has_Tag",
             joinColumns={@JoinColumn(name="idAnime", referencedColumnName="id")},
             inverseJoinColumns={@JoinColumn(name="idTag", referencedColumnName="id")
             })
     private List<TagModel> tags;
 
-    @ManyToMany(cascade=CascadeType.ALL)
-    @JoinTable(name="Sequels",
-            joinColumns={@JoinColumn(name="idAnime", referencedColumnName="id")},
-            inverseJoinColumns={@JoinColumn(name="idSequel", referencedColumnName="id")
-            })
-    private List<AnimeModel> sequels;
-
-    @ManyToMany(cascade=CascadeType.ALL)
-    @JoinTable(name="Alternatives",
-            joinColumns={@JoinColumn(name="idAnime", referencedColumnName="id")},
-            inverseJoinColumns={@JoinColumn(name="idAlternative", referencedColumnName="id")
-            })
-    private List<AnimeModel> alternativeVersions;
-
-    @ManyToMany(cascade=CascadeType.ALL)
-    @JoinTable(name="Prequels",
-            joinColumns={@JoinColumn(name="idAnime", referencedColumnName="id")},
-            inverseJoinColumns={@JoinColumn(name="idPrequel", referencedColumnName="id")
-            })
-    private List<AnimeModel> prequels;
-
-    @ManyToMany(cascade=CascadeType.ALL)
-    @JoinTable(name="SpinOffs",
-            joinColumns={@JoinColumn(name="idAnime", referencedColumnName="id")},
-            inverseJoinColumns={@JoinColumn(name="idSpinOff", referencedColumnName="id")
-            })
-    private List<AnimeModel> spinoff;
-
-    @ManyToMany(cascade=CascadeType.ALL)
-    @JoinTable(name="SideStories",
-            joinColumns={@JoinColumn(name="idAnime", referencedColumnName="id")},
-            inverseJoinColumns={@JoinColumn(name="idSideStory", referencedColumnName="id")
-            })
-    private List<AnimeModel> sideStories;
-
-    @ManyToMany(cascade=CascadeType.ALL)
-    @JoinTable(name="Others",
-            joinColumns={@JoinColumn(name="idAnime", referencedColumnName="id")},
-            inverseJoinColumns={@JoinColumn(name="idOther", referencedColumnName="id")
-            })
-    private List<AnimeModel> others;
-
-    @ManyToMany(cascade=CascadeType.ALL)
-    @JoinTable(name="Summaries",
-            joinColumns={@JoinColumn(name="idAnime", referencedColumnName="id")},
-            inverseJoinColumns={@JoinColumn(name="idSummary", referencedColumnName="id")
-            })
-    private List<AnimeModel> summaries;
-
-    @ManyToMany(cascade=CascadeType.ALL)
-    @JoinTable(name="Adaptations",
-            joinColumns={@JoinColumn(name="idAnime", referencedColumnName="id")},
-            inverseJoinColumns={@JoinColumn(name="idAdaptation", referencedColumnName="id")
-            })
-    private List<AnimeModel> adaptations;
-
-    @ManyToMany(cascade=CascadeType.ALL)
+    @ManyToMany(cascade=CascadeType.MERGE)
     @JoinTable(name="Anime_has_Character",
             joinColumns={@JoinColumn(name="idAnime", referencedColumnName="id")},
             inverseJoinColumns={@JoinColumn(name="idCharacter", referencedColumnName="id")
             })
     private List<CharacterModel> characters;
+
+    //Recursive dependecnies
+
+    @Transient
+    private List<AnimeIdModel> sequels;
+
+    @Transient
+    private List<AnimeIdModel> alternativeVersions;
+
+    @Transient
+    private List<AnimeIdModel> prequels;
+
+    @Transient
+    private List<AnimeIdModel> spinoff;
+
+    @Transient
+    private List<AnimeIdModel> sideStories;
+
+    @Transient
+    private List<AnimeIdModel> others;
+
+    @Transient
+    private List<AnimeIdModel> summaries;
+
+    @Transient
+    private List<AnimeIdModel> adaptations;
+
 
     public AnimeModel(Long id) {
         this.id = id;
@@ -299,67 +269,67 @@ public class AnimeModel {
         this.type = type;
     }
 
-    public List<AnimeModel> getSequels() {
+    public List<AnimeIdModel> getSequels() {
         return sequels;
     }
 
-    public void setSequels(List<AnimeModel> sequels) {
+    public void setSequels(List<AnimeIdModel> sequels) {
         this.sequels = sequels;
     }
 
-    public List<AnimeModel> getAlternativeVersions() {
+    public List<AnimeIdModel> getAlternativeVersions() {
         return alternativeVersions;
     }
 
-    public void setAlternativeVersions(List<AnimeModel> alternativeVersions) {
+    public void setAlternativeVersions(List<AnimeIdModel> alternativeVersions) {
         this.alternativeVersions = alternativeVersions;
     }
 
-    public List<AnimeModel> getPrequels() {
+    public List<AnimeIdModel> getPrequels() {
         return prequels;
     }
 
-    public void setPrequels(List<AnimeModel> prequels) {
+    public void setPrequels(List<AnimeIdModel> prequels) {
         this.prequels = prequels;
     }
 
-    public List<AnimeModel> getSpinoff() {
+    public List<AnimeIdModel> getSpinoff() {
         return spinoff;
     }
 
-    public void setSpinoff(List<AnimeModel> spinoff) {
+    public void setSpinoff(List<AnimeIdModel> spinoff) {
         this.spinoff = spinoff;
     }
 
-    public List<AnimeModel> getSideStories() {
+    public List<AnimeIdModel> getSideStories() {
         return sideStories;
     }
 
-    public void setSideStories(List<AnimeModel> sideStories) {
+    public void setSideStories(List<AnimeIdModel> sideStories) {
         this.sideStories = sideStories;
     }
 
-    public List<AnimeModel> getOthers() {
+    public List<AnimeIdModel> getOthers() {
         return others;
     }
 
-    public void setOthers(List<AnimeModel> others) {
+    public void setOthers(List<AnimeIdModel> others) {
         this.others = others;
     }
 
-    public List<AnimeModel> getSummaries() {
+    public List<AnimeIdModel> getSummaries() {
         return summaries;
     }
 
-    public void setSummaries(List<AnimeModel> summaries) {
+    public void setSummaries(List<AnimeIdModel> summaries) {
         this.summaries = summaries;
     }
 
-    public List<AnimeModel> getAdaptations() {
+    public List<AnimeIdModel> getAdaptations() {
         return adaptations;
     }
 
-    public void setAdaptations(List<AnimeModel> adaptations) {
+    public void setAdaptations(List<AnimeIdModel> adaptations) {
         this.adaptations = adaptations;
     }
 

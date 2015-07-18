@@ -4,12 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
 
 @Configuration
-@Transactional
 @Import({ConfigMysql.class})
 public class DatabaseTestConfiguration {
 

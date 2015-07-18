@@ -1,11 +1,11 @@
 package net.v4lproik.googlanime.service.api.entities;
 
-import com.google.common.base.Objects;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.persistence.*;
 
 @Entity
-@Table(name = "Character")
+@Table(name = "CharacterT")
 public class CharacterModel {
 
     @Id
@@ -19,9 +19,18 @@ public class CharacterModel {
 
     private String japaneseName;
 
+    @Transient
     private String role;
 
     public CharacterModel() {
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getFirstName() {
@@ -40,22 +49,6 @@ public class CharacterModel {
         this.lastName = lastName;
     }
 
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
     public String getJapaneseName() {
         return japaneseName;
     }
@@ -64,14 +57,22 @@ public class CharacterModel {
         this.japaneseName = japaneseName;
     }
 
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
-                .add("id", id)
-                .add("firstName", firstName)
-                .add("lastName", lastName)
-                .add("japaneseName", japaneseName)
-                .add("role", role)
+        return new ToStringBuilder(this)
+                .append("id", id)
+                .append("firstName", firstName)
+                .append("lastName", lastName)
+                .append("japaneseName", japaneseName)
+                .append("role", role)
                 .toString();
     }
 }

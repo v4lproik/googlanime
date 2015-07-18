@@ -8,7 +8,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.PropertySources;
 import org.springframework.core.env.Environment;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 
@@ -38,7 +41,10 @@ public class ConfigMysql {
             throw new IllegalArgumentException("Database host, user or password cannot be found. Check that the active profile provided a file that contains the variable mysql.host... ");
         }
 
-        String connectionURI = String.format("jdbc:mysql://%s:%s/%s?zeroDateTimeBehavior=convertToNull", HOST, PORT, DB);
+        //SET character_set_database='UTF8';
+        //SET character_set_server='UTF8';
+
+        String connectionURI = String.format("jdbc:mysql://%s:%s/%s?zeroDateTimeBehavior=convertToNull&useUnicode=yes&characterEncoding=utf8", HOST, PORT, DB);
 
         org.hibernate.cfg.Configuration c = new org.hibernate.cfg.Configuration();
         c.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5InnoDBDialect");
@@ -50,12 +56,15 @@ public class ConfigMysql {
         c.setProperty("hibernate.current_session_context_class", "thread");
         c.addPackage("net.v4lproik.googlanime");
         c.addAnnotatedClass(AnimeModel.class);
+        c.addAnnotatedClass(AnimeIdModel.class);
         c.addAnnotatedClass(GenreModel.class);
         c.addAnnotatedClass(ProducerModel.class);
         c.addAnnotatedClass(SynonymModel.class);
         c.addAnnotatedClass(TagModel.class);
         c.addAnnotatedClass(CharacterModel.class);
         c.addAnnotatedClass(AuthorModel.class);
+        c.addAnnotatedClass(AnimeJobAuthor.class);
+        c.addAnnotatedClass(AnimeRoleCharacter.class);
 
         c.setProperty("connection.provider_class", "org.hibernate.connection.C3P0ConnectionProvider");
         c.setProperty("c3p0.min_size", "5");
