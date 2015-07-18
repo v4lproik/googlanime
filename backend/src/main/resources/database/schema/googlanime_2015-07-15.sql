@@ -7,7 +7,7 @@
 #
 # Host: 192.168.59.103 (MySQL 5.7.7-rc)
 # Database: googlanime
-# Generation Time: 2015-07-16 12:51:25 +0000
+# Generation Time: 2015-07-18 09:14:45 +0000
 # ************************************************************
 
 
@@ -26,24 +26,25 @@ DROP TABLE IF EXISTS `Anime`;
 
 CREATE TABLE `Anime` (
   `id` int(11) NOT NULL,
-  `type` varchar(50) NOT NULL,
-  `title` varchar(50) DEFAULT '',
-  `englishTitle` varchar(50) DEFAULT '',
-  `japaneseTitle` varchar(50) DEFAULT '',
-  `synopsis` text,
+  `type` varchar(50) CHARACTER SET latin1 NOT NULL,
+  `title` varchar(200) CHARACTER SET latin1 DEFAULT '',
+  `englishTitle` varchar(200) CHARACTER SET latin1 DEFAULT '',
+  `japaneseTitle` varchar(200) DEFAULT '',
+  `synopsis` text CHARACTER SET latin1,
   `startedAiringDate` date DEFAULT NULL,
   `finishedAiringDate` date DEFAULT NULL,
-  `rank` varchar(50) DEFAULT '',
-  `popularity` varchar(50) DEFAULT '',
-  `score` varchar(50) DEFAULT NULL,
-  `ageRating` varchar(50) DEFAULT '',
+  `rank` varchar(50) CHARACTER SET latin1 DEFAULT '',
+  `popularity` varchar(50) CHARACTER SET latin1 DEFAULT '',
+  `score` varchar(50) CHARACTER SET latin1 DEFAULT NULL,
+  `ageRating` varchar(50) CHARACTER SET latin1 DEFAULT '',
   `episodeCount` int(11) DEFAULT NULL,
-  `episodeLength` varchar(50) DEFAULT '',
-  `showType` varchar(50) DEFAULT '',
-  `posterImage` varchar(300) DEFAULT '',
+  `episodeLength` varchar(50) CHARACTER SET latin1 DEFAULT '',
+  `showType` varchar(50) CHARACTER SET latin1 DEFAULT '',
+  `posterImage` varchar(300) CHARACTER SET latin1 DEFAULT '',
   `parent` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 
 
 # Dump of table Adaptations
@@ -55,10 +56,9 @@ CREATE TABLE `Adaptations` (
   `idAnime` int(11) NOT NULL,
   `idAdaptation` int(11) NOT NULL,
   PRIMARY KEY (`idAnime`,`idAdaptation`),
-  KEY `idAdaptation` (`idAdaptation`),
-  CONSTRAINT `Adaptations_ibfk_1` FOREIGN KEY (`idAnime`) REFERENCES `Anime` (`id`),
-  CONSTRAINT `Adaptations_ibfk_2` FOREIGN KEY (`idAdaptation`) REFERENCES `Anime` (`id`)
+  CONSTRAINT `Adaptations_ibfk_1` FOREIGN KEY (`idAnime`) REFERENCES `Anime` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 
 
 # Dump of table Alternatives
@@ -70,10 +70,11 @@ CREATE TABLE `Alternatives` (
   `idAnime` int(11) NOT NULL,
   `idAlternative` int(11) NOT NULL,
   PRIMARY KEY (`idAnime`,`idAlternative`),
-  KEY `idAlternative` (`idAlternative`),
-  CONSTRAINT `Alternatives_ibfk_1` FOREIGN KEY (`idAnime`) REFERENCES `Anime` (`id`),
-  CONSTRAINT `Alternatives_ibfk_2` FOREIGN KEY (`idAlternative`) REFERENCES `Anime` (`id`)
+  CONSTRAINT `Alternatives_ibfk_1` FOREIGN KEY (`idAnime`) REFERENCES `Anime` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+
 
 
 # Dump of table Author
@@ -83,30 +84,26 @@ DROP TABLE IF EXISTS `Author`;
 
 CREATE TABLE `Author` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `firstName` varchar(50) NOT NULL,
-  `lastName` varchar(50) NOT NULL,
-  `biography` varchar(500) DEFAULT '',
+  `firstName` varchar(50) CHARACTER SET latin1 DEFAULT '',
+  `lastName` varchar(50) CHARACTER SET latin1 DEFAULT '',
+  `biography` varchar(500) CHARACTER SET latin1 DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
-# Dump of table Character
+# Dump of table CharacterT
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `Character`;
+DROP TABLE IF EXISTS `CharacterT`;
 
-CREATE TABLE `Character` (
-  `id` int(11) NOT NULL,
-  `firstName` varchar(50) NOT NULL,
-  `lastName` varchar(50) NOT NULL,
-  `japaneseName` varchar(50) NOT NULL,
-  `CharactersInAnime_idAnime` int(11) NOT NULL,
-  `CharactersInAnime_idCharacter` int(11) NOT NULL,
-  `CharactersInAnime_2_idAnime` int(11) NOT NULL,
-  `CharactersInAnime_2_idCharacter` int(11) NOT NULL,
+CREATE TABLE `CharacterT` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `firstName` varchar(100) CHARACTER SET latin1 DEFAULT NULL,
+  `lastName` varchar(100) CHARACTER SET latin1 DEFAULT NULL,
+  `japaneseName` varchar(100) CHARACTER SET latin1 DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
@@ -117,13 +114,13 @@ DROP TABLE IF EXISTS `Episode`;
 
 CREATE TABLE `Episode` (
   `id` int(11) NOT NULL,
-  `title` varchar(200) NOT NULL,
+  `title` varchar(200) CHARACTER SET latin1 NOT NULL,
   `date` date NOT NULL,
   `idAnime` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `idAnime` (`idAnime`),
   CONSTRAINT `Episode_ibfk_1` FOREIGN KEY (`idAnime`) REFERENCES `Anime` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
@@ -134,9 +131,10 @@ DROP TABLE IF EXISTS `Genre`;
 
 CREATE TABLE `Genre` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(20) NOT NULL,
+  `name` varchar(20) CHARACTER SET latin1 NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 
 # Dump of table Others
@@ -148,10 +146,8 @@ CREATE TABLE `Others` (
   `idAnime` int(11) NOT NULL,
   `idOther` int(11) NOT NULL,
   PRIMARY KEY (`idAnime`,`idOther`),
-  KEY `idOther` (`idOther`),
-  CONSTRAINT `Others_ibfk_1` FOREIGN KEY (`idAnime`) REFERENCES `Anime` (`id`),
-  CONSTRAINT `Others_ibfk_2` FOREIGN KEY (`idOther`) REFERENCES `Anime` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  CONSTRAINT `Others_ibfk_1` FOREIGN KEY (`idAnime`) REFERENCES `Anime` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
@@ -164,10 +160,8 @@ CREATE TABLE `Prequels` (
   `idAnime` int(11) NOT NULL,
   `idPrequel` int(11) NOT NULL,
   PRIMARY KEY (`idAnime`,`idPrequel`),
-  KEY `idPrequel` (`idPrequel`),
-  CONSTRAINT `Prequels_ibfk_1` FOREIGN KEY (`idAnime`) REFERENCES `Anime` (`id`),
-  CONSTRAINT `Prequels_ibfk_2` FOREIGN KEY (`idPrequel`) REFERENCES `Anime` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  CONSTRAINT `Prequels_ibfk_1` FOREIGN KEY (`idAnime`) REFERENCES `Anime` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
@@ -178,9 +172,9 @@ DROP TABLE IF EXISTS `Producer`;
 
 CREATE TABLE `Producer` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(200) NOT NULL,
+  `name` varchar(200) CHARACTER SET latin1 NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
@@ -193,10 +187,8 @@ CREATE TABLE `Sequels` (
   `idAnime` int(11) NOT NULL,
   `idSequel` int(11) NOT NULL,
   PRIMARY KEY (`idAnime`,`idSequel`),
-  KEY `idSequel` (`idSequel`),
-  CONSTRAINT `Sequels_ibfk_1` FOREIGN KEY (`idAnime`) REFERENCES `Anime` (`id`),
-  CONSTRAINT `Sequels_ibfk_2` FOREIGN KEY (`idSequel`) REFERENCES `Anime` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  CONSTRAINT `Sequels_ibfk_1` FOREIGN KEY (`idAnime`) REFERENCES `Anime` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
@@ -209,10 +201,8 @@ CREATE TABLE `SideStories` (
   `idAnime` int(11) NOT NULL,
   `idSideStory` int(11) NOT NULL,
   PRIMARY KEY (`idAnime`,`idSideStory`),
-  KEY `idSideStory` (`idSideStory`),
-  CONSTRAINT `SideStories_ibfk_1` FOREIGN KEY (`idAnime`) REFERENCES `Anime` (`id`),
-  CONSTRAINT `SideStories_ibfk_2` FOREIGN KEY (`idSideStory`) REFERENCES `Anime` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  CONSTRAINT `SideStories_ibfk_1` FOREIGN KEY (`idAnime`) REFERENCES `Anime` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
@@ -225,10 +215,8 @@ CREATE TABLE `SpinOffs` (
   `idAnime` int(11) NOT NULL,
   `idSpinOff` int(11) NOT NULL,
   PRIMARY KEY (`idAnime`,`idSpinOff`),
-  KEY `idSpinOff` (`idSpinOff`),
-  CONSTRAINT `SpinOffs_ibfk_1` FOREIGN KEY (`idAnime`) REFERENCES `Anime` (`id`),
-  CONSTRAINT `SpinOffs_ibfk_2` FOREIGN KEY (`idSpinOff`) REFERENCES `Anime` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  CONSTRAINT `SpinOffs_ibfk_1` FOREIGN KEY (`idAnime`) REFERENCES `Anime` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
@@ -241,10 +229,8 @@ CREATE TABLE `Summaries` (
   `idAnime` int(11) NOT NULL,
   `idSummary` int(11) NOT NULL,
   PRIMARY KEY (`idAnime`,`idSummary`),
-  KEY `idSummary` (`idSummary`),
-  CONSTRAINT `Summaries_ibfk_1` FOREIGN KEY (`idAnime`) REFERENCES `Anime` (`id`),
-  CONSTRAINT `Summaries_ibfk_2` FOREIGN KEY (`idSummary`) REFERENCES `Anime` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  CONSTRAINT `Summaries_ibfk_1` FOREIGN KEY (`idAnime`) REFERENCES `Anime` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
@@ -254,13 +240,13 @@ CREATE TABLE `Summaries` (
 DROP TABLE IF EXISTS `Synonym`;
 
 CREATE TABLE `Synonym` (
-  `title` varchar(200) NOT NULL,
+  `title` varchar(200) CHARACTER SET latin1 NOT NULL,
   `idAnime` int(11) NOT NULL,
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`),
   KEY `idAnime` (`idAnime`),
   CONSTRAINT `Synonym_ibfk_1` FOREIGN KEY (`idAnime`) REFERENCES `Anime` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
@@ -271,10 +257,11 @@ DROP TABLE IF EXISTS `Tag`;
 
 CREATE TABLE `Tag` (
   `id` int(50) NOT NULL,
-  `name` varchar(30) NOT NULL DEFAULT '',
+  `name` varchar(30) CHARACTER SET latin1 NOT NULL DEFAULT '',
   PRIMARY KEY (`name`),
   KEY `id` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 
 # Dump of table Anime_has_Author
@@ -285,10 +272,12 @@ DROP TABLE IF EXISTS `Anime_has_Author`;
 CREATE TABLE `Anime_has_Author` (
   `idAnime` int(11) NOT NULL,
   `idAuthor` int(11) NOT NULL,
-  `job` varchar(100) NOT NULL DEFAULT '',
+  `job` varchar(100) CHARACTER SET latin1 NOT NULL DEFAULT '',
   PRIMARY KEY (`idAnime`,`idAuthor`),
-  CONSTRAINT `Anime_has_Author_ibfk_1` FOREIGN KEY (`idAnime`) REFERENCES `Anime` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  KEY `idAuthor` (`idAuthor`),
+  CONSTRAINT `Anime_has_Author_ibfk_1` FOREIGN KEY (`idAnime`) REFERENCES `Anime` (`id`),
+  CONSTRAINT `Anime_has_Author_ibfk_2` FOREIGN KEY (`idAuthor`) REFERENCES `Author` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 
@@ -300,12 +289,12 @@ DROP TABLE IF EXISTS `Anime_has_Character`;
 CREATE TABLE `Anime_has_Character` (
   `idAnime` int(11) NOT NULL,
   `idCharacter` int(11) NOT NULL,
-  `role` varchar(50) NOT NULL,
+  `role` varchar(50) CHARACTER SET latin1 NOT NULL DEFAULT 'Main',
   PRIMARY KEY (`idAnime`,`idCharacter`),
   KEY `idCharacter` (`idCharacter`),
   CONSTRAINT `Anime_has_Character_ibfk_1` FOREIGN KEY (`idAnime`) REFERENCES `Anime` (`id`),
-  CONSTRAINT `Anime_has_Character_ibfk_2` FOREIGN KEY (`idCharacter`) REFERENCES `Character` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  CONSTRAINT `Anime_has_Character_ibfk_2` FOREIGN KEY (`idCharacter`) REFERENCES `CharacterT` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
@@ -317,8 +306,12 @@ DROP TABLE IF EXISTS `Anime_has_Genre`;
 CREATE TABLE `Anime_has_Genre` (
   `idAnime` int(11) NOT NULL,
   `idGenre` int(11) NOT NULL,
-  PRIMARY KEY (`idAnime`,`idGenre`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  PRIMARY KEY (`idAnime`,`idGenre`),
+  KEY `idGenre` (`idGenre`),
+  CONSTRAINT `Anime_has_Genre_ibfk_1` FOREIGN KEY (`idGenre`) REFERENCES `Genre` (`id`),
+  CONSTRAINT `Anime_has_Genre_ibfk_2` FOREIGN KEY (`idAnime`) REFERENCES `Anime` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 
 # Dump of table Anime_has_Producer
@@ -330,8 +323,10 @@ CREATE TABLE `Anime_has_Producer` (
   `idAnime` int(11) NOT NULL,
   `idProducer` int(11) NOT NULL,
   PRIMARY KEY (`idAnime`,`idProducer`),
-  CONSTRAINT `Anime_has_Producer_ibfk_1` FOREIGN KEY (`idAnime`) REFERENCES `Anime` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  KEY `idProducer` (`idProducer`),
+  CONSTRAINT `Anime_has_Producer_ibfk_1` FOREIGN KEY (`idAnime`) REFERENCES `Anime` (`id`),
+  CONSTRAINT `Anime_has_Producer_ibfk_2` FOREIGN KEY (`idProducer`) REFERENCES `Producer` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
@@ -348,7 +343,9 @@ CREATE TABLE `Anime_has_Tag` (
   KEY `idTag` (`idTag`),
   CONSTRAINT `Anime_has_Tag_ibfk_2` FOREIGN KEY (`idAnime`) REFERENCES `Anime` (`id`),
   CONSTRAINT `Anime_has_Tag_ibfk_3` FOREIGN KEY (`idTag`) REFERENCES `Tag` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
 
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
