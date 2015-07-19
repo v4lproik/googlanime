@@ -1,7 +1,7 @@
 package net.v4lproik.googlanime.service.api.myanimelist;
 
 import net.v4lproik.googlanime.service.api.common.ImportOptions;
-import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListAnime;
+import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListEntry;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.junit.Test;
@@ -35,7 +35,7 @@ public class MyAnimeListUTest {
         doReturn(doc).when(myAnimeList).getResultFromJSoup(url, type);
 
         // When
-        MyAnimeListAnime response = myAnimeList.crawlById(options);
+        MyAnimeListEntry response = myAnimeList.crawlById(options);
 
         System.out.println(response.getPosterImage());
         //Then
@@ -57,7 +57,7 @@ public class MyAnimeListUTest {
         doReturn(doc).when(myAnimeList).getResultFromJSoup(url, type);
 
         // When
-        MyAnimeListAnime response = myAnimeList.crawlById(options);
+        MyAnimeListEntry response = myAnimeList.crawlById(options);
 
         //Then
         assertEquals("Code Geass: Hangyaku no Lelouch R2", response.getTitle());
@@ -92,7 +92,7 @@ public class MyAnimeListUTest {
         doReturn(null).when(myAnimeList).getResultFromJSoup(url, type);
 
         // When
-        MyAnimeListAnime response = myAnimeList.crawlById(options);
+        MyAnimeListEntry response = myAnimeList.crawlById(options);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -103,7 +103,7 @@ public class MyAnimeListUTest {
         final Integer id = options.getId();
 
         // When
-        MyAnimeListAnime response = myAnimeList.crawlById(options);
+        MyAnimeListEntry response = myAnimeList.crawlById(options);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -114,6 +114,6 @@ public class MyAnimeListUTest {
         final String id = options.getId().toString();
 
         // When
-        MyAnimeListAnime response = myAnimeList.crawlById(options);
+        MyAnimeListEntry response = myAnimeList.crawlById(options);
     }
 }

@@ -1,10 +1,10 @@
 package net.v4lproik.googlanime.service.api.myanimelist.models;
 
-public class MyAnimeListAnimeGenre {
+public class MyAnimeListEntryGenre {
 
     String name;
 
-    public MyAnimeListAnimeGenre(String name) {
+    public MyAnimeListEntryGenre(String name) {
         this.name = name;
     }
 
