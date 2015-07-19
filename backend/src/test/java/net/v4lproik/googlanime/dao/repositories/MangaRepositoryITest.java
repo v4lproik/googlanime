@@ -3,13 +3,12 @@ package net.v4lproik.googlanime.dao.repositories;
 import net.v4lproik.googlanime.client.mysql.DatabaseTestConfiguration;
 import net.v4lproik.googlanime.client.mysql.SqlDatabaseInitializer;
 import net.v4lproik.googlanime.dao.api.EntryDAO;
-import net.v4lproik.googlanime.service.api.AnimeServiceWrite;
 import net.v4lproik.googlanime.service.api.common.ImportOptions;
 import net.v4lproik.googlanime.service.api.entities.AnimeModel;
 import net.v4lproik.googlanime.service.api.myanimelist.MyAnimeList;
-import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListAnime;
 import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListEntry;
-import net.v4lproik.googlanime.service.api.utils.TransformAnimeMapper;
+import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListManga;
+import net.v4lproik.googlanime.service.api.utils.TransformMangaMapper;
 import org.hibernate.SessionFactory;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -38,7 +37,7 @@ import static org.mockito.Mockito.doReturn;
 @ImportResource("classpath*  : application-context.xml")
 @WebAppConfiguration
 @TransactionConfiguration
-public class AnimeRepositoryITest {
+public class MangaRepositoryITest {
 
     @Autowired
     SqlDatabaseInitializer databaseInitializer;
@@ -48,7 +47,7 @@ public class AnimeRepositoryITest {
 
     EntryDAO entryDAO;
 
-    AnimeServiceWrite service;
+    TransformMangaMapper mapper;
 
     @Spy
     private MyAnimeList myAnimeList;
@@ -65,7 +64,7 @@ public class AnimeRepositoryITest {
 
         entryDAO = new EntryRepository(sessionFactoryConfig);
 
-        TransformAnimeMapper animeMapper = new TransformAnimeMapper();
+        mapper = new TransformMangaMapper();
 
     }
 
@@ -81,28 +80,26 @@ public class AnimeRepositoryITest {
 //
 //
 //        // Then
-//        for (MyAnimeListEntryDependency anime : response) {
+//        for (MyAnimeListEntryDependency manga : response) {
 //
-//            TransformAnimeMapper mapper = new TransformAnimeMapper();
+//            AnimeModel animeRes = mapper.transformMyAnimeListMangaDependencyToDAO((MyAnimeListMangaDependency) manga);
 //
-//            AnimeModel animeRes = mapper.transformMyAnimeListAnimeDependencyToDAO(anime);
-//
-//            if (anime.getTitle() != null) {
+//            if (manga.getTitle() != null) {
 //                entryDAO.saveOrUpdate(animeRes);
 //            }
 //        }
     }
 
     @Test
-    public void test_saveAnime_shouldBeInserted() throws Exception {
+    public void test_saveManga_shouldBeInserted() throws Exception {
 
         // Given
-        ImportOptions options = new ImportOptions(2904, "anime", false);
+        ImportOptions options = new ImportOptions(11, "manga", false);
         String type = options.getType();
-        Integer id = options.getId();
+        final Integer id = options.getId();
         String url = myAnimeList.createURL(id, type);
 
-        File input = new File("src/test/resource/code-geass-r2.anime");
+        File input = new File("src/test/resource/naruto.manga");
         Document doc = Jsoup.parse(input, "UTF-8", url);
 
         doReturn(doc).when(myAnimeList).getResultFromJSoup(url, type);
@@ -110,24 +107,22 @@ public class AnimeRepositoryITest {
         // When
         MyAnimeListEntry response = myAnimeList.crawlById(options);
 
-        TransformAnimeMapper mapper = new TransformAnimeMapper();
+        AnimeModel mangaRes = mapper.transformMyAnimeListMangaToDAO((MyAnimeListManga) response);
 
-        AnimeModel animeRes = mapper.transformMyAnimeListAnimeToDAO((MyAnimeListAnime) response);
-
-        entryDAO.saveOrUpdate(animeRes);
+        entryDAO.saveOrUpdate(mangaRes);
 
     }
 
     @Test
-    public void test_saveAnimeTwice_shouldBeUpdated() throws Exception {
+    public void test_saveMangaTwice_shouldBeUpdated() throws Exception {
 
         // Given
-        ImportOptions options = new ImportOptions(2904, "anime", false);
+        ImportOptions options = new ImportOptions(11, "manga", false);
         String type = options.getType();
-        Integer id = options.getId();
+        final Integer id = options.getId();
         String url = myAnimeList.createURL(id, type);
 
-        File input = new File("src/test/resource/code-geass-r2.anime");
+        File input = new File("src/test/resource/naruto.manga");
         Document doc = Jsoup.parse(input, "UTF-8", url);
 
         doReturn(doc).when(myAnimeList).getResultFromJSoup(url, type);
@@ -135,17 +130,15 @@ public class AnimeRepositoryITest {
         // When
         MyAnimeListEntry response = myAnimeList.crawlById(options);
 
-        TransformAnimeMapper mapper = new TransformAnimeMapper();
+        AnimeModel mangaRes = mapper.transformMyAnimeListMangaToDAO((MyAnimeListManga) response);
 
-        AnimeModel animeRes = mapper.transformMyAnimeListAnimeToDAO((MyAnimeListAnime) response);
+        entryDAO.saveOrUpdate(mangaRes);
+        mangaRes.setTitle(mangaRes.getTitle() + "_UPDATED");
+        entryDAO.saveOrUpdate(mangaRes);
 
-        entryDAO.saveOrUpdate(animeRes);
-        animeRes.setTitle(animeRes.getTitle() + "_UPDATED");
-        entryDAO.saveOrUpdate(animeRes);
+        AnimeModel animeFind = entryDAO.find(mangaRes.getId());
 
-        AnimeModel animeFind = entryDAO.find(animeRes.getId());
-
-        String title = animeRes.getTitle();
+        String title = mangaRes.getTitle();
 
         // Then
         assertEquals(title, animeFind.getTitle());

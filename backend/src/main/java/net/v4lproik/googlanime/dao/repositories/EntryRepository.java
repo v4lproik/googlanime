@@ -1,6 +1,6 @@
 package net.v4lproik.googlanime.dao.repositories;
 
-import net.v4lproik.googlanime.dao.api.AnimeDAO;
+import net.v4lproik.googlanime.dao.api.EntryDAO;
 import net.v4lproik.googlanime.service.api.entities.*;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -17,13 +17,13 @@ import java.util.List;
 import java.util.Set;
 
 @Repository
-public class AnimeRepository implements AnimeDAO {
+public class EntryRepository implements EntryDAO {
 
-    private static final Logger log = LoggerFactory.getLogger(AnimeRepository.class);
+    private static final Logger log = LoggerFactory.getLogger(EntryRepository.class);
     public final SessionFactory sessionFactory;
 
     @Autowired
-    public AnimeRepository(final SessionFactory sessionFactory) {
+    public EntryRepository(final SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 

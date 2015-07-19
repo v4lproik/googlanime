@@ -1,6 +1,6 @@
 package net.v4lproik.googlanime.service.impl;
 
-import net.v4lproik.googlanime.dao.api.AnimeDAO;
+import net.v4lproik.googlanime.dao.api.EntryDAO;
 import net.v4lproik.googlanime.service.api.AnimeServiceWrite;
 import net.v4lproik.googlanime.service.api.entities.AnimeModel;
 import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListAnime;
@@ -13,45 +13,45 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
-public class DBAnimeServiceWriteImpl implements AnimeServiceWrite {
+public class AnimeServiceWriteImpl implements AnimeServiceWrite {
 
-    static Logger log = Logger.getLogger(DBAnimeServiceWriteImpl.class.getName());
+    static Logger log = Logger.getLogger(AnimeServiceWriteImpl.class.getName());
 
-    public final AnimeDAO animeDAO;
+    public final EntryDAO entryDAO;
 
     public final TransformAnimeMapper animeMapper;
 
     @Autowired
-    public DBAnimeServiceWriteImpl(final AnimeDAO animeDAO, final TransformAnimeMapper animeMapper) {
-        this.animeDAO = animeDAO;
+    public AnimeServiceWriteImpl(final EntryDAO entryDAO, final TransformAnimeMapper animeMapper) {
+        this.entryDAO = entryDAO;
         this.animeMapper = animeMapper;
     }
 
     @Transactional( readOnly = false)
     @Override
-    public void saveAnime(MyAnimeListAnimeDependency anime) {
+    public void save(MyAnimeListAnimeDependency anime) {
         AnimeModel entity = animeMapper.transformMyAnimeListAnimeDependencyToDAO(anime);
         if (!isSavable(entity)){
             return;
         }
 
         log.debug(entity.toString());
-        animeDAO.saveOrUpdate(entity);
+        entryDAO.saveOrUpdate(entity);
     }
 
     @Transactional( readOnly = false)
     @Override
-    public void saveAnime(MyAnimeListAnime anime) {
+    public void save(MyAnimeListAnime anime) {
         AnimeModel entity = animeMapper.transformMyAnimeListAnimeToDAO(anime);
         log.debug(entity.toString());
-        animeDAO.save(entity);
+        entryDAO.save(entity);
     }
 
     @Transactional( readOnly = false)
     @Override
     public void delete(MyAnimeListAnime anime) {
         AnimeModel entity = animeMapper.transformMyAnimeListAnimeToDAO(anime);
-        animeDAO.delete(entity);
+        entryDAO.delete(entity);
     }
 
     private boolean isSavable(AnimeModel anime){
