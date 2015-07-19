@@ -11,6 +11,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.jsoup.select.Elements;
 import org.springframework.beans.BeanUtils;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,9 +22,6 @@ import java.util.Random;
 import static org.elasticsearch.common.lang3.StringUtils.countMatches;
 import static org.elasticsearch.common.lang3.StringUtils.substringBetween;
 
-/**
- * Created by joel on 08/05/2015.
- */
 public class MyAnimeList extends WebsiteAbstract {
 
     public static final String DOMAIN = "http://myanimelist.net/";
@@ -168,7 +166,7 @@ public class MyAnimeList extends WebsiteAbstract {
         return root;
     }
 
-    protected Document getResultFromJSoup(String url, String type) throws IOException {
+    public Document getResultFromJSoup(String url, String type) throws IOException {
         log.debug("Trying to get result from " + url);
 
         try {
@@ -391,7 +389,7 @@ public class MyAnimeList extends WebsiteAbstract {
         return null;
     }
 
-    protected String createURL(Integer id, String type){
+    public String createURL(Integer id, String type){
         return DOMAIN + type.toString() + "/" + id.toString() + "/";
     }
 
@@ -808,6 +806,6 @@ public class MyAnimeList extends WebsiteAbstract {
 
     @Override
     public void call() {
-
+        throw new NotImplementedException();
     }
 }

@@ -10,8 +10,9 @@ import org.springframework.stereotype.Component;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Component
 public class TransformAnimeMapper {
@@ -28,7 +29,7 @@ public class TransformAnimeMapper {
 
         String[] genres = myAnimeListAnimeDependency.getGenres();
         if (genres != null){
-            List<GenreModel> genresModel = new ArrayList<>();
+            Set<GenreModel> genresModel = new HashSet<>();
             for (String genre:genres){
                 GenreModel genreModel = new GenreModel();
                 genreModel.setName(genre);
@@ -39,7 +40,7 @@ public class TransformAnimeMapper {
 
         String[] producers = myAnimeListAnimeDependency.getProducers();
         if (producers != null){
-            List<ProducerModel> producersModel = new ArrayList<>();
+            Set<ProducerModel> producersModel = new HashSet<>();
             for (String producer:producers){
                 ProducerModel producerModel = new ProducerModel();
                 producerModel.setName(producer);
@@ -48,21 +49,10 @@ public class TransformAnimeMapper {
             anime.setProducers(producersModel);
         }
 
-//        AuthorModel authorModel;
-//        List<MyAnimeListAuthor> authors = myAnimeListAnimeDependency.getAuthors();
-//        if (authors != null) {
-//            for (MyAnimeListAuthor author : authors) {
-//                authorModel = new AuthorModel();
-//                authorModel.setFirstName(author.getFirstName());
-//                authorModel.setLastName(author.getLastName());
-//                authorModel.setJobs(Arrays.asList(author.getJob()));
-//            }
-//        }
-//
         List<MyAnimeListCharacter> characters = myAnimeListAnimeDependency.getCharacters();
         if (characters != null) {
             CharacterModel characterModel;
-            List<CharacterModel> charactersModel = new ArrayList<CharacterModel>();
+            Set<CharacterModel> charactersModel = new HashSet<>();
             for (MyAnimeListCharacter character : characters) {
                 characterModel = new CharacterModel();
                 characterModel.setRole(character.getRole());
@@ -98,7 +88,7 @@ public class TransformAnimeMapper {
         String[] synonyms = myAnimeListAnimeDependency.getSynonyms();
         if (synonyms != null) {
             SynonymModel synonymModel;
-            List<SynonymModel> synonymsModel = new ArrayList<SynonymModel>();
+            Set<SynonymModel> synonymsModel = new HashSet<>();
             for (String synonym : synonyms) {
                 synonymModel = new SynonymModel();
                 synonymModel.setTitle(synonym);
@@ -114,8 +104,93 @@ public class TransformAnimeMapper {
     public AnimeModel transformMyAnimeListAnimeToDAO(MyAnimeListAnime myAnimeListAnime){
         AnimeModel anime = new AnimeModel();
 
+        System.out.println(myAnimeListAnime.toString());
+
         ModelMapper modelMapper = new ModelMapper();
         anime = modelMapper.map(myAnimeListAnime, AnimeModel.class);
+
+        String[] genres = myAnimeListAnime.getGenres();
+        if (genres != null){
+            Set<GenreModel> genresModel = new HashSet<>();
+            for (String genre:genres){
+                GenreModel genreModel = new GenreModel();
+                genreModel.setName(genre);
+                genresModel.add(genreModel);
+            }
+            anime.setGenres(genresModel);
+        }
+
+        String[] producers = myAnimeListAnime.getProducers();
+        if (producers != null){
+            Set<ProducerModel> producersModel = new HashSet<>();
+            for (String producer:producers){
+                ProducerModel producerModel = new ProducerModel();
+                producerModel.setName(producer);
+                producersModel.add(producerModel);
+            }
+            anime.setProducers(producersModel);
+        }
+
+        List<MyAnimeListCharacter> characters = myAnimeListAnime.getCharacters();
+        if (characters != null) {
+            CharacterModel characterModel;
+            Set<CharacterModel> charactersModel = new HashSet<>();
+            for (MyAnimeListCharacter character : characters) {
+                characterModel = new CharacterModel();
+                characterModel.setRole(character.getRole());
+                characterModel.setFirstName(character.getFirstName());
+                characterModel.setJapaneseName(character.getJapaneseName());
+                characterModel.setLastName(character.getLastName());
+                charactersModel.add(characterModel);
+            }
+            anime.setCharacters(charactersModel);
+        }
+
+
+        if (myAnimeListAnime.getFinishedAiringDate() != null){
+            try {
+                DateFormat df = new SimpleDateFormat(DATE_FORMAT);
+                df.setLenient(false);
+                df.parse(myAnimeListAnime.getFinishedAiringDate());
+            } catch (ParseException e) {
+                anime.setFinishedAiringDate(null);
+            }
+        }
+
+        if (myAnimeListAnime.getStartedAiringDate() != null){
+            try {
+                DateFormat df = new SimpleDateFormat(DATE_FORMAT);
+                df.setLenient(false);
+                df.parse(myAnimeListAnime.getStartedAiringDate());
+            } catch (ParseException e) {
+                anime.setStartedAiringDate(null);
+            }
+        }
+
+        String[] synonyms = myAnimeListAnime.getSynonyms();
+        if (synonyms != null) {
+            SynonymModel synonymModel;
+            Set<SynonymModel> synonymsModel = new HashSet<>();
+            for (String synonym : synonyms) {
+                synonymModel = new SynonymModel();
+                synonymModel.setTitle(synonym);
+                synonymModel.setAnime(anime);
+                synonymsModel.add(synonymModel);
+            }
+            anime.setSynonyms(synonymsModel);
+        }
+
+        String[] tags = myAnimeListAnime.getTags();
+        if (tags != null) {
+            TagModel tagModel;
+            Set<TagModel> tagsModel = new HashSet<>();
+            for (String tag : tags) {
+                tagModel = new TagModel();
+                tagModel.setName(tag);
+                tagsModel.add(tagModel);
+            }
+            anime.setTags(tagsModel);
+        }
 
         return anime;
     }

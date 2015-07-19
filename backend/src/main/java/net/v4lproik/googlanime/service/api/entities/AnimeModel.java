@@ -6,6 +6,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "Anime")
@@ -50,38 +51,38 @@ public class AnimeModel {
             joinColumns={@JoinColumn(name="idAnime", referencedColumnName="id")},
             inverseJoinColumns={@JoinColumn(name="idProducer", referencedColumnName="id")
             })
-    private List<ProducerModel> producers;
+    private Set<ProducerModel> producers;
 
     @OneToMany(cascade=CascadeType.ALL, mappedBy = "anime")
-    private List<SynonymModel> synonyms;
+    private Set<SynonymModel> synonyms;
 
     @OneToMany(cascade=CascadeType.ALL)
     @JoinTable(name="Anime_has_Genre",
             joinColumns={@JoinColumn(name="idAnime", referencedColumnName="id")},
             inverseJoinColumns={@JoinColumn(name="idGenre", referencedColumnName="id")
             })
-    private List<GenreModel> genres;
+    private Set<GenreModel> genres;
 
-    @ManyToMany(cascade=CascadeType.MERGE)
+    @ManyToMany(cascade=CascadeType.ALL)
     @JoinTable(name="Anime_has_Author",
             joinColumns={@JoinColumn(name="idAnime", referencedColumnName="id")},
             inverseJoinColumns={@JoinColumn(name="idAuthor", referencedColumnName="id")
             })
-    private List<AuthorModel> authors;
+    private Set<AuthorModel> authors;
 
-    @ManyToMany(cascade=CascadeType.MERGE)
+    @ManyToMany(cascade=CascadeType.ALL)
     @JoinTable(name="Anime_has_Tag",
             joinColumns={@JoinColumn(name="idAnime", referencedColumnName="id")},
             inverseJoinColumns={@JoinColumn(name="idTag", referencedColumnName="id")
             })
-    private List<TagModel> tags;
+    private Set<TagModel> tags;
 
-    @ManyToMany(cascade=CascadeType.MERGE)
+    @ManyToMany(cascade=CascadeType.ALL)
     @JoinTable(name="Anime_has_Character",
             joinColumns={@JoinColumn(name="idAnime", referencedColumnName="id")},
             inverseJoinColumns={@JoinColumn(name="idCharacter", referencedColumnName="id")
             })
-    private List<CharacterModel> characters;
+    private Set<CharacterModel> characters;
 
     //Recursive dependecnies
 
@@ -229,11 +230,11 @@ public class AnimeModel {
         this.score = score;
     }
 
-    public List<GenreModel> getGenres() {
+    public Set<GenreModel> getGenres() {
         return genres;
     }
 
-    public void setGenres(List<GenreModel> genres) {
+    public void setGenres(Set<GenreModel> genres) {
         this.genres = genres;
     }
 
@@ -245,19 +246,19 @@ public class AnimeModel {
         this.title = title;
     }
 
-    public List<CharacterModel> getCharacters() {
+    public Set<CharacterModel> getCharacters() {
         return characters;
     }
 
-    public void setCharacters(List<CharacterModel> characters) {
+    public void setCharacters(Set<CharacterModel> characters) {
         this.characters = characters;
     }
 
-    public List<AuthorModel> getAuthors() {
+    public Set<AuthorModel> getAuthors() {
         return authors;
     }
 
-    public void setAuthors(List<AuthorModel> authors) {
+    public void setAuthors(Set<AuthorModel> authors) {
         this.authors = authors;
     }
 
@@ -333,27 +334,27 @@ public class AnimeModel {
         this.adaptations = adaptations;
     }
 
-    public List<SynonymModel> getSynonyms() {
+    public Set<SynonymModel> getSynonyms() {
         return synonyms;
     }
 
-    public void setSynonyms(List<SynonymModel> synonyms) {
+    public void setSynonyms(Set<SynonymModel> synonyms) {
         this.synonyms = synonyms;
     }
 
-    public List<ProducerModel> getProducers() {
+    public Set<ProducerModel> getProducers() {
         return producers;
     }
 
-    public void setProducers(List<ProducerModel> producers) {
+    public void setProducers(Set<ProducerModel> producers) {
         this.producers = producers;
     }
 
-    public List<TagModel> getTags() {
+    public Set<TagModel> getTags() {
         return tags;
     }
 
-    public void setTags(List<TagModel> tags) {
+    public void setTags(Set<TagModel> tags) {
         this.tags = tags;
     }
 

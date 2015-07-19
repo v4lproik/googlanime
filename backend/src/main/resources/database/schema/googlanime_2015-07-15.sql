@@ -7,7 +7,7 @@
 #
 # Host: 192.168.59.103 (MySQL 5.7.7-rc)
 # Database: googlanime
-# Generation Time: 2015-07-19 07:26:07 +0000
+# Generation Time: 2015-07-19 08:07:39 +0000
 # ************************************************************
 
 
@@ -45,6 +45,7 @@ CREATE TABLE `Anime` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+
 # Dump of table Adaptations
 # ------------------------------------------------------------
 
@@ -70,6 +71,7 @@ CREATE TABLE `Alternatives` (
   PRIMARY KEY (`idAnime`,`idAlternative`),
   CONSTRAINT `Alternatives_ibfk_1` FOREIGN KEY (`idAnime`) REFERENCES `Anime` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 
 
 # Dump of table Author
@@ -252,11 +254,15 @@ CREATE TABLE `Synonym` (
 DROP TABLE IF EXISTS `Tag`;
 
 CREATE TABLE `Tag` (
-  `id` int(50) NOT NULL,
+  `id` int(50) NOT NULL AUTO_INCREMENT,
   `name` varchar(30) CHARACTER SET latin1 NOT NULL DEFAULT '',
-  UNIQUE KEY `name` (`name`),
-  KEY `id` (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+
 
 
 # Dump of table Anime_has_Author
@@ -269,9 +275,7 @@ CREATE TABLE `Anime_has_Author` (
   `idAuthor` int(11) NOT NULL,
   `job` varchar(100) CHARACTER SET latin1 NOT NULL DEFAULT '',
   PRIMARY KEY (`idAnime`,`idAuthor`),
-  KEY `idAuthor` (`idAuthor`),
-  CONSTRAINT `Anime_has_Author_ibfk_1` FOREIGN KEY (`idAnime`) REFERENCES `Anime` (`id`),
-  CONSTRAINT `Anime_has_Author_ibfk_2` FOREIGN KEY (`idAuthor`) REFERENCES `Author` (`id`)
+  CONSTRAINT `Anime_has_Author_ibfk_1` FOREIGN KEY (`idAnime`) REFERENCES `Anime` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
@@ -286,9 +290,7 @@ CREATE TABLE `Anime_has_Character` (
   `idCharacter` int(11) NOT NULL,
   `role` varchar(50) CHARACTER SET latin1 NOT NULL DEFAULT 'Main',
   PRIMARY KEY (`idAnime`,`idCharacter`),
-  KEY `idCharacter` (`idCharacter`),
-  CONSTRAINT `Anime_has_Character_ibfk_1` FOREIGN KEY (`idAnime`) REFERENCES `Anime` (`id`),
-  CONSTRAINT `Anime_has_Character_ibfk_2` FOREIGN KEY (`idCharacter`) REFERENCES `CharacterT` (`id`)
+  CONSTRAINT `Anime_has_Character_ibfk_1` FOREIGN KEY (`idAnime`) REFERENCES `Anime` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -302,8 +304,6 @@ CREATE TABLE `Anime_has_Genre` (
   `idAnime` int(11) NOT NULL,
   `idGenre` int(11) NOT NULL,
   PRIMARY KEY (`idAnime`,`idGenre`),
-  KEY `idGenre` (`idGenre`),
-  CONSTRAINT `Anime_has_Genre_ibfk_1` FOREIGN KEY (`idGenre`) REFERENCES `Genre` (`id`),
   CONSTRAINT `Anime_has_Genre_ibfk_2` FOREIGN KEY (`idAnime`) REFERENCES `Anime` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -318,9 +318,7 @@ CREATE TABLE `Anime_has_Producer` (
   `idAnime` int(11) NOT NULL,
   `idProducer` int(11) NOT NULL,
   PRIMARY KEY (`idAnime`,`idProducer`),
-  KEY `idProducer` (`idProducer`),
-  CONSTRAINT `Anime_has_Producer_ibfk_1` FOREIGN KEY (`idAnime`) REFERENCES `Anime` (`id`),
-  CONSTRAINT `Anime_has_Producer_ibfk_2` FOREIGN KEY (`idProducer`) REFERENCES `Producer` (`id`)
+  CONSTRAINT `Anime_has_Producer_ibfk_1` FOREIGN KEY (`idAnime`) REFERENCES `Anime` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -333,12 +331,11 @@ DROP TABLE IF EXISTS `Anime_has_Tag`;
 CREATE TABLE `Anime_has_Tag` (
   `idAnime` int(11) NOT NULL,
   `idTag` int(11) NOT NULL,
-  PRIMARY KEY (`idAnime`),
-  KEY `idAnime` (`idAnime`),
-  KEY `idTag` (`idTag`),
-  CONSTRAINT `Anime_has_Tag_ibfk_2` FOREIGN KEY (`idAnime`) REFERENCES `Anime` (`id`),
-  CONSTRAINT `Anime_has_Tag_ibfk_3` FOREIGN KEY (`idTag`) REFERENCES `Tag` (`id`)
+  PRIMARY KEY (`idAnime`,`idTag`),
+  CONSTRAINT `Anime_has_Tag_ibfk_1` FOREIGN KEY (`idAnime`) REFERENCES `Anime` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
 
 
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;

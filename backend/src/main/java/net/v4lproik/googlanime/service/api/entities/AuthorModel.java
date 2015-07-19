@@ -4,6 +4,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "Author")
@@ -17,6 +18,8 @@ public class AuthorModel {
     private String firstName;
 
     private String lastName;
+
+    private String biography;
 
     @Transient
     private List<String> jobs;
@@ -56,13 +59,38 @@ public class AuthorModel {
         this.jobs = jobs;
     }
 
+    public String getBiography() {
+        return biography;
+    }
+
+    public void setBiography(String biography) {
+        this.biography = biography;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this)
                 .append("id", id)
                 .append("firstName", firstName)
                 .append("lastName", lastName)
+                .append("biography", biography)
                 .append("jobs", jobs)
                 .toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AuthorModel that = (AuthorModel) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(firstName, that.firstName) &&
+                Objects.equals(lastName, that.lastName) &&
+                Objects.equals(biography, that.biography);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, firstName, lastName, biography);
     }
 }

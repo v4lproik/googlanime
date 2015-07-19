@@ -2,6 +2,7 @@ package net.v4lproik.googlanime.service.api.entities;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 @Table( name = "Anime_has_Character")
@@ -41,5 +42,20 @@ public class AnimeRoleCharacter implements Serializable {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AnimeRoleCharacter that = (AnimeRoleCharacter) o;
+        return Objects.equals(idAnime, that.idAnime) &&
+                Objects.equals(idCharacter, that.idCharacter) &&
+                Objects.equals(role, that.role);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(idAnime, idCharacter, role);
     }
 }

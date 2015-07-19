@@ -7,9 +7,11 @@ import net.v4lproik.googlanime.service.api.AnimeServiceWrite;
 import net.v4lproik.googlanime.service.api.common.ImportOptions;
 import net.v4lproik.googlanime.service.api.entities.AnimeModel;
 import net.v4lproik.googlanime.service.api.myanimelist.MyAnimeList;
-import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListAnimeDependency;
+import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListAnime;
 import net.v4lproik.googlanime.service.api.utils.TransformAnimeMapper;
 import org.hibernate.SessionFactory;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,7 +24,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import java.util.List;
+import java.io.File;
+
+import static org.mockito.Mockito.doReturn;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(
@@ -41,6 +45,7 @@ public class AnimeRepositoryITest {
     SessionFactory sessionFactoryConfig;
     AnimeDAO animeDAO;
     AnimeServiceWrite service;
+
     @Spy
     private MyAnimeList myAnimeList;
 
@@ -64,22 +69,48 @@ public class AnimeRepositoryITest {
     public void test_saveMysql_withGoodGenre_shouldBeInserted() throws Exception {
 
         //Given
-        ImportOptions options = new ImportOptions(24, "manga", true);
+//        ImportOptions options = new ImportOptions(24, "manga", true);
+//        String type = options.getType();
+//        final Integer id = options.getId();
+//
+//        // When
+//        List<MyAnimeListAnimeDependency> response = myAnimeList.crawlByIdList(options);
+
+
+        // Then
+//        for (MyAnimeListAnimeDependency anime : response) {
+//
+//            TransformAnimeMapper mapper = new TransformAnimeMapper();
+//
+//            AnimeModel animeRes = mapper.transformMyAnimeListAnimeDependencyToDAO(anime);
+//
+//            if (anime.getTitle() != null) {
+//                animeDAO.saveOrUpdate(animeRes);
+//            }
+//        }
+
+
+        // Given
+        ImportOptions options = new ImportOptions(2904, "anime", false);
         String type = options.getType();
-        final Integer id = options.getId();
+        Integer id = options.getId();
+        String url = myAnimeList.createURL(id, type);
+
+        File input = new File("src/test/resource/code-geass-r2.anime");
+        Document doc = Jsoup.parse(input, "UTF-8", url);
+
+        doReturn(doc).when(myAnimeList).getResultFromJSoup(url, type);
 
         // When
-        List<MyAnimeListAnimeDependency> response = myAnimeList.crawlByIdList(options);
+        MyAnimeListAnime response = myAnimeList.crawlById(options);
 
-        for (MyAnimeListAnimeDependency anime : response) {
+        TransformAnimeMapper mapper = new TransformAnimeMapper();
 
-            TransformAnimeMapper mapper = new TransformAnimeMapper();
+        AnimeModel animeRes = mapper.transformMyAnimeListAnimeToDAO(response);
 
-            AnimeModel animeRes = mapper.transformMyAnimeListAnimeDependencyToDAO(anime);
-
-            if (anime.getTitle() != null) {
-                animeDAO.saveOrUpdate(animeRes);
-            }
+        if (response.getTitle() != null) {
+            animeDAO.saveOrUpdate(animeRes);
         }
+
     }
 }
