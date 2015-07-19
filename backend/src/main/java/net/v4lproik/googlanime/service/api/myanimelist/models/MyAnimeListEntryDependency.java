@@ -2,13 +2,12 @@ package net.v4lproik.googlanime.service.api.myanimelist.models;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="@id")
 public abstract class MyAnimeListEntryDependency {
@@ -300,27 +299,24 @@ public abstract class MyAnimeListEntryDependency {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-
         if (o == null || getClass() != o.getClass()) return false;
-
-        MyAnimeListEntry that = (MyAnimeListEntry) o;
-
-        return new EqualsBuilder()
-                .append(id, that.id)
-                .isEquals();
+        MyAnimeListEntryDependency that = (MyAnimeListEntryDependency) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(type, that.type) &&
+                Objects.equals(title, that.title) &&
+                Objects.equals(rank, that.rank);
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37)
-                .append(id)
-                .toHashCode();
+        return Objects.hash(id, type, title, rank);
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
                 .append("id", id)
+                .append("type", type)
                 .append("title", title)
                 .append("synonyms", synonyms)
                 .append("englishTitle", englishTitle)

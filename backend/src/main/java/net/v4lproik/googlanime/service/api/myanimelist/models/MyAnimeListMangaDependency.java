@@ -54,7 +54,7 @@ public class MyAnimeListMangaDependency extends MyAnimeListEntryDependency{
                 .append("nbVolumes", nbVolumes)
                 .append("mbChapters", mbChapters)
                 .append("serialization", serialization)
-                .toString();
+                .toString() + super.toString();
     }
 
     @Override

@@ -25,6 +25,7 @@ public class MyAnimeListEntryDependencyFactory {
                 throw new IllegalArgumentException();
         }
 
+        myAnimeListEntryDependency.setType(type);
         return myAnimeListEntryDependency;
     }
 }

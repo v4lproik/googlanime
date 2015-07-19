@@ -1,10 +1,10 @@
 package net.v4lproik.googlanime.service.api.common;
 
-import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListEntryDependency;
 import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListEntry;
+import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListEntryDependency;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.Set;
 
 public abstract class WebsiteAbstract {
     /**
@@ -29,7 +29,7 @@ public abstract class WebsiteAbstract {
      * @return
      * @throws IOException
      */
-    public abstract List<MyAnimeListEntryDependency> crawlByIdList(ImportOptions opts) throws IOException;
+    public abstract Set<MyAnimeListEntryDependency> crawlByIdList(ImportOptions opts) throws IOException;
 
     /**
      * This function aims to call an API

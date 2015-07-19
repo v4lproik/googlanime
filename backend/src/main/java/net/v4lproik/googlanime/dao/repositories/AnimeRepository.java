@@ -1,6 +1,6 @@
 package net.v4lproik.googlanime.dao.repositories;
 
-import net.v4lproik.googlanime.dao.api.EntryDAO;
+import net.v4lproik.googlanime.dao.api.AnimeDao;
 import net.v4lproik.googlanime.service.api.entities.*;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -17,13 +17,13 @@ import java.util.List;
 import java.util.Set;
 
 @Repository
-public class EntryRepository implements EntryDAO {
+public class AnimeRepository implements AnimeDao {
 
-    private static final Logger log = LoggerFactory.getLogger(EntryRepository.class);
+    private static final Logger log = LoggerFactory.getLogger(AnimeRepository.class);
     public final SessionFactory sessionFactory;
 
     @Autowired
-    public EntryRepository(final SessionFactory sessionFactory) {
+    public AnimeRepository(final SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 
@@ -137,7 +137,7 @@ public class EntryRepository implements EntryDAO {
             for (SynonymModel synonym:anime.getSynonyms()){
                 Criteria criteria = currentSession().createCriteria(SynonymModel.class);
                 criteria.add(Restrictions.eq("title", synonym.getTitle()));
-                criteria.add(Restrictions.eq("anime.id", id));
+                criteria.add(Restrictions.eq("entry.id", id));
                 SynonymModel synonymRes = (SynonymModel) criteria.uniqueResult();
 
                 if (synonymRes != null){

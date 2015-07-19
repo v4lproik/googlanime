@@ -62,7 +62,7 @@ public class MyAnimeListAnime extends MyAnimeListEntry{
                 .append("episodeCount", episodeCount)
                 .append("episodeLength", episodeLength)
                 .append("showType", showType)
-                .toString();
+                .toString() + super.toString();
     }
 
     @Override

@@ -19,7 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.Set;
 
 @Controller
 @RequestMapping(value = "/websites")
@@ -122,7 +122,7 @@ public class WebsiteController {
             final ImportOptions opts = new ImportOptions(id, type, dependency);
             log.debug(String.format("/import/store with options from=%s, type=%s, id=%s, dependency=%s", from, type, id.toString(), dependency.toString()));
 
-            List<MyAnimeListEntryDependency> entries = website.crawlByIdList(opts);
+            Set<MyAnimeListEntryDependency> entries = website.crawlByIdList(opts);
             response.setAnimes(entries);
 
             for (MyAnimeListEntryDependency entity : entries){

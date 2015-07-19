@@ -1,6 +1,6 @@
 package net.v4lproik.googlanime.service.impl;
 
-import net.v4lproik.googlanime.dao.api.EntryDAO;
+import net.v4lproik.googlanime.dao.api.AnimeDao;
 import net.v4lproik.googlanime.service.api.AnimeServiceWrite;
 import net.v4lproik.googlanime.service.api.entities.AnimeModel;
 import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListAnime;
@@ -17,13 +17,13 @@ public class AnimeServiceWriteImpl implements AnimeServiceWrite {
 
     static Logger log = Logger.getLogger(AnimeServiceWriteImpl.class.getName());
 
-    public final EntryDAO entryDAO;
+    public final AnimeDao animeDao;
 
     public final TransformAnimeMapper animeMapper;
 
     @Autowired
-    public AnimeServiceWriteImpl(final EntryDAO entryDAO, final TransformAnimeMapper animeMapper) {
-        this.entryDAO = entryDAO;
+    public AnimeServiceWriteImpl(final AnimeDao animeDao, final TransformAnimeMapper animeMapper) {
+        this.animeDao = animeDao;
         this.animeMapper = animeMapper;
     }
 
@@ -36,7 +36,7 @@ public class AnimeServiceWriteImpl implements AnimeServiceWrite {
         }
 
         log.debug(entity.toString());
-        entryDAO.saveOrUpdate(entity);
+        animeDao.saveOrUpdate(entity);
     }
 
     @Transactional( readOnly = false)
@@ -44,14 +44,14 @@ public class AnimeServiceWriteImpl implements AnimeServiceWrite {
     public void save(MyAnimeListAnime anime) {
         AnimeModel entity = animeMapper.transformMyAnimeListAnimeToDAO(anime);
         log.debug(entity.toString());
-        entryDAO.save(entity);
+        animeDao.save(entity);
     }
 
     @Transactional( readOnly = false)
     @Override
     public void delete(MyAnimeListAnime anime) {
         AnimeModel entity = animeMapper.transformMyAnimeListAnimeToDAO(anime);
-        entryDAO.delete(entity);
+        animeDao.delete(entity);
     }
 
     private boolean isSavable(AnimeModel anime){

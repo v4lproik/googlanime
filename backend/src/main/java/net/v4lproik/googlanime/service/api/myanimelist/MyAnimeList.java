@@ -14,10 +14,7 @@ import org.springframework.beans.BeanUtils;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import static org.elasticsearch.common.lang3.StringUtils.countMatches;
 import static org.elasticsearch.common.lang3.StringUtils.substringBetween;
@@ -25,15 +22,13 @@ import static org.elasticsearch.common.lang3.StringUtils.substringBetween;
 public class MyAnimeList extends WebsiteAbstract {
 
     public static final String DOMAIN = "http://myanimelist.net/";
-    public static final String API = "";
     public static final String USER_AGENT = "iMAL-iOS";
-    public static final String[] URL_GRAB = new String[]{"characters", "characters#staff"};
     public static final String[] IGNORE_PROPERTIES = {"sequels", "alternativeVersions", "prequels", "spinoff", "sideStories", "others", "summaries", "adaptations" };
     static Logger log = Logger.getLogger(MyAnimeList.class.getName());
     List<Integer> animeScrapped = new ArrayList<Integer>();
     List<Integer> animeErrorScrapped = new ArrayList<Integer>();
 
-    List<MyAnimeListEntryDependency> animes = new ArrayList<>();
+    Set<MyAnimeListEntryDependency> animes = new HashSet<MyAnimeListEntryDependency>();
 
     MyAnimeListEntry root;
 
@@ -99,7 +94,7 @@ public class MyAnimeList extends WebsiteAbstract {
     }
 
     @Override
-    public List<MyAnimeListEntryDependency> crawlByIdList(ImportOptions opts) throws IOException {
+    public Set<MyAnimeListEntryDependency> crawlByIdList(ImportOptions opts) throws IOException {
 
         final String type = opts.getType();
         final Integer id = opts.getId();
@@ -154,7 +149,7 @@ public class MyAnimeList extends WebsiteAbstract {
                 log.debug(toScrap.toString());
             }
 
-            MyAnimeListAnime nextToScrap = whoSNext(toScrap);
+            MyAnimeListEntry nextToScrap = whoSNext(toScrap);
 
             // Tricky part
             if (nextToScrap == null){
@@ -193,72 +188,65 @@ public class MyAnimeList extends WebsiteAbstract {
         return doc;
     }
 
-    MyAnimeListAnime whoSNext(MyAnimeListEntry lastScrapped){
+    MyAnimeListEntry whoSNext(MyAnimeListEntry lastScrapped){
 
         log.debug(String.format("Animes that have been scrapped %s ", Arrays.asList(animeScrapped)));
         log.debug(String.format("Animes that have been errorscrapped %s ", Arrays.asList(animeErrorScrapped)));
 
 
-        for (Object anime : lastScrapped.getAdaptations()){
-            MyAnimeListAnime animeSelected = (MyAnimeListAnime) anime;
-            Integer id = animeSelected.getId();
+        for (MyAnimeListEntry entry : lastScrapped.getAdaptations()){
+            Integer id = entry.getId();
 
             if (!animeScrapped.contains(id) && !animeErrorScrapped.contains(id)){
-                return animeSelected;
+                return entry;
             }
         }
 
-        for (Object anime : lastScrapped.getAlternativeVersions()){
-            MyAnimeListAnime animeSelected = (MyAnimeListAnime) anime;
-            int id = animeSelected.getId();
+        for (MyAnimeListEntry entry : lastScrapped.getAlternativeVersions()){
+            Integer id = entry.getId();
 
             if (!animeScrapped.contains(id) && !animeErrorScrapped.contains(id)){
-                return animeSelected;
+                return entry;
             }
         }
 
-        for (Object anime : lastScrapped.getPrequels()){
-            MyAnimeListAnime animeSelected = (MyAnimeListAnime) anime;
-            int id = animeSelected.getId();
+        for (MyAnimeListEntry entry : lastScrapped.getPrequels()){
+            Integer id = entry.getId();
 
             if (!animeScrapped.contains(id) && !animeErrorScrapped.contains(id)){
-                return animeSelected;
+                return entry;
             }
         }
 
-        for (Object anime : lastScrapped.getSequels()){
-            MyAnimeListAnime animeSelected = (MyAnimeListAnime) anime;
-            int id = animeSelected.getId();
+        for (MyAnimeListEntry entry : lastScrapped.getSequels()){
+            int id = entry.getId();
 
             if (!animeScrapped.contains(id) && !animeErrorScrapped.contains(id)){
-                return animeSelected;
+                return entry;
             }
         }
 
-        for (Object anime : lastScrapped.getSideStories()){
-            MyAnimeListAnime animeSelected = (MyAnimeListAnime) anime;
-            int id = animeSelected.getId();
+        for (MyAnimeListEntry entry : lastScrapped.getSideStories()){
+            int id = entry.getId();
 
             if (!animeScrapped.contains(id) && !animeErrorScrapped.contains(id)){
-                return animeSelected;
+                return entry;
             }
         }
 
-        for (Object anime : lastScrapped.getOthers()){
-            MyAnimeListAnime animeSelected = (MyAnimeListAnime) anime;
-            int id = animeSelected.getId();
+        for (MyAnimeListEntry entry : lastScrapped.getOthers()){
+            int id = entry.getId();
 
             if (!animeScrapped.contains(id) && !animeErrorScrapped.contains(id)){
-                return animeSelected;
+                return entry;
             }
         }
 
-        for (Object anime : lastScrapped.getSummaries()){
-            MyAnimeListAnime animeSelected = (MyAnimeListAnime) anime;
-            int id = animeSelected.getId();
+        for (MyAnimeListEntry entry : lastScrapped.getSummaries()){
+            int id = entry.getId();
 
             if (!animeScrapped.contains(id) && !animeErrorScrapped.contains(id)){
-                return animeSelected;
+                return entry;
             }
         }
 
@@ -267,7 +255,8 @@ public class MyAnimeList extends WebsiteAbstract {
 
     MyAnimeListEntryDependency convertIntoDependencyObject(MyAnimeListEntry from){
 
-        MyAnimeListEntryDependency myAnimeListEntryDependency = null;
+        MyAnimeListEntryDependency myAnimeListEntryDependency = entityFactoryDependency.getEntity(from.getType(), from.getId());
+        BeanUtils.copyProperties(from, myAnimeListEntryDependency, IGNORE_PROPERTIES);
         MyAnimeListEntryDependencyId myAnimeListEntryDependencyId = new MyAnimeListEntryDependencyId();
         Integer id;
         String title;

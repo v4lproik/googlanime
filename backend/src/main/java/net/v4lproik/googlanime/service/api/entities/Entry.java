@@ -1,25 +1,26 @@
-package net.v4lproik.googlanime.service.api.myanimelist.models;
+package net.v4lproik.googlanime.service.api.entities;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-import java.util.ArrayList;
+import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
-@JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="@id")
-public abstract class MyAnimeListEntry {
+@Entity
+@DiscriminatorColumn(name="type_jpa")
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@Table(name = "Anime")
+public class Entry {
 
-    private Integer id;
+    @Id
+    @Column(name = "id")
+    private Long id;
 
     private String type;
 
     private String title;
-
-    private String[] synonyms;
 
     private String englishTitle;
 
@@ -29,61 +30,88 @@ public abstract class MyAnimeListEntry {
 
     private String startedAiringDate;
 
-    private String finishedAiringDate;
-
     private String rank;
 
     private String popularity;
 
     private String score;
 
-    private String[] genres;
+    private String finishedAiringDate;
 
     private String ageRating;
 
     private String posterImage;
 
-    private MyAnimeListEntry parent;
+    @OneToMany(cascade=CascadeType.ALL, mappedBy = "entry")
+    private Set<SynonymModel> synonyms;
 
-    private List<MyAnimeListAuthor> authors = new ArrayList<MyAnimeListAuthor>();
+    @OneToMany(cascade=CascadeType.ALL)
+    @JoinTable(name="Anime_has_Genre",
+            joinColumns={@JoinColumn(name="idAnime", referencedColumnName="id")},
+            inverseJoinColumns={@JoinColumn(name="idGenre", referencedColumnName="id")
+            })
+    private Set<GenreModel> genres;
 
-    private String[] tags;
+    @ManyToMany(cascade=CascadeType.ALL)
+    @JoinTable(name="Anime_has_Author",
+            joinColumns={@JoinColumn(name="idAnime", referencedColumnName="id")},
+            inverseJoinColumns={@JoinColumn(name="idAuthor", referencedColumnName="id")
+            })
+    private Set<AuthorModel> authors;
 
-    private List<MyAnimeListEntry> sequels = new ArrayList<MyAnimeListEntry>();
+    @ManyToMany(cascade=CascadeType.ALL)
+    @JoinTable(name="Anime_has_Tag",
+            joinColumns={@JoinColumn(name="idAnime", referencedColumnName="id")},
+            inverseJoinColumns={@JoinColumn(name="idTag", referencedColumnName="id")
+            })
+    private Set<TagModel> tags;
 
-    private List<MyAnimeListEntry> alternativeVersions = new ArrayList<MyAnimeListEntry>();
+    @ManyToMany(cascade=CascadeType.ALL)
+    @JoinTable(name="Anime_has_Character",
+            joinColumns={@JoinColumn(name="idAnime", referencedColumnName="id")},
+            inverseJoinColumns={@JoinColumn(name="idCharacter", referencedColumnName="id")
+            })
+    private Set<CharacterModel> characters;
 
-    private List<MyAnimeListEntry> prequels = new ArrayList<MyAnimeListEntry>();
+    //Recursive dependecnies
 
-    private List<MyAnimeListEntry> spinoff = new ArrayList<MyAnimeListEntry>();
+    @Transient
+    private List<AnimeIdModel> sequels;
 
-    private List<MyAnimeListEntry> sideStories = new ArrayList<MyAnimeListEntry>();
+    @Transient
+    private List<AnimeIdModel> alternativeVersions;
 
-    private List<MyAnimeListEntry> others = new ArrayList<MyAnimeListEntry>();
+    @Transient
+    private List<AnimeIdModel> prequels;
 
-    private List<MyAnimeListEntry> summaries = new ArrayList<MyAnimeListEntry>();
+    @Transient
+    private List<AnimeIdModel> spinoff;
 
-    private List<MyAnimeListEntry> adaptations = new ArrayList<MyAnimeListEntry>();
+    @Transient
+    private List<AnimeIdModel> sideStories;
 
-    private List<MyAnimeListCharacter> characters = new ArrayList<MyAnimeListCharacter>();
+    @Transient
+    private List<AnimeIdModel> others;
 
-    public MyAnimeListEntry(Integer id) {
+    @Transient
+    private List<AnimeIdModel> summaries;
 
-        if (id <= 0){
-            throw new NumberFormatException("An entry id cannot be <= 0");
-        }
+    @Transient
+    private List<AnimeIdModel> adaptations;
 
+
+    public Entry(Long id) {
         this.id = id;
     }
 
-    public MyAnimeListEntry() {
+    public Entry() {
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -167,20 +195,12 @@ public abstract class MyAnimeListEntry {
         this.score = score;
     }
 
-    public String[] getGenres() {
+    public Set<GenreModel> getGenres() {
         return genres;
     }
 
-    public void setGenres(String[] genres) {
+    public void setGenres(Set<GenreModel> genres) {
         this.genres = genres;
-    }
-
-    public String[] getSynonyms() {
-        return synonyms;
-    }
-
-    public void setSynonyms(String[] synonyms) {
-        this.synonyms = synonyms;
     }
 
     public String getTitle() {
@@ -191,92 +211,20 @@ public abstract class MyAnimeListEntry {
         this.title = title;
     }
 
-    public String[] getTags() {
-        return tags;
-    }
-
-    public void setTags(String[] tags) {
-        this.tags = tags;
-    }
-
-    public List<MyAnimeListCharacter> getCharacters() {
+    public Set<CharacterModel> getCharacters() {
         return characters;
     }
 
-    public void setCharacters(List<MyAnimeListCharacter> characters) {
+    public void setCharacters(Set<CharacterModel> characters) {
         this.characters = characters;
     }
 
-    public List<MyAnimeListAuthor> getAuthors() {
+    public Set<AuthorModel> getAuthors() {
         return authors;
     }
 
-    public void setAuthors(List<MyAnimeListAuthor> authors) {
+    public void setAuthors(Set<AuthorModel> authors) {
         this.authors = authors;
-    }
-
-    public List<MyAnimeListEntry> getSequels() {
-        return sequels;
-    }
-
-    public void setSequels(List<MyAnimeListEntry> sequels) {
-        this.sequels = sequels;
-    }
-
-    public List<MyAnimeListEntry> getAlternativeVersions() {
-        return alternativeVersions;
-    }
-
-    public void setAlternativeVersions(List<MyAnimeListEntry> alternativeVersions) {
-        this.alternativeVersions = alternativeVersions;
-    }
-
-    public List<MyAnimeListEntry> getPrequels() {
-        return prequels;
-    }
-
-    public void setPrequels(List<MyAnimeListEntry> prequels) {
-        this.prequels = prequels;
-    }
-
-    public List<MyAnimeListEntry> getSpinoff() {
-        return spinoff;
-    }
-
-    public void setSpinoff(List<MyAnimeListEntry> spinoff) {
-        this.spinoff = spinoff;
-    }
-
-    public List<MyAnimeListEntry> getSideStories() {
-        return sideStories;
-    }
-
-    public void setSideStories(List<MyAnimeListEntry> sideStories) {
-        this.sideStories = sideStories;
-    }
-
-    public List<MyAnimeListEntry> getOthers() {
-        return others;
-    }
-
-    public void setOthers(List<MyAnimeListEntry> others) {
-        this.others = others;
-    }
-
-    public List<MyAnimeListEntry> getSummaries() {
-        return summaries;
-    }
-
-    public void setSummaries(List<MyAnimeListEntry> summaries) {
-        this.summaries = summaries;
-    }
-
-    public List<MyAnimeListEntry> getAdaptations() {
-        return adaptations;
-    }
-
-    public void setAdaptations(List<MyAnimeListEntry> adaptations) {
-        this.adaptations = adaptations;
     }
 
     public String getType() {
@@ -287,25 +235,84 @@ public abstract class MyAnimeListEntry {
         this.type = type;
     }
 
-    public MyAnimeListEntry getParent() {
-        return parent;
+    public List<AnimeIdModel> getSequels() {
+        return sequels;
     }
 
-    public void setParent(MyAnimeListEntry parent) {
-        this.parent = parent;
+    public void setSequels(List<AnimeIdModel> sequels) {
+        this.sequels = sequels;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
+    public List<AnimeIdModel> getAlternativeVersions() {
+        return alternativeVersions;
+    }
 
-        if (o == null || getClass() != o.getClass()) return false;
+    public void setAlternativeVersions(List<AnimeIdModel> alternativeVersions) {
+        this.alternativeVersions = alternativeVersions;
+    }
 
-        MyAnimeListEntry that = (MyAnimeListEntry) o;
+    public List<AnimeIdModel> getPrequels() {
+        return prequels;
+    }
 
-        return new EqualsBuilder()
-                .append(id, that.id)
-                .isEquals();
+    public void setPrequels(List<AnimeIdModel> prequels) {
+        this.prequels = prequels;
+    }
+
+    public List<AnimeIdModel> getSpinoff() {
+        return spinoff;
+    }
+
+    public void setSpinoff(List<AnimeIdModel> spinoff) {
+        this.spinoff = spinoff;
+    }
+
+    public List<AnimeIdModel> getSideStories() {
+        return sideStories;
+    }
+
+    public void setSideStories(List<AnimeIdModel> sideStories) {
+        this.sideStories = sideStories;
+    }
+
+    public List<AnimeIdModel> getOthers() {
+        return others;
+    }
+
+    public void setOthers(List<AnimeIdModel> others) {
+        this.others = others;
+    }
+
+    public List<AnimeIdModel> getSummaries() {
+        return summaries;
+    }
+
+    public void setSummaries(List<AnimeIdModel> summaries) {
+        this.summaries = summaries;
+    }
+
+    public List<AnimeIdModel> getAdaptations() {
+        return adaptations;
+    }
+
+    public void setAdaptations(List<AnimeIdModel> adaptations) {
+        this.adaptations = adaptations;
+    }
+
+    public Set<SynonymModel> getSynonyms() {
+        return synonyms;
+    }
+
+    public void setSynonyms(Set<SynonymModel> synonyms) {
+        this.synonyms = synonyms;
+    }
+
+    public Set<TagModel> getTags() {
+        return tags;
+    }
+
+    public void setTags(Set<TagModel> tags) {
+        this.tags = tags;
     }
 
     @Override
@@ -319,21 +326,20 @@ public abstract class MyAnimeListEntry {
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
                 .append("id", id)
-                .append("title", title)
                 .append("type", type)
+                .append("title", title)
                 .append("synonyms", synonyms)
                 .append("englishTitle", englishTitle)
                 .append("japaneseTitle", japaneseTitle)
                 .append("synopsis", synopsis)
                 .append("startedAiringDate", startedAiringDate)
-                .append("finishedAiringDate", finishedAiringDate)
                 .append("rank", rank)
                 .append("popularity", popularity)
                 .append("score", score)
-                .append("genres", genres)
+                .append("finishedAiringDate", finishedAiringDate)
                 .append("ageRating", ageRating)
                 .append("posterImage", posterImage)
-                .append("parent", parent)
+                .append("genres", genres)
                 .append("authors", authors)
                 .append("tags", tags)
                 .append("sequels", sequels)
@@ -347,8 +353,4 @@ public abstract class MyAnimeListEntry {
                 .append("characters", characters)
                 .toString();
     }
-
-    public abstract boolean isAnime();
-
-    public abstract boolean isManga();
 }

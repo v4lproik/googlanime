@@ -19,13 +19,13 @@ public class TransformMangaMapper {
 
     public final static String DATE_FORMAT = "dd-MM-yyyy";
 
-    public AnimeModel transformMyAnimeListMangaDependencyToDAO(MyAnimeListMangaDependency myAnimeListMangaDependency){
-        AnimeModel anime = new AnimeModel();
+    public MangaModel transformMyAnimeListMangaDependencyToDAO(MyAnimeListMangaDependency myAnimeListMangaDependency){
+        MangaModel manga = new MangaModel();
 
         System.out.println(myAnimeListMangaDependency.toString());
 
         ModelMapper modelMapper = new ModelMapper();
-        anime = modelMapper.map(myAnimeListMangaDependency, AnimeModel.class);
+        manga = modelMapper.map(myAnimeListMangaDependency, MangaModel.class);
 
         String[] genres = myAnimeListMangaDependency.getGenres();
         if (genres != null){
@@ -35,7 +35,7 @@ public class TransformMangaMapper {
                 genreModel.setName(genre);
                 genresModel.add(genreModel);
             }
-            anime.setGenres(genresModel);
+            manga.setGenres(genresModel);
         }
 
 //        String[] producers = myAnimeListMangaDependency.getProducers();
@@ -46,7 +46,7 @@ public class TransformMangaMapper {
 //                producerModel.setName(producer);
 //                producersModel.add(producerModel);
 //            }
-//            anime.setProducers(producersModel);
+//            manga.setProducers(producersModel);
 //        }
 
         List<MyAnimeListCharacter> characters = myAnimeListMangaDependency.getCharacters();
@@ -61,7 +61,7 @@ public class TransformMangaMapper {
                 characterModel.setLastName(character.getLastName());
                 charactersModel.add(characterModel);
             }
-            anime.setCharacters(charactersModel);
+            manga.setCharacters(charactersModel);
         }
 
 
@@ -71,7 +71,7 @@ public class TransformMangaMapper {
                 df.setLenient(false);
                 df.parse(myAnimeListMangaDependency.getFinishedAiringDate());
             } catch (ParseException e) {
-                anime.setFinishedAiringDate(null);
+                manga.setFinishedAiringDate(null);
             }
         }
 
@@ -81,7 +81,7 @@ public class TransformMangaMapper {
                 df.setLenient(false);
                 df.parse(myAnimeListMangaDependency.getStartedAiringDate());
             } catch (ParseException e) {
-                anime.setStartedAiringDate(null);
+                manga.setStartedAiringDate(null);
             }
         }
 
@@ -92,22 +92,22 @@ public class TransformMangaMapper {
             for (String synonym : synonyms) {
                 synonymModel = new SynonymModel();
                 synonymModel.setTitle(synonym);
-                synonymModel.setAnime(anime);
+                synonymModel.setEntry(manga);
                 synonymsModel.add(synonymModel);
             }
-            anime.setSynonyms(synonymsModel);
+            manga.setSynonyms(synonymsModel);
         }
 
-        return anime;
+        return manga;
     }
 
-    public AnimeModel transformMyAnimeListMangaToDAO(MyAnimeListManga myAnimeListManga){
-        AnimeModel anime = new AnimeModel();
+    public MangaModel transformMyAnimeListMangaToDAO(MyAnimeListManga myAnimeListManga){
+        MangaModel manga = new MangaModel();
 
         System.out.println(myAnimeListManga.toString());
 
         ModelMapper modelMapper = new ModelMapper();
-        anime = modelMapper.map(myAnimeListManga, AnimeModel.class);
+        manga = modelMapper.map(myAnimeListManga, MangaModel.class);
 
         String[] genres = myAnimeListManga.getGenres();
         if (genres != null){
@@ -117,7 +117,7 @@ public class TransformMangaMapper {
                 genreModel.setName(genre);
                 genresModel.add(genreModel);
             }
-            anime.setGenres(genresModel);
+            manga.setGenres(genresModel);
         }
 
 //        String[] producers = myAnimeListManga.getProducers();
@@ -128,7 +128,7 @@ public class TransformMangaMapper {
 //                producerModel.setName(producer);
 //                producersModel.add(producerModel);
 //            }
-//            anime.setProducers(producersModel);
+//            manga.setProducers(producersModel);
 //        }
 
         List<MyAnimeListCharacter> characters = myAnimeListManga.getCharacters();
@@ -143,7 +143,7 @@ public class TransformMangaMapper {
                 characterModel.setLastName(character.getLastName());
                 charactersModel.add(characterModel);
             }
-            anime.setCharacters(charactersModel);
+            manga.setCharacters(charactersModel);
         }
 
 
@@ -153,7 +153,7 @@ public class TransformMangaMapper {
                 df.setLenient(false);
                 df.parse(myAnimeListManga.getFinishedAiringDate());
             } catch (ParseException e) {
-                anime.setFinishedAiringDate(null);
+                manga.setFinishedAiringDate(null);
             }
         }
 
@@ -163,7 +163,7 @@ public class TransformMangaMapper {
                 df.setLenient(false);
                 df.parse(myAnimeListManga.getStartedAiringDate());
             } catch (ParseException e) {
-                anime.setStartedAiringDate(null);
+                manga.setStartedAiringDate(null);
             }
         }
 
@@ -174,10 +174,10 @@ public class TransformMangaMapper {
             for (String synonym : synonyms) {
                 synonymModel = new SynonymModel();
                 synonymModel.setTitle(synonym);
-                synonymModel.setAnime(anime);
+                synonymModel.setEntry(manga);
                 synonymsModel.add(synonymModel);
             }
-            anime.setSynonyms(synonymsModel);
+            manga.setSynonyms(synonymsModel);
         }
 
         String[] tags = myAnimeListManga.getTags();
@@ -189,9 +189,9 @@ public class TransformMangaMapper {
                 tagModel.setName(tag);
                 tagsModel.add(tagModel);
             }
-            anime.setTags(tagsModel);
+            manga.setTags(tagsModel);
         }
 
-        return anime;
+        return manga;
     }
 }

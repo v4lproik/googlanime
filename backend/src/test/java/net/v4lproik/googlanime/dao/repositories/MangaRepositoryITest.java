@@ -2,9 +2,9 @@ package net.v4lproik.googlanime.dao.repositories;
 
 import net.v4lproik.googlanime.client.mysql.DatabaseTestConfiguration;
 import net.v4lproik.googlanime.client.mysql.SqlDatabaseInitializer;
-import net.v4lproik.googlanime.dao.api.EntryDAO;
+import net.v4lproik.googlanime.dao.api.MangaDao;
 import net.v4lproik.googlanime.service.api.common.ImportOptions;
-import net.v4lproik.googlanime.service.api.entities.AnimeModel;
+import net.v4lproik.googlanime.service.api.entities.MangaModel;
 import net.v4lproik.googlanime.service.api.myanimelist.MyAnimeList;
 import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListEntry;
 import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListManga;
@@ -45,7 +45,7 @@ public class MangaRepositoryITest {
     @Autowired
     SessionFactory sessionFactoryConfig;
 
-    EntryDAO entryDAO;
+    MangaDao mangaDao;
 
     TransformMangaMapper mapper;
 
@@ -62,7 +62,7 @@ public class MangaRepositoryITest {
             // Something went wrong while importing the database schema
         }
 
-        entryDAO = new EntryRepository(sessionFactoryConfig);
+        mangaDao = new MangaRepository(sessionFactoryConfig);
 
         mapper = new TransformMangaMapper();
 
@@ -85,7 +85,7 @@ public class MangaRepositoryITest {
 //            AnimeModel animeRes = mapper.transformMyAnimeListMangaDependencyToDAO((MyAnimeListMangaDependency) manga);
 //
 //            if (manga.getTitle() != null) {
-//                entryDAO.saveOrUpdate(animeRes);
+//                mangaDao.saveOrUpdate(animeRes);
 //            }
 //        }
     }
@@ -107,9 +107,9 @@ public class MangaRepositoryITest {
         // When
         MyAnimeListEntry response = myAnimeList.crawlById(options);
 
-        AnimeModel mangaRes = mapper.transformMyAnimeListMangaToDAO((MyAnimeListManga) response);
+        MangaModel mangaRes = mapper.transformMyAnimeListMangaToDAO((MyAnimeListManga) response);
 
-        entryDAO.saveOrUpdate(mangaRes);
+        mangaDao.saveOrUpdate(mangaRes);
 
     }
 
@@ -130,18 +130,18 @@ public class MangaRepositoryITest {
         // When
         MyAnimeListEntry response = myAnimeList.crawlById(options);
 
-        AnimeModel mangaRes = mapper.transformMyAnimeListMangaToDAO((MyAnimeListManga) response);
+        MangaModel mangaRes = mapper.transformMyAnimeListMangaToDAO((MyAnimeListManga) response);
 
-        entryDAO.saveOrUpdate(mangaRes);
+        mangaDao.saveOrUpdate(mangaRes);
         mangaRes.setTitle(mangaRes.getTitle() + "_UPDATED");
-        entryDAO.saveOrUpdate(mangaRes);
+        mangaDao.saveOrUpdate(mangaRes);
 
-        AnimeModel animeFind = entryDAO.find(mangaRes.getId());
+        MangaModel mangaFind = mangaDao.find(mangaRes.getId());
 
         String title = mangaRes.getTitle();
 
         // Then
-        assertEquals(title, animeFind.getTitle());
+        assertEquals(title, mangaFind.getTitle());
 
     }
 }

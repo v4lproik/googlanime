@@ -54,7 +54,7 @@ public class MyAnimeListManga extends MyAnimeListEntry{
                 .append("nbVolumes", nbVolumes)
                 .append("mbChapters", mbChapters)
                 .append("serialization", serialization)
-                .toString();
+                .toString() + super.toString();
     }
 
     @Override

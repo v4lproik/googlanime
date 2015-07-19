@@ -7,7 +7,7 @@
 #
 # Host: 192.168.59.103 (MySQL 5.7.7-rc)
 # Database: googlanime
-# Generation Time: 2015-07-19 08:07:39 +0000
+# Generation Time: 2015-07-20 07:05:26 +0000
 # ************************************************************
 
 
@@ -42,8 +42,13 @@ CREATE TABLE `Anime` (
   `showType` varchar(50) CHARACTER SET latin1 DEFAULT '',
   `posterImage` varchar(300) CHARACTER SET latin1 DEFAULT '',
   `parent` int(11) DEFAULT NULL,
+  `nbVolumes` int(11) DEFAULT NULL,
+  `nbChapters` int(11) DEFAULT NULL,
+  `serialization` varchar(200) DEFAULT NULL,
+  `type_jpa` varchar(5) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 
 
 # Dump of table Adaptations
@@ -71,6 +76,9 @@ CREATE TABLE `Alternatives` (
   PRIMARY KEY (`idAnime`,`idAlternative`),
   CONSTRAINT `Alternatives_ibfk_1` FOREIGN KEY (`idAnime`) REFERENCES `Anime` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+
 
 
 
@@ -261,10 +269,6 @@ CREATE TABLE `Tag` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-
-
-
-
 # Dump of table Anime_has_Author
 # ------------------------------------------------------------
 
@@ -288,7 +292,7 @@ DROP TABLE IF EXISTS `Anime_has_Character`;
 CREATE TABLE `Anime_has_Character` (
   `idAnime` int(11) NOT NULL,
   `idCharacter` int(11) NOT NULL,
-  `role` varchar(50) CHARACTER SET latin1 NOT NULL DEFAULT 'Main',
+  `role` varchar(50) CHARACTER SET latin1 NOT NULL DEFAULT 'N/A',
   PRIMARY KEY (`idAnime`,`idCharacter`),
   CONSTRAINT `Anime_has_Character_ibfk_1` FOREIGN KEY (`idAnime`) REFERENCES `Anime` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -334,6 +338,7 @@ CREATE TABLE `Anime_has_Tag` (
   PRIMARY KEY (`idAnime`,`idTag`),
   CONSTRAINT `Anime_has_Tag_ibfk_1` FOREIGN KEY (`idAnime`) REFERENCES `Anime` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 
 

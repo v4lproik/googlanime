@@ -62,7 +62,7 @@ public class MyAnimeListAnimeDependency extends MyAnimeListEntryDependency{
                 .append("episodeCount", episodeCount)
                 .append("episodeLength", episodeLength)
                 .append("showType", showType)
-                .toString();
+                .toString() + super.toString();
     }
 
     @Override

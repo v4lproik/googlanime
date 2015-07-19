@@ -20,7 +20,7 @@ public class TransformAnimeMapper {
     public final static String DATE_FORMAT = "dd-MM-yyyy";
 
     public AnimeModel transformMyAnimeListAnimeDependencyToDAO(MyAnimeListAnimeDependency myAnimeListEntryDependency){
-        AnimeModel anime = new AnimeModel();
+        AnimeModel anime;
 
         System.out.println(myAnimeListEntryDependency.toString());
 
@@ -92,7 +92,7 @@ public class TransformAnimeMapper {
             for (String synonym : synonyms) {
                 synonymModel = new SynonymModel();
                 synonymModel.setTitle(synonym);
-                synonymModel.setAnime(anime);
+                synonymModel.setEntry(anime);
                 synonymsModel.add(synonymModel);
             }
             anime.setSynonyms(synonymsModel);
@@ -102,7 +102,7 @@ public class TransformAnimeMapper {
     }
 
     public AnimeModel transformMyAnimeListAnimeToDAO(MyAnimeListAnime myAnimeListAnime){
-        AnimeModel anime = new AnimeModel();
+        AnimeModel anime;
 
         System.out.println(myAnimeListAnime.toString());
 
@@ -174,7 +174,7 @@ public class TransformAnimeMapper {
             for (String synonym : synonyms) {
                 synonymModel = new SynonymModel();
                 synonymModel.setTitle(synonym);
-                synonymModel.setAnime(anime);
+                synonymModel.setEntry(anime);
                 synonymsModel.add(synonymModel);
             }
             anime.setSynonyms(synonymsModel);
