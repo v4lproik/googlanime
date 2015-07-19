@@ -292,6 +292,18 @@ public class AnimeRepository implements AnimeDAO {
     }
 
     @Override
+    public AnimeModel find(Long id){
+
+        Transaction tx=currentSession().beginTransaction();
+        Criteria criteria = currentSession().createCriteria(AnimeModel.class);
+        criteria.add(Restrictions.eq("id", id));
+        AnimeModel animeRes = (AnimeModel) criteria.uniqueResult();
+        tx.commit();
+
+        return animeRes;
+    }
+
+    @Override
     public void delete(AnimeModel anime) {
         Transaction tx=currentSession().beginTransaction();
         currentSession().delete(anime);

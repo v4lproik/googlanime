@@ -26,6 +26,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.io.File;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doReturn;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -66,7 +67,7 @@ public class AnimeRepositoryITest {
     }
 
     @Test
-    public void test_saveMysql_withGoodGenre_shouldBeInserted() throws Exception {
+    public void test_saveAnime_shouldBeInserted() throws Exception {
 
         //Given
 //        ImportOptions options = new ImportOptions(24, "manga", true);
@@ -108,9 +109,41 @@ public class AnimeRepositoryITest {
 
         AnimeModel animeRes = mapper.transformMyAnimeListAnimeToDAO(response);
 
-        if (response.getTitle() != null) {
-            animeDAO.saveOrUpdate(animeRes);
-        }
+        animeDAO.saveOrUpdate(animeRes);
+
+    }
+
+    @Test
+    public void test_saveAnimeTwice_shouldBeUpdated() throws Exception {
+
+        // Given
+        ImportOptions options = new ImportOptions(2904, "anime", false);
+        String type = options.getType();
+        Integer id = options.getId();
+        String url = myAnimeList.createURL(id, type);
+
+        File input = new File("src/test/resource/code-geass-r2.anime");
+        Document doc = Jsoup.parse(input, "UTF-8", url);
+
+        doReturn(doc).when(myAnimeList).getResultFromJSoup(url, type);
+
+        // When
+        MyAnimeListAnime response = myAnimeList.crawlById(options);
+
+        TransformAnimeMapper mapper = new TransformAnimeMapper();
+
+        AnimeModel animeRes = mapper.transformMyAnimeListAnimeToDAO(response);
+
+        animeDAO.saveOrUpdate(animeRes);
+        animeRes.setTitle(animeRes.getTitle() + "_UPDATED");
+        animeDAO.saveOrUpdate(animeRes);
+
+        AnimeModel animeFind = animeDAO.find(animeRes.getId());
+
+        String title = animeRes.getTitle();
+
+        // Then
+        assertEquals(title, animeFind.getTitle());
 
     }
 }
