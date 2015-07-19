@@ -7,7 +7,7 @@
 #
 # Host: 192.168.59.103 (MySQL 5.7.7-rc)
 # Database: googlanime
-# Generation Time: 2015-07-18 09:14:45 +0000
+# Generation Time: 2015-07-19 07:26:07 +0000
 # ************************************************************
 
 
@@ -45,8 +45,6 @@ CREATE TABLE `Anime` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-
-
 # Dump of table Adaptations
 # ------------------------------------------------------------
 
@@ -72,9 +70,6 @@ CREATE TABLE `Alternatives` (
   PRIMARY KEY (`idAnime`,`idAlternative`),
   CONSTRAINT `Alternatives_ibfk_1` FOREIGN KEY (`idAnime`) REFERENCES `Anime` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-
-
 
 
 # Dump of table Author
@@ -132,7 +127,8 @@ DROP TABLE IF EXISTS `Genre`;
 CREATE TABLE `Genre` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(20) CHARACTER SET latin1 NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -258,10 +254,9 @@ DROP TABLE IF EXISTS `Tag`;
 CREATE TABLE `Tag` (
   `id` int(50) NOT NULL,
   `name` varchar(30) CHARACTER SET latin1 NOT NULL DEFAULT '',
-  PRIMARY KEY (`name`),
+  UNIQUE KEY `name` (`name`),
   KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 
 
 # Dump of table Anime_has_Author
@@ -344,7 +339,6 @@ CREATE TABLE `Anime_has_Tag` (
   CONSTRAINT `Anime_has_Tag_ibfk_2` FOREIGN KEY (`idAnime`) REFERENCES `Anime` (`id`),
   CONSTRAINT `Anime_has_Tag_ibfk_3` FOREIGN KEY (`idTag`) REFERENCES `Tag` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 
 
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
