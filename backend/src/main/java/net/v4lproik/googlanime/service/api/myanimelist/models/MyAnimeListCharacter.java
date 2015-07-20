@@ -1,6 +1,7 @@
 package net.v4lproik.googlanime.service.api.myanimelist.models;
 
-import com.google.common.base.Objects;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class MyAnimeListCharacter {
 
@@ -13,6 +14,8 @@ public class MyAnimeListCharacter {
     private String japaneseName;
 
     private String role;
+
+    private String[] nickNames;
 
     public String getFirstName() {
         return firstName;
@@ -54,14 +57,23 @@ public class MyAnimeListCharacter {
         this.japaneseName = japaneseName;
     }
 
+    public String[] getNickNames() {
+        return nickNames;
+    }
+
+    public void setNickNames(String[] nickNames) {
+        this.nickNames = nickNames;
+    }
+
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
-                .add("id", id)
-                .add("firstName", firstName)
-                .add("lastName", lastName)
-                .add("japaneseName", japaneseName)
-                .add("role", role)
+        return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
+                .append("id", id)
+                .append("firstName", firstName)
+                .append("lastName", lastName)
+                .append("japaneseName", japaneseName)
+                .append("role", role)
+                .append("nickNames", nickNames)
                 .toString();
     }
 }

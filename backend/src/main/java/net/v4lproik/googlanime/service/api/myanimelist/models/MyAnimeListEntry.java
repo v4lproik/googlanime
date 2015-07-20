@@ -19,6 +19,8 @@ public abstract class MyAnimeListEntry {
 
     private String title;
 
+    private String background;
+
     private String[] synonyms;
 
     private String englishTitle;
@@ -64,6 +66,8 @@ public abstract class MyAnimeListEntry {
     private List<MyAnimeListEntry> summaries = new ArrayList<MyAnimeListEntry>();
 
     private List<MyAnimeListEntry> adaptations = new ArrayList<MyAnimeListEntry>();
+
+    private List<MyAnimeListEntry> parentStories = new ArrayList<MyAnimeListEntry>();
 
     private List<MyAnimeListCharacter> characters = new ArrayList<MyAnimeListCharacter>();
 
@@ -295,6 +299,22 @@ public abstract class MyAnimeListEntry {
         this.parent = parent;
     }
 
+    public List<MyAnimeListEntry> getParentStories() {
+        return parentStories;
+    }
+
+    public void setParentStories(List<MyAnimeListEntry> parentStories) {
+        this.parentStories = parentStories;
+    }
+
+    public String getBackground() {
+        return background;
+    }
+
+    public void setBackground(String background) {
+        this.background = background;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -319,8 +339,9 @@ public abstract class MyAnimeListEntry {
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
                 .append("id", id)
-                .append("title", title)
                 .append("type", type)
+                .append("title", title)
+                .append("background", background)
                 .append("synonyms", synonyms)
                 .append("englishTitle", englishTitle)
                 .append("japaneseTitle", japaneseTitle)
@@ -344,6 +365,7 @@ public abstract class MyAnimeListEntry {
                 .append("others", others)
                 .append("summaries", summaries)
                 .append("adaptations", adaptations)
+                .append("parentStories", parentStories)
                 .append("characters", characters)
                 .toString();
     }

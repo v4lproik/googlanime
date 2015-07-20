@@ -75,7 +75,7 @@ public class MyAnimeList extends WebsiteAbstract {
         if (!dependency){
             log.debug(String.format("ToScrap %s", id.toString()));
 
-            String url = createURL(id, type);
+            String url = createEntryURL(id, type);
             Document doc = this.getResultFromJSoup(url, type);
 
             if (doc == null)
@@ -132,7 +132,7 @@ public class MyAnimeList extends WebsiteAbstract {
             if (!animeScrapped.contains(toScrap.getId())) {
                 log.debug(String.format("ToScrap %s => %s", id.toString(), toScrap.getTitle()));
 
-                url = createURL(id, type);
+                url = createEntryURL(id, type);
                 doc = getResultFromJSoup(url, type);
 
                 if (doc == null) {
@@ -390,16 +390,32 @@ public class MyAnimeList extends WebsiteAbstract {
         return null;
     }
 
-    public String createURL(Integer id, String type){
+    public String createEntryURL(Integer id, String type){
+
+        if (id == null || type == null){
+            throw new IllegalArgumentException("Id or Type cannot be null");
+        }
+
         return DOMAIN + type.toString() + "/" + id.toString() + "/";
     }
 
+    public String createCharacterURL(Integer id){
+
+        if (id == null){
+            throw new IllegalArgumentException("Id cannot be null");
+        }
+
+        return DOMAIN + "character" + "/" + id.toString() + "/";
+    }
+
     MyAnimeListEntry scrapGeneralInformation(Document doc, String url, String type, MyAnimeListEntry myAnimeListEntry){
+
         String pattern;
+        Integer id = this.getIdFromLink(url);
 
-        Integer id;
-
-        id = this.getIdFromLink(url);
+        if (doc == null){
+            throw new IllegalArgumentException("Document cannot be null");
+        }
 
         if (myAnimeListEntry == null){
             myAnimeListEntry = entityFactory.getEntity(type, id);
@@ -414,7 +430,7 @@ public class MyAnimeList extends WebsiteAbstract {
         //get image
         myAnimeListEntry.setPosterImage(doc.select("meta[property=og:image]").attr("content"));
 
-        //parse for general information - work in porgress
+        //parse for general information
         Elements tds = doc.select("td");
         for (Element td : tds) {
             if (td.text().startsWith("EditSynopsis")) {
@@ -630,6 +646,33 @@ public class MyAnimeList extends WebsiteAbstract {
                                                                 summaries.add(summary);
                                                             }
                                                         }
+                                                    }else {
+                                                        if (line.startsWith("Parent story:")) {
+                                                            log.debug("Parent story have been found");
+
+                                                            Document docTmp = Jsoup.parse(line);
+                                                            Elements links = docTmp.select("a");
+
+                                                            for (Element link : links) {
+                                                                String linkHref = link.attr("href");
+                                                                String title =  link.text();
+                                                                id = this.getIdFromLink(linkHref);
+                                                                type = this.getTypeFromLink(linkHref);
+
+                                                                if (id != null) {
+                                                                    List<MyAnimeListEntry> parentStories = new ArrayList<>();
+                                                                    MyAnimeListEntry parentStory = entityFactory.getEntity(type, id);
+                                                                    parentStory.setId(id);
+                                                                    parentStory.setType(type);
+                                                                    parentStory.setTitle(title);
+                                                                    parentStory.setParent(myAnimeListEntry);
+
+                                                                    //get sequels
+                                                                    parentStories = myAnimeListEntry.getParentStories();
+                                                                    parentStories.add(parentStory);
+                                                                }
+                                                            }
+                                                        }
                                                     }
                                                 }
                                             }
@@ -650,6 +693,9 @@ public class MyAnimeList extends WebsiteAbstract {
             if (div.text().startsWith("Synopsis: "))
                 myAnimeListEntry.setSynopsis(div.text().substring(9, div.text().length()));
 
+            if (div.text().startsWith("Background: "))
+                myAnimeListEntry.setBackground(div.text().substring(12, div.text().length()));
+
             if (div.text().startsWith("Synonyms: "))
                 myAnimeListEntry.setSynonyms(div.text().substring(10, div.text().length()).replace(", ", ",").split(","));
 
@@ -664,14 +710,28 @@ public class MyAnimeList extends WebsiteAbstract {
                 anime.setEpisodeCount(div.text().substring(10, div.text().length()));
             }
 
-            pattern = type.equals("manga") ? "Published: " : "Aired: ";
+            if (div.text().startsWith("Serialization: ")){
+                MyAnimeListManga manga = (MyAnimeListManga) myAnimeListEntry;
+                manga.setSerialization(div.text().substring(14, div.text().length()));
+            }
 
-            if (div.text().startsWith(pattern)) {
-                String[] tmp;
-                tmp = div.text().substring(7, div.text().length()).split("to ");
+            if (div.text().startsWith("Published: ")){
+                String[] fullTime = div.text().substring(11, div.text().length()).split(" to ");
+
                 try {
-                    myAnimeListEntry.setStartedAiringDate(tmp[0]);
-                    myAnimeListEntry.setFinishedAiringDate(tmp[1]);
+                    myAnimeListEntry.setStartedAiringDate(fullTime[0]);
+                    myAnimeListEntry.setFinishedAiringDate(fullTime[1]);
+                }catch(Exception e){
+                    log.debug("Error parsing airing/finishing dates");
+                }
+            }
+
+            if (div.text().startsWith("Aired: ")){
+                String[] fullTime = div.text().substring(7, div.text().length()).split(" to ");
+
+                try {
+                    myAnimeListEntry.setStartedAiringDate(fullTime[0]);
+                    myAnimeListEntry.setFinishedAiringDate(fullTime[1]);
                 }catch(Exception e){
                     log.debug("Error parsing airing/finishing dates");
                 }
@@ -682,9 +742,26 @@ public class MyAnimeList extends WebsiteAbstract {
                 anime.setProducers(div.text().substring(11, div.text().length()).replace(", ", ",").split(","));
             }
 
-
             if (div.text().startsWith("Genres: "))
                 myAnimeListEntry.setGenres(div.text().substring(8, div.text().length()).replace(", ", ",").split(","));
+
+            if (div.text().startsWith("Volumes: ")){
+                MyAnimeListManga manga = (MyAnimeListManga) myAnimeListEntry;
+                try{
+                    manga.setNbVolumes(Integer.parseInt(div.text().substring(9, div.text().length())));
+                }catch (Exception e){
+                    log.debug("Error parsing volumes number");
+                }
+            }
+
+            if (div.text().startsWith("Chapters: ")){
+                MyAnimeListManga manga = (MyAnimeListManga) myAnimeListEntry;
+                try{
+                    manga.setMbChapters(Integer.parseInt(div.text().substring(10, div.text().length())));
+                }catch (Exception e){
+                    log.debug("Error parsing volumes number");
+                }
+            }
 
             if (div.text().startsWith("Authors: ")){
 
@@ -752,9 +829,10 @@ public class MyAnimeList extends WebsiteAbstract {
                         MyAnimeListCharacter character = new MyAnimeListCharacter();
                         try{
                             String characterFullName = el.select("td").get(1).select("a").text();
+                            Integer idCharacter = Integer.parseInt(el.select("td").get(1).select("a").attr("href").split("/")[4]);
                             String role = el.select("td").get(1).select("small").text();
 
-                            String[] parts = characterFullName.split(",");
+                            String[] parts = characterFullName.split(", ");
 
                             if (parts.length == 2){
                                 character.setFirstName(parts[1]);
@@ -764,9 +842,10 @@ public class MyAnimeList extends WebsiteAbstract {
                                     character.setLastName(characterFullName);
                             }
                             character.setRole(role);
+                            character.setId(idCharacter);
                             myAnimeListEntry.getCharacters().add(character);
 
-                            log.info(String.format("Add new character %s", character.toString()));
+                            log.debug(String.format("Add new character %s", character.toString()));
                         }catch (Exception e){
                             log.debug("Error when trying to get character's name");
                         }
@@ -815,6 +894,42 @@ public class MyAnimeList extends WebsiteAbstract {
         }
 
         return myAnimeListEntry;
+    }
+
+    public MyAnimeListCharacter scrapCharacter(Document doc, String url, MyAnimeListCharacter character){
+
+        if (doc == null){
+            throw new IllegalArgumentException("Document cannot be null");
+        }
+
+        if (character == null){
+            character = new MyAnimeListCharacter();
+        }
+
+        Elements base = doc.body().select("#myanimelist").select("#contentWrapper");
+
+        String header = base.select("h1").first().text();
+
+        try {
+            String nicknames = header.split("\"")[1];
+            character.setNickNames(nicknames.split(","));
+        }catch (Exception e){
+            log.debug("Error when trying to get character's nicknames");
+        }
+
+        Elements content = base.select("#content").select("table").first().select("tbody").first().select("tr").first()
+                .select("td[style=padding-left: 5px;]");
+
+        String allNames = content.select(".normal_header").text();
+
+        try {
+            String japaneseName = allNames.split("\\(")[1].split("\\)")[0];
+            character.setJapaneseName(japaneseName);
+        }catch (Exception e){
+            log.debug("Error when trying to get character's japanese name");
+        }
+
+        return character;
     }
 
     @Override

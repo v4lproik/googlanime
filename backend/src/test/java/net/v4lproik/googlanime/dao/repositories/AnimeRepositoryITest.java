@@ -131,7 +131,7 @@ public class AnimeRepositoryITest {
         ImportOptions options = new ImportOptions(2904, "anime", false);
         String type = options.getType();
         Integer id = options.getId();
-        String url = myAnimeList.createURL(id, type);
+        String url = myAnimeList.createEntryURL(id, type);
 
         File input = new File("src/test/resource/code-geass-r2.anime");
         Document doc = Jsoup.parse(input, "UTF-8", url);
@@ -154,7 +154,7 @@ public class AnimeRepositoryITest {
         ImportOptions options = new ImportOptions(2904, "anime", false);
         String type = options.getType();
         Integer id = options.getId();
-        String url = myAnimeList.createURL(id, type);
+        String url = myAnimeList.createEntryURL(id, type);
 
         File input = new File("src/test/resource/code-geass-r2.anime");
         Document doc = Jsoup.parse(input, "UTF-8", url);

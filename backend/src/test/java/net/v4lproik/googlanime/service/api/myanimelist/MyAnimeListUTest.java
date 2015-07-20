@@ -27,7 +27,7 @@ public class MyAnimeListUTest {
         ImportOptions options = new ImportOptions(11, "manga", false);
         String type = options.getType();
         final Integer id = options.getId();
-        String url = myAnimeList.createURL(id, type);
+        String url = myAnimeList.createEntryURL(id, type);
 
         File input = new File("src/test/resource/naruto.manga");
         Document doc = Jsoup.parse(input, "UTF-8", url);
@@ -37,7 +37,6 @@ public class MyAnimeListUTest {
         // When
         MyAnimeListEntry response = myAnimeList.crawlById(options);
 
-        System.out.println(response.getPosterImage());
         //Then
         assertEquals("Naruto", response.getTitle());
         assertEquals("http://cdn.myanimelist.net/images/manga/3/117681l.jpg", response.getPosterImage());
@@ -49,7 +48,7 @@ public class MyAnimeListUTest {
         ImportOptions options = new ImportOptions(2904, "anime", false);
         String type = options.getType();
         Integer id = options.getId();
-        String url = myAnimeList.createURL(id, type);
+        String url = myAnimeList.createEntryURL(id, type);
 
         File input = new File("src/test/resource/code-geass-r2.anime");
         Document doc = Jsoup.parse(input, "UTF-8", url);
@@ -87,7 +86,7 @@ public class MyAnimeListUTest {
         ImportOptions options = new ImportOptions(5081, "anime", false);
         String type = options.getType();
         final Integer id = options.getId();
-        String url = myAnimeList.createURL(id, type);
+        String url = myAnimeList.createEntryURL(id, type);
 
         doReturn(null).when(myAnimeList).getResultFromJSoup(url, type);
 
@@ -115,5 +114,37 @@ public class MyAnimeListUTest {
 
         // When
         MyAnimeListEntry response = myAnimeList.crawlById(options);
+    }
+
+    @Test
+    public void test_crawlCharacter_shouldBeOK() throws Exception {
+        // Given
+        ImportOptions options = new ImportOptions(11, "manga", false);
+        String type = options.getType();
+        final Integer id = options.getId();
+        String url = myAnimeList.createEntryURL(id, type);
+
+        File input = new File("src/test/resource/naruto.manga");
+        Document doc = Jsoup.parse(input, "UTF-8", url);
+
+        doReturn(doc).when(myAnimeList).getResultFromJSoup(url, type);
+
+        // When
+        MyAnimeListEntry response = myAnimeList.crawlById(options);
+
+
+        input = new File("src/test/resource/naruto-uzumaki.character");
+        doc = Jsoup.parse(input, "UTF-8", url);
+
+
+        Integer idCharacter = response.getCharacters().get(0).getId();
+        url = myAnimeList.createCharacterURL(idCharacter);
+
+        myAnimeList.scrapCharacter(doc, url, response.getCharacters().get(0));
+
+        //Then
+        assertEquals("Naruto", response.getTitle());
+        assertEquals("http://cdn.myanimelist.net/images/manga/3/117681l.jpg", response.getPosterImage());
+        assertEquals("うずまきナルト", response.getCharacters().get(0).getJapaneseName());
     }
 }
