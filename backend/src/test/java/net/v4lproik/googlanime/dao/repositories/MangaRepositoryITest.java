@@ -97,7 +97,7 @@ public class MangaRepositoryITest {
         ImportOptions options = new ImportOptions(11, "manga", false);
         String type = options.getType();
         final Integer id = options.getId();
-        String url = myAnimeList.createURL(id, type);
+        String url = myAnimeList.createEntryURL(id, type);
 
         File input = new File("src/test/resource/naruto.manga");
         Document doc = Jsoup.parse(input, "UTF-8", url);
@@ -120,7 +120,7 @@ public class MangaRepositoryITest {
         ImportOptions options = new ImportOptions(11, "manga", false);
         String type = options.getType();
         final Integer id = options.getId();
-        String url = myAnimeList.createURL(id, type);
+        String url = myAnimeList.createEntryURL(id, type);
 
         File input = new File("src/test/resource/naruto.manga");
         Document doc = Jsoup.parse(input, "UTF-8", url);
