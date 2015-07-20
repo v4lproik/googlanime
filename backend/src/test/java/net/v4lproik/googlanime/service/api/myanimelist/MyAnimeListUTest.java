@@ -1,7 +1,6 @@
 package net.v4lproik.googlanime.service.api.myanimelist;
 
 import net.v4lproik.googlanime.service.api.common.ImportOptions;
-import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListCharacter;
 import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListEntry;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -137,14 +136,15 @@ public class MyAnimeListUTest {
         input = new File("src/test/resource/naruto-uzumaki.character");
         doc = Jsoup.parse(input, "UTF-8", url);
 
+
         Integer idCharacter = response.getCharacters().get(0).getId();
         url = myAnimeList.createCharacterURL(idCharacter);
 
-        MyAnimeListCharacter character = myAnimeList.scrapCharacter(doc, url, response.getCharacters().get(0));
-
+        myAnimeList.scrapCharacter(doc, url, response.getCharacters().get(0));
 
         //Then
         assertEquals("Naruto", response.getTitle());
         assertEquals("http://cdn.myanimelist.net/images/manga/3/117681l.jpg", response.getPosterImage());
+        assertEquals("うずまきナルト", response.getCharacters().get(0).getJapaneseName());
     }
 }
