@@ -18,10 +18,10 @@ import java.util.List;
 import static org.elasticsearch.index.query.QueryBuilders.fuzzyLikeThisQuery;
 
 @Service
-public class ESAnimeServiceReadImpl implements AnimeServiceRead {
+public class AnimeServiceReadImpl implements AnimeServiceRead {
 
     public static final int MAX_RETURN_SIZE = 20;
-    static Logger log = Logger.getLogger(ESAnimeServiceReadImpl.class.getName());
+    static Logger log = Logger.getLogger(AnimeServiceReadImpl.class.getName());
     @Autowired
     private Client client;
 

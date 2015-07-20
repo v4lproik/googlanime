@@ -3,7 +3,7 @@
 
 **Googlanime Backend** is the backend of [Googlanime](https://github.com/v4lproik/googlanime/) project.
 
-This project aims to provide a clear and nice interface to whoever is seeking for anime/manga information.
+This project aims to provide a clear and nice interface to whoever is seeking for entry/manga information.
 
 ## Features implemented
 
@@ -25,4 +25,4 @@ This is a the main core of the project. It provides a powerful JEE RESTful API t
 5. `mvn clean compile jetty:run -Dspring.profiles.active="test"` to launch the server (Reachable at http://localhost:8080/ by default)
 6. `python -m maestro start` to start docker containers 
 6. `sh scripts/fill-elasticsearch.sh` to fill elasticsearch with some data
-7. `http://localhost:8080/animes/?query=geass&fields=title&type=anime&render=mal` to browse to a test page 
+7. `http://localhost:8080/animes/?query=geass&fields=title&type=entry&render=mal` to browse to a test page

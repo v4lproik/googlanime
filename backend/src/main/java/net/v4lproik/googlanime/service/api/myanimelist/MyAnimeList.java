@@ -14,10 +14,7 @@ import org.springframework.beans.BeanUtils;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import static org.elasticsearch.common.lang3.StringUtils.countMatches;
 import static org.elasticsearch.common.lang3.StringUtils.substringBetween;
@@ -25,17 +22,18 @@ import static org.elasticsearch.common.lang3.StringUtils.substringBetween;
 public class MyAnimeList extends WebsiteAbstract {
 
     public static final String DOMAIN = "http://myanimelist.net/";
-    public static final String API = "";
     public static final String USER_AGENT = "iMAL-iOS";
-    public static final String[] URL_GRAB = new String[]{"characters", "characters#staff"};
     public static final String[] IGNORE_PROPERTIES = {"sequels", "alternativeVersions", "prequels", "spinoff", "sideStories", "others", "summaries", "adaptations" };
     static Logger log = Logger.getLogger(MyAnimeList.class.getName());
-    private List<Integer> animeScrapped = new ArrayList<Integer>();
-    private List<Integer> animeErrorScrapped = new ArrayList<Integer>();
+    List<Integer> animeScrapped = new ArrayList<Integer>();
+    List<Integer> animeErrorScrapped = new ArrayList<Integer>();
 
-    private List<MyAnimeListAnimeDependency> animes = new ArrayList<>();
+    Set<MyAnimeListEntryDependency> animes = new HashSet<MyAnimeListEntryDependency>();
 
-    private MyAnimeListAnime root;
+    MyAnimeListEntry root;
+
+    MyAnimeListEntryFactory entityFactory = new MyAnimeListEntryFactory();
+    MyAnimeListEntryDependencyFactory entityFactoryDependency = new MyAnimeListEntryDependencyFactory();
 
     @Override
     public MyAnimeListAnime crawl(ImportOptions opts) throws IOException {
@@ -59,7 +57,7 @@ public class MyAnimeList extends WebsiteAbstract {
     }
 
     @Override
-    public MyAnimeListAnime crawlById(ImportOptions opts) throws IOException {
+    public MyAnimeListEntry crawlById(ImportOptions opts) throws IOException {
 
         final String type = opts.getType();
         final Integer id = opts.getId();
@@ -71,9 +69,8 @@ public class MyAnimeList extends WebsiteAbstract {
         if (type.isEmpty() || id.toString().isEmpty())
             throw new IllegalArgumentException("Both type and id argument cannot be empty");
 
-        // Set the root here so it gets never overwritten
-        root = new MyAnimeListAnime(id);
-        root.setType(type);
+
+        root = entityFactory.getEntity(type, id);
 
         if (!dependency){
             log.debug(String.format("ToScrap %s", id.toString()));
@@ -97,7 +94,7 @@ public class MyAnimeList extends WebsiteAbstract {
     }
 
     @Override
-    public List<MyAnimeListAnimeDependency> crawlByIdList(ImportOptions opts) throws IOException {
+    public Set<MyAnimeListEntryDependency> crawlByIdList(ImportOptions opts) throws IOException {
 
         final String type = opts.getType();
         final Integer id = opts.getId();
@@ -108,8 +105,7 @@ public class MyAnimeList extends WebsiteAbstract {
         if (type.isEmpty() || id.toString().isEmpty())
             throw new IllegalArgumentException("Both type and id argument cannot be empty");
 
-        // Set the root here so it gets never overwritten
-        root = new MyAnimeListAnime(id);
+        root = entityFactory.getEntity(type, id);
         root.setType(type);
 
         letsScrap(root, true);
@@ -117,7 +113,7 @@ public class MyAnimeList extends WebsiteAbstract {
         return animes;
     }
 
-    protected MyAnimeListAnime letsScrap(MyAnimeListAnime toScrap, Boolean first) throws IOException {
+    MyAnimeListEntry letsScrap(MyAnimeListEntry toScrap, Boolean first) throws IOException {
 
         String url;
         Document doc;
@@ -145,15 +141,15 @@ public class MyAnimeList extends WebsiteAbstract {
                     scrapGeneralInformation(doc, url, type, toScrap);
                     animeScrapped.add(id);
 
-                    MyAnimeListAnimeDependency myAnimeListAnimeDependency = convertIntoDependencyObject(toScrap);
+                    MyAnimeListEntryDependency myAnimeListEntryDependency = convertIntoDependencyObject(toScrap);
 
-                    animes.add(myAnimeListAnimeDependency);
+                    animes.add(myAnimeListEntryDependency);
                 }
 
                 log.debug(toScrap.toString());
             }
 
-            MyAnimeListAnime nextToScrap = whoSNext(toScrap);
+            MyAnimeListEntry nextToScrap = whoSNext(toScrap);
 
             // Tricky part
             if (nextToScrap == null){
@@ -192,178 +188,183 @@ public class MyAnimeList extends WebsiteAbstract {
         return doc;
     }
 
-    protected MyAnimeListAnime whoSNext(MyAnimeListAnime lastScrapped){
+    MyAnimeListEntry whoSNext(MyAnimeListEntry lastScrapped){
 
         log.debug(String.format("Animes that have been scrapped %s ", Arrays.asList(animeScrapped)));
         log.debug(String.format("Animes that have been errorscrapped %s ", Arrays.asList(animeErrorScrapped)));
 
 
-        for (Object anime : lastScrapped.getAdaptations()){
-            MyAnimeListAnime animeSelected = (MyAnimeListAnime) anime;
-            Integer id = animeSelected.getId();
+        for (MyAnimeListEntry entry : lastScrapped.getAdaptations()){
+            Integer id = entry.getId();
 
             if (!animeScrapped.contains(id) && !animeErrorScrapped.contains(id)){
-                return animeSelected;
+                return entry;
             }
         }
 
-        for (Object anime : lastScrapped.getAlternativeVersions()){
-            MyAnimeListAnime animeSelected = (MyAnimeListAnime) anime;
-            int id = animeSelected.getId();
+        for (MyAnimeListEntry entry : lastScrapped.getAlternativeVersions()){
+            Integer id = entry.getId();
 
             if (!animeScrapped.contains(id) && !animeErrorScrapped.contains(id)){
-                return animeSelected;
+                return entry;
             }
         }
 
-        for (Object anime : lastScrapped.getPrequels()){
-            MyAnimeListAnime animeSelected = (MyAnimeListAnime) anime;
-            int id = animeSelected.getId();
+        for (MyAnimeListEntry entry : lastScrapped.getPrequels()){
+            Integer id = entry.getId();
 
             if (!animeScrapped.contains(id) && !animeErrorScrapped.contains(id)){
-                return animeSelected;
+                return entry;
             }
         }
 
-        for (Object anime : lastScrapped.getSequels()){
-            MyAnimeListAnime animeSelected = (MyAnimeListAnime) anime;
-            int id = animeSelected.getId();
+        for (MyAnimeListEntry entry : lastScrapped.getSequels()){
+            int id = entry.getId();
 
             if (!animeScrapped.contains(id) && !animeErrorScrapped.contains(id)){
-                return animeSelected;
+                return entry;
             }
         }
 
-        for (Object anime : lastScrapped.getSideStories()){
-            MyAnimeListAnime animeSelected = (MyAnimeListAnime) anime;
-            int id = animeSelected.getId();
+        for (MyAnimeListEntry entry : lastScrapped.getSideStories()){
+            int id = entry.getId();
 
             if (!animeScrapped.contains(id) && !animeErrorScrapped.contains(id)){
-                return animeSelected;
+                return entry;
             }
         }
 
-        for (Object anime : lastScrapped.getOthers()){
-            MyAnimeListAnime animeSelected = (MyAnimeListAnime) anime;
-            int id = animeSelected.getId();
+        for (MyAnimeListEntry entry : lastScrapped.getOthers()){
+            int id = entry.getId();
 
             if (!animeScrapped.contains(id) && !animeErrorScrapped.contains(id)){
-                return animeSelected;
+                return entry;
             }
         }
 
-        for (Object anime : lastScrapped.getSummaries()){
-            MyAnimeListAnime animeSelected = (MyAnimeListAnime) anime;
-            int id = animeSelected.getId();
+        for (MyAnimeListEntry entry : lastScrapped.getSummaries()){
+            int id = entry.getId();
 
             if (!animeScrapped.contains(id) && !animeErrorScrapped.contains(id)){
-                return animeSelected;
+                return entry;
             }
         }
 
         return null;
     }
 
-    protected MyAnimeListAnimeDependency convertIntoDependencyObject(MyAnimeListAnime from){
+    MyAnimeListEntryDependency convertIntoDependencyObject(MyAnimeListEntry from){
 
-        MyAnimeListAnimeDependency myAnimeListAnimeDependency = new MyAnimeListAnimeDependency();
-        MyAnimeListAnimeDependencyId myAnimeListAnimeDependencyId = new MyAnimeListAnimeDependencyId();
+        MyAnimeListEntryDependency myAnimeListEntryDependency = entityFactoryDependency.getEntity(from.getType(), from.getId());
+        BeanUtils.copyProperties(from, myAnimeListEntryDependency, IGNORE_PROPERTIES);
+        MyAnimeListEntryDependencyId myAnimeListEntryDependencyId = new MyAnimeListEntryDependencyId();
         Integer id;
         String title;
         String type;
 
-        //Copy value into MyAnimeListDependency
-        BeanUtils.copyProperties(from, myAnimeListAnimeDependency, IGNORE_PROPERTIES);
+        for (MyAnimeListEntry entry : from.getAdaptations()){
+            id = entry.getId();
+            title = entry.getEnglishTitle();
+            type = entry.getType();
+            myAnimeListEntryDependency = entityFactoryDependency.getEntity(type, id);
+            BeanUtils.copyProperties(from, myAnimeListEntryDependency, IGNORE_PROPERTIES);
 
-        for (MyAnimeListAnime anime : from.getAdaptations()){
-            id = anime.getId();
-            title = anime.getEnglishTitle();
-            type = anime.getType();
+            myAnimeListEntryDependencyId.setId(id);
+            myAnimeListEntryDependencyId.setEnglishTitle(title);
+            myAnimeListEntryDependencyId.setType(type);
 
-            myAnimeListAnimeDependencyId.setId(id);
-            myAnimeListAnimeDependencyId.setEnglishTitle(title);
-            myAnimeListAnimeDependencyId.setType(type);
-
-            myAnimeListAnimeDependency.getAdaptations().add(myAnimeListAnimeDependencyId);
+            myAnimeListEntryDependency.getAdaptations().add(myAnimeListEntryDependencyId);
 
         }
 
-        for (MyAnimeListAnime anime : from.getAlternativeVersions()){
-            id = anime.getId();
-            title = anime.getEnglishTitle();
-            type = anime.getType();
+        for (MyAnimeListEntry entry : from.getAlternativeVersions()){
+            id = entry.getId();
+            title = entry.getEnglishTitle();
+            type = entry.getType();
+            myAnimeListEntryDependency = entityFactoryDependency.getEntity(type, id);
+            BeanUtils.copyProperties(from, myAnimeListEntryDependency, IGNORE_PROPERTIES);
 
-            myAnimeListAnimeDependencyId.setId(id);
-            myAnimeListAnimeDependencyId.setEnglishTitle(title);
-            myAnimeListAnimeDependencyId.setType(type);
+            myAnimeListEntryDependencyId.setId(id);
+            myAnimeListEntryDependencyId.setEnglishTitle(title);
+            myAnimeListEntryDependencyId.setType(type);
 
-            myAnimeListAnimeDependency.getAlternativeVersions().add(myAnimeListAnimeDependencyId);
+            myAnimeListEntryDependency.getAlternativeVersions().add(myAnimeListEntryDependencyId);
         }
 
-        for (MyAnimeListAnime anime : from.getPrequels()){
-            id = anime.getId();
-            title = anime.getEnglishTitle();
-            type = anime.getType();
+        for (MyAnimeListEntry entry : from.getPrequels()){
+            id = entry.getId();
+            title = entry.getEnglishTitle();
+            type = entry.getType();
+            myAnimeListEntryDependency = entityFactoryDependency.getEntity(type, id);
+            BeanUtils.copyProperties(from, myAnimeListEntryDependency, IGNORE_PROPERTIES);
 
-            myAnimeListAnimeDependencyId.setId(id);
-            myAnimeListAnimeDependencyId.setEnglishTitle(title);
-            myAnimeListAnimeDependencyId.setType(type);
+            myAnimeListEntryDependencyId.setId(id);
+            myAnimeListEntryDependencyId.setEnglishTitle(title);
+            myAnimeListEntryDependencyId.setType(type);
 
-            myAnimeListAnimeDependency.getPrequels().add(myAnimeListAnimeDependencyId);
+            myAnimeListEntryDependency.getPrequels().add(myAnimeListEntryDependencyId);
         }
 
-        for (MyAnimeListAnime anime : from.getSequels()){
-            id = anime.getId();
-            title = anime.getEnglishTitle();
-            type = anime.getType();
+        for (MyAnimeListEntry entry : from.getSequels()){
+            id = entry.getId();
+            title = entry.getEnglishTitle();
+            type = entry.getType();
+            myAnimeListEntryDependency = entityFactoryDependency.getEntity(type, id);
+            BeanUtils.copyProperties(from, myAnimeListEntryDependency, IGNORE_PROPERTIES);
 
-            myAnimeListAnimeDependencyId.setId(id);
-            myAnimeListAnimeDependencyId.setEnglishTitle(title);
-            myAnimeListAnimeDependencyId.setType(type);
+            myAnimeListEntryDependencyId.setId(id);
+            myAnimeListEntryDependencyId.setEnglishTitle(title);
+            myAnimeListEntryDependencyId.setType(type);
 
-            myAnimeListAnimeDependency.getSequels().add(myAnimeListAnimeDependencyId);
+            myAnimeListEntryDependency.getSequels().add(myAnimeListEntryDependencyId);
         }
 
-        for (MyAnimeListAnime anime : from.getSideStories()){
-            id = anime.getId();
-            title = anime.getEnglishTitle();
-            type = anime.getType();
+        for (MyAnimeListEntry entry : from.getSideStories()){
+            id = entry.getId();
+            title = entry.getEnglishTitle();
+            type = entry.getType();
+            myAnimeListEntryDependency = entityFactoryDependency.getEntity(type, id);
+            BeanUtils.copyProperties(from, myAnimeListEntryDependency, IGNORE_PROPERTIES);
 
-            myAnimeListAnimeDependencyId.setId(id);
-            myAnimeListAnimeDependencyId.setEnglishTitle(title);
-            myAnimeListAnimeDependencyId.setType(type);
+            myAnimeListEntryDependencyId.setId(id);
+            myAnimeListEntryDependencyId.setEnglishTitle(title);
+            myAnimeListEntryDependencyId.setType(type);
 
-            myAnimeListAnimeDependency.getSideStories().add(myAnimeListAnimeDependencyId);
+            myAnimeListEntryDependency.getSideStories().add(myAnimeListEntryDependencyId);
         }
 
-        for (MyAnimeListAnime anime : from.getOthers()) {
-            id = anime.getId();
-            title = anime.getEnglishTitle();
-            type = anime.getType();
+        for (MyAnimeListEntry entry : from.getOthers()) {
+            id = entry.getId();
+            title = entry.getEnglishTitle();
+            type = entry.getType();
+            myAnimeListEntryDependency = entityFactoryDependency.getEntity(type, id);
+            BeanUtils.copyProperties(from, myAnimeListEntryDependency, IGNORE_PROPERTIES);
 
-            myAnimeListAnimeDependencyId.setId(id);
-            myAnimeListAnimeDependencyId.setEnglishTitle(title);
-            myAnimeListAnimeDependencyId.setType(type);
+            myAnimeListEntryDependencyId.setId(id);
+            myAnimeListEntryDependencyId.setEnglishTitle(title);
+            myAnimeListEntryDependencyId.setType(type);
 
-            myAnimeListAnimeDependency.getOthers().add(myAnimeListAnimeDependencyId);
+            myAnimeListEntryDependency.getOthers().add(myAnimeListEntryDependencyId);
         }
 
-        for (MyAnimeListAnime anime : from.getSummaries()) {
-            id = anime.getId();
-            title = anime.getEnglishTitle();
-            type = anime.getType();
+        for (MyAnimeListEntry entry : from.getSummaries()) {
+            id = entry.getId();
+            title = entry.getEnglishTitle();
+            type = entry.getType();
+            myAnimeListEntryDependency = entityFactoryDependency.getEntity(type, id);
+            BeanUtils.copyProperties(from, myAnimeListEntryDependency, IGNORE_PROPERTIES);
 
-            myAnimeListAnimeDependencyId.setId(id);
-            myAnimeListAnimeDependencyId.setEnglishTitle(title);
-            myAnimeListAnimeDependencyId.setType(type);
+            myAnimeListEntryDependencyId.setId(id);
+            myAnimeListEntryDependencyId.setEnglishTitle(title);
+            myAnimeListEntryDependencyId.setType(type);
 
-            myAnimeListAnimeDependency.getSummaries().add(myAnimeListAnimeDependencyId);
+            myAnimeListEntryDependency.getSummaries().add(myAnimeListEntryDependencyId);
         }
 
-        return myAnimeListAnimeDependency;
+        return myAnimeListEntryDependency;
     }
 
-    protected Integer getIdFromLink(String link) {
+    Integer getIdFromLink(String link) {
         try {
             if (link.startsWith("http") || link.startsWith("https"))
                 return Integer.parseInt(link.split("/")[4].split("/")[0]);
@@ -376,7 +377,7 @@ public class MyAnimeList extends WebsiteAbstract {
         return null;
     }
 
-    protected String getTypeFromLink(String link) {
+    String getTypeFromLink(String link) {
         try {
             if (link.startsWith("http") || link.startsWith("https"))
                 return link.split("/")[3].split("/")[0];
@@ -393,28 +394,31 @@ public class MyAnimeList extends WebsiteAbstract {
         return DOMAIN + type.toString() + "/" + id.toString() + "/";
     }
 
-    private MyAnimeListAnime scrapGeneralInformation(Document doc, String url, String type, MyAnimeListAnime myAnimeListAnime){
+    MyAnimeListEntry scrapGeneralInformation(Document doc, String url, String type, MyAnimeListEntry myAnimeListEntry){
         String pattern;
 
-        if (myAnimeListAnime == null) myAnimeListAnime = new MyAnimeListAnime();
+        Integer id;
 
-        //get id
-        myAnimeListAnime.setId(this.getIdFromLink(url));
+        id = this.getIdFromLink(url);
+
+        if (myAnimeListEntry == null){
+            myAnimeListEntry = entityFactory.getEntity(type, id);
+        }
 
         //get type
-        myAnimeListAnime.setType(type);
+        myAnimeListEntry.setType(type);
 
         //get main title
-        myAnimeListAnime.setTitle(doc.select("h1").first().ownText());
+        myAnimeListEntry.setTitle(doc.select("h1").first().ownText());
 
         //get image
-        myAnimeListAnime.setPosterImage(doc.select("meta[property=og:image]").attr("content"));
+        myAnimeListEntry.setPosterImage(doc.select("meta[property=og:image]").attr("content"));
 
         //parse for general information - work in porgress
         Elements tds = doc.select("td");
         for (Element td : tds) {
             if (td.text().startsWith("EditSynopsis")) {
-                myAnimeListAnime.setSynopsis(td.text().substring(12, td.text().length()));
+                myAnimeListEntry.setSynopsis(td.text().substring(12, td.text().length()));
             }else {
                 if (td.text().startsWith("EditRelated")) {
                     String tmp[] = substringBetween(td.html(), "Related " + type.substring(0,1).toUpperCase() + type.substring(1) + "</h2>", "<h2>").split("<br>");
@@ -427,18 +431,19 @@ public class MyAnimeList extends WebsiteAbstract {
                             Element link = docTmp.select("a").first();
                             String linkHref = link.attr("href");
                             String title =  link.text();
-                            Integer id = this.getIdFromLink(linkHref);
+                            id = this.getIdFromLink(linkHref);
                             type = this.getTypeFromLink(linkHref);
 
                             if (id != null){
-                                MyAnimeListAnime sequel = new MyAnimeListAnime();
+                                List<MyAnimeListEntry> sequels = new ArrayList<>();
+                                MyAnimeListEntry sequel = entityFactory.getEntity(type, id);
                                 sequel.setId(id);
                                 sequel.setType(type);
                                 sequel.setTitle(title);
-                                sequel.setParent(myAnimeListAnime);
+                                sequel.setParent(myAnimeListEntry);
 
                                 //get sequels
-                                List<MyAnimeListAnime> sequels = myAnimeListAnime.getSequels();
+                                sequels = myAnimeListEntry.getSequels();
                                 sequels.add(sequel);
                             }
                         }else {
@@ -450,20 +455,21 @@ public class MyAnimeList extends WebsiteAbstract {
 
                                 for (Element link : links) {
                                     String linkHref = link.attr("href");
-                                    String title = link.text();
-                                    Integer id = this.getIdFromLink(linkHref);
+                                    String title =  link.text();
+                                    id = this.getIdFromLink(linkHref);
                                     type = this.getTypeFromLink(linkHref);
 
                                     if (id != null) {
-                                        MyAnimeListAnime sideStory = new MyAnimeListAnime();
+                                        List<MyAnimeListEntry> sideStories = new ArrayList<>();
+                                        MyAnimeListEntry sideStory = entityFactory.getEntity(type, id);
                                         sideStory.setId(id);
                                         sideStory.setType(type);
                                         sideStory.setTitle(title);
-                                        sideStory.setParent(myAnimeListAnime);
+                                        sideStory.setParent(myAnimeListEntry);
 
 
                                         //get sequels
-                                        List<MyAnimeListAnime> sideStories = myAnimeListAnime.getSideStories();
+                                        sideStories = myAnimeListEntry.getSideStories();
                                         sideStories.add(sideStory);
                                     }
                                 }
@@ -476,19 +482,20 @@ public class MyAnimeList extends WebsiteAbstract {
 
                                     for (Element link : links) {
                                         String linkHref = link.attr("href");
-                                        String title = link.text();
-                                        Integer id = this.getIdFromLink(linkHref);
+                                        String title =  link.text();
+                                        id = this.getIdFromLink(linkHref);
                                         type = this.getTypeFromLink(linkHref);
 
                                         if (id != null) {
-                                            MyAnimeListAnime spinOff = new MyAnimeListAnime();
+                                            List<MyAnimeListEntry> spinOffs = new ArrayList<>();
+                                            MyAnimeListEntry spinOff = entityFactory.getEntity(type, id);
                                             spinOff.setId(id);
                                             spinOff.setType(type);
                                             spinOff.setTitle(title);
-                                            spinOff.setParent(myAnimeListAnime);
+                                            spinOff.setParent(myAnimeListEntry);
 
                                             //get sequels
-                                            List<MyAnimeListAnime> spinOffs = myAnimeListAnime.getSpinoff();
+                                            spinOffs = myAnimeListEntry.getSpinoff();
                                             spinOffs.add(spinOff);
                                         }
                                     }
@@ -501,20 +508,21 @@ public class MyAnimeList extends WebsiteAbstract {
 
                                         for (Element link : links) {
                                             String linkHref = link.attr("href");
-                                            String title = link.text();
-                                            Integer id = this.getIdFromLink(linkHref);
+                                            String title =  link.text();
+                                            id = this.getIdFromLink(linkHref);
                                             type = this.getTypeFromLink(linkHref);
 
                                             if (id != null) {
-                                                MyAnimeListAnime other = new MyAnimeListAnime();
+                                                List<MyAnimeListEntry> others = new ArrayList<>();
+                                                MyAnimeListEntry other = entityFactory.getEntity(type, id);
                                                 other.setId(id);
                                                 other.setType(type);
                                                 other.setTitle(title);
-                                                other.setParent(myAnimeListAnime);
+                                                other.setParent(myAnimeListEntry);
 
 
                                                 //get sequels
-                                                List<MyAnimeListAnime> others = myAnimeListAnime.getOthers();
+                                                others = myAnimeListEntry.getOthers();
                                                 others.add(other);
                                             }
                                         }
@@ -527,19 +535,20 @@ public class MyAnimeList extends WebsiteAbstract {
 
                                             for (Element link : links) {
                                                 String linkHref = link.attr("href");
-                                                String title = link.text();
-                                                Integer id = this.getIdFromLink(linkHref);
+                                                String title =  link.text();
+                                                id = this.getIdFromLink(linkHref);
                                                 type = this.getTypeFromLink(linkHref);
 
                                                 if (id != null) {
-                                                    MyAnimeListAnime prequel = new MyAnimeListAnime();
+                                                    List<MyAnimeListEntry> prequels = new ArrayList<>();
+                                                    MyAnimeListEntry prequel = entityFactory.getEntity(type, id);
                                                     prequel.setId(id);
                                                     prequel.setType(type);
                                                     prequel.setTitle(title);
-                                                    prequel.setParent(myAnimeListAnime);
+                                                    prequel.setParent(myAnimeListEntry);
 
                                                     //get sequels
-                                                    List<MyAnimeListAnime> prequels = myAnimeListAnime.getPrequels();
+                                                    prequels = myAnimeListEntry.getPrequels();
                                                     prequels.add(prequel);
                                                 }
                                             }
@@ -552,19 +561,20 @@ public class MyAnimeList extends WebsiteAbstract {
 
                                                 for (Element link : links) {
                                                     String linkHref = link.attr("href");
-                                                    String title = link.text();
-                                                    Integer id = this.getIdFromLink(linkHref);
+                                                    String title =  link.text();
+                                                    id = this.getIdFromLink(linkHref);
                                                     type = this.getTypeFromLink(linkHref);
 
                                                     if (id != null) {
-                                                        MyAnimeListAnime alternativeVersion = new MyAnimeListAnime();
+                                                        List<MyAnimeListEntry> alternativeVersions = new ArrayList<>();
+                                                        MyAnimeListEntry alternativeVersion = entityFactory.getEntity(type, id);
                                                         alternativeVersion.setId(id);
                                                         alternativeVersion.setType(type);
                                                         alternativeVersion.setTitle(title);
-                                                        alternativeVersion.setParent(myAnimeListAnime);
+                                                        alternativeVersion.setParent(myAnimeListEntry);
 
                                                         //get sequels
-                                                        List<MyAnimeListAnime> alternativeVersions = myAnimeListAnime.getOthers();
+                                                        alternativeVersions = myAnimeListEntry.getOthers();
                                                         alternativeVersions.add(alternativeVersion);
                                                     }
                                                 }
@@ -577,20 +587,21 @@ public class MyAnimeList extends WebsiteAbstract {
 
                                                     for (Element link : links) {
                                                         String linkHref = link.attr("href");
-                                                        String title = link.text();
-                                                        Integer id = this.getIdFromLink(linkHref);
+                                                        String title =  link.text();
+                                                        id = this.getIdFromLink(linkHref);
                                                         type = this.getTypeFromLink(linkHref);
 
                                                         if (id != null) {
-                                                            MyAnimeListAnime adaptations = new MyAnimeListAnime();
-                                                            adaptations.setId(id);
-                                                            adaptations.setType(type);
-                                                            adaptations.setTitle(title);
-                                                            adaptations.setParent(myAnimeListAnime);
+                                                            List<MyAnimeListEntry> adaptations = new ArrayList<>();
+                                                            MyAnimeListEntry adaptation = entityFactory.getEntity(type, id);
+                                                            adaptation.setId(id);
+                                                            adaptation.setType(type);
+                                                            adaptation.setTitle(title);
+                                                            adaptation.setParent(myAnimeListEntry);
 
                                                             //get sequels
-                                                            List<MyAnimeListAnime> alternativeVersions = myAnimeListAnime.getAdaptations();
-                                                            alternativeVersions.add(adaptations);
+                                                            adaptations = myAnimeListEntry.getAdaptations();
+                                                            adaptations.add(adaptation);
                                                         }
                                                     }
                                                 }else {
@@ -602,19 +613,20 @@ public class MyAnimeList extends WebsiteAbstract {
 
                                                         for (Element link : links) {
                                                             String linkHref = link.attr("href");
-                                                            String title = link.text();
-                                                            Integer id = this.getIdFromLink(linkHref);
+                                                            String title =  link.text();
+                                                            id = this.getIdFromLink(linkHref);
                                                             type = this.getTypeFromLink(linkHref);
 
                                                             if (id != null) {
-                                                                MyAnimeListAnime summary = new MyAnimeListAnime();
+                                                                List<MyAnimeListEntry> summaries = new ArrayList<>();
+                                                                MyAnimeListEntry summary = entityFactory.getEntity(type, id);
                                                                 summary.setId(id);
                                                                 summary.setType(type);
                                                                 summary.setTitle(title);
-                                                                summary.setParent(myAnimeListAnime);
+                                                                summary.setParent(myAnimeListEntry);
 
                                                                 //get sequels
-                                                                List<MyAnimeListAnime> summaries = myAnimeListAnime.getSummaries();
+                                                                summaries = myAnimeListEntry.getSummaries();
                                                                 summaries.add(summary);
                                                             }
                                                         }
@@ -636,19 +648,21 @@ public class MyAnimeList extends WebsiteAbstract {
         for (Element div : divs) {
 
             if (div.text().startsWith("Synopsis: "))
-                myAnimeListAnime.setSynopsis(div.text().substring(9, div.text().length()));
+                myAnimeListEntry.setSynopsis(div.text().substring(9, div.text().length()));
 
             if (div.text().startsWith("Synonyms: "))
-                myAnimeListAnime.setSynonyms(div.text().substring(10, div.text().length()).replace(", ", ",").split(","));
+                myAnimeListEntry.setSynonyms(div.text().substring(10, div.text().length()).replace(", ", ",").split(","));
 
             if (div.text().startsWith("English: "))
-                myAnimeListAnime.setEnglishTitle(div.text().substring(9, div.text().length()));
+                myAnimeListEntry.setEnglishTitle(div.text().substring(9, div.text().length()));
 
             if (div.text().startsWith("Japanese: "))
-                myAnimeListAnime.setJapaneseTitle(div.text().substring(10, div.text().length()));
+                myAnimeListEntry.setJapaneseTitle(div.text().substring(10, div.text().length()));
 
-            if (div.text().startsWith("Episodes: "))
-                myAnimeListAnime.setEpisodeCount(div.text().substring(10, div.text().length()));
+            if (div.text().startsWith("Episodes: ")){
+                MyAnimeListAnime anime = (MyAnimeListAnime) myAnimeListEntry;
+                anime.setEpisodeCount(div.text().substring(10, div.text().length()));
+            }
 
             pattern = type.equals("manga") ? "Published: " : "Aired: ";
 
@@ -656,25 +670,28 @@ public class MyAnimeList extends WebsiteAbstract {
                 String[] tmp;
                 tmp = div.text().substring(7, div.text().length()).split("to ");
                 try {
-                    myAnimeListAnime.setStartedAiringDate(tmp[0]);
-                    myAnimeListAnime.setFinishedAiringDate(tmp[1]);
+                    myAnimeListEntry.setStartedAiringDate(tmp[0]);
+                    myAnimeListEntry.setFinishedAiringDate(tmp[1]);
                 }catch(Exception e){
                     log.debug("Error parsing airing/finishing dates");
                 }
             }
 
-            if (div.text().startsWith("Producers: "))
-                myAnimeListAnime.setProducers(div.text().substring(11, div.text().length()).replace(", ", ",").split(","));
+            if (div.text().startsWith("Producers: ")){
+                MyAnimeListAnime anime = (MyAnimeListAnime) myAnimeListEntry;
+                anime.setProducers(div.text().substring(11, div.text().length()).replace(", ", ",").split(","));
+            }
+
 
             if (div.text().startsWith("Genres: "))
-                myAnimeListAnime.setGenres(div.text().substring(8, div.text().length()).replace(", ", ",").split(","));
+                myAnimeListEntry.setGenres(div.text().substring(8, div.text().length()).replace(", ", ",").split(","));
 
             if (div.text().startsWith("Authors: ")){
 
                 String parts[] = div.text().substring(9, div.text().length()).replace(", ", ",").split(",");
                 ArrayList<String> listItems = new ArrayList<String>();
 
-                List<MyAnimeListAuthor> authors = myAnimeListAnime.getAuthors();
+                List<MyAnimeListAuthor> authors = myAnimeListEntry.getAuthors();
                 for (int i = 0; i < parts.length; i = i+2) {
                     MyAnimeListAuthor author = new MyAnimeListAuthor();
                     try{
@@ -688,26 +705,22 @@ public class MyAnimeList extends WebsiteAbstract {
                 }
             }
 
-            if (div.text().startsWith("Duration: "))
-                myAnimeListAnime.setEpisodeLength(div.text().substring(10, div.text().length()));
+            if (div.text().startsWith("Duration: ")) {
+                MyAnimeListAnime anime = (MyAnimeListAnime) myAnimeListEntry;
+                anime.setEpisodeLength(div.text().substring(10, div.text().length()));
+            }
 
             if (div.text().startsWith("Rating: "))
-                myAnimeListAnime.setAgeRating(div.text().substring(8, div.text().length()));
+                myAnimeListEntry.setAgeRating(div.text().substring(8, div.text().length()));
 
             if (div.text().startsWith("Score: "))
-                myAnimeListAnime.setScore(div.text().substring(7, div.text().length()));
+                myAnimeListEntry.setScore(div.text().substring(7, div.text().length()));
 
             if (div.text().startsWith("Ranked: "))
-                myAnimeListAnime.setRank(div.text().substring(8, div.text().length()));
+                myAnimeListEntry.setRank(div.text().substring(8, div.text().length()));
 
             if (div.text().startsWith("Popularity: "))
-                myAnimeListAnime.setPopularity(div.text().substring(12, div.text().length()));
-
-            if (div.text().startsWith("Duration: "))
-                myAnimeListAnime.setEpisodeLength(div.text().substring(10, div.text().length()));
-
-            if (div.text().startsWith("Type: "))
-                myAnimeListAnime.setShowType(div.text().substring(6, div.text().length()));
+                myAnimeListEntry.setPopularity(div.text().substring(12, div.text().length()));
 
         }
 
@@ -725,7 +738,7 @@ public class MyAnimeList extends WebsiteAbstract {
                     tags[i] = tag.text();
                     i++;
                 }
-                myAnimeListAnime.setTags(tags);
+                myAnimeListEntry.setTags(tags);
             }else{
                 if (h2.text().equals(pattern)) {
                     log.debug("Characters have been found");
@@ -751,7 +764,7 @@ public class MyAnimeList extends WebsiteAbstract {
                                     character.setLastName(characterFullName);
                             }
                             character.setRole(role);
-                            myAnimeListAnime.getCharacters().add(character);
+                            myAnimeListEntry.getCharacters().add(character);
 
                             log.info(String.format("Add new character %s", character.toString()));
                         }catch (Exception e){
@@ -788,7 +801,7 @@ public class MyAnimeList extends WebsiteAbstract {
                                         author.setLastName(characterFullName);
                                 }
                                 author.setJob(jobs);
-                                myAnimeListAnime.getAuthors().add(author);
+                                myAnimeListEntry.getAuthors().add(author);
 
                                 log.info(String.format("Add new author %s", author.toString()));
                             }catch (Exception e){
@@ -801,7 +814,7 @@ public class MyAnimeList extends WebsiteAbstract {
             }
         }
 
-        return myAnimeListAnime;
+        return myAnimeListEntry;
     }
 
     @Override

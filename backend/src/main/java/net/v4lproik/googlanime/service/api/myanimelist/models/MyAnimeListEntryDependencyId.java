@@ -2,7 +2,7 @@ package net.v4lproik.googlanime.service.api.myanimelist.models;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-public class MyAnimeListAnimeDependencyId {
+public class MyAnimeListEntryDependencyId {
 
     private int id;
 
@@ -10,10 +10,10 @@ public class MyAnimeListAnimeDependencyId {
 
     private String type;
 
-    public MyAnimeListAnimeDependencyId() {
+    public MyAnimeListEntryDependencyId() {
     }
 
-    public MyAnimeListAnimeDependencyId(int id) {
+    public MyAnimeListEntryDependencyId(int id) {
         this.id = id;
     }
 

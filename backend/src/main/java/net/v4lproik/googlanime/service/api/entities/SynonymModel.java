@@ -17,7 +17,7 @@ public class SynonymModel {
 
     @ManyToOne
     @JoinColumn(name="idAnime")
-    private AnimeModel anime;
+    private Entry entry;
 
     public SynonymModel() {
     }
@@ -42,12 +42,12 @@ public class SynonymModel {
         this.title = title;
     }
 
-    public AnimeModel getAnime() {
-        return anime;
+    public Entry getEntry() {
+        return entry;
     }
 
-    public void setAnime(AnimeModel anime) {
-        this.anime = anime;
+    public void setEntry(Entry entry) {
+        this.entry = entry;
     }
 
     @Override

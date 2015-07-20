@@ -1,9 +1,9 @@
 package net.v4lproik.googlanime.service.api.utils;
 
 import net.v4lproik.googlanime.service.api.entities.*;
-import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListAnime;
-import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListAnimeDependency;
 import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListCharacter;
+import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListManga;
+import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListMangaDependency;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
@@ -15,19 +15,19 @@ import java.util.List;
 import java.util.Set;
 
 @Component
-public class TransformAnimeMapper {
+public class TransformMangaMapper {
 
     public final static String DATE_FORMAT = "dd-MM-yyyy";
 
-    public AnimeModel transformMyAnimeListAnimeDependencyToDAO(MyAnimeListAnimeDependency myAnimeListEntryDependency){
-        AnimeModel anime;
+    public MangaModel transformMyAnimeListMangaDependencyToDAO(MyAnimeListMangaDependency myAnimeListMangaDependency){
+        MangaModel manga = new MangaModel();
 
-        System.out.println(myAnimeListEntryDependency.toString());
+        System.out.println(myAnimeListMangaDependency.toString());
 
         ModelMapper modelMapper = new ModelMapper();
-        anime = modelMapper.map(myAnimeListEntryDependency, AnimeModel.class);
+        manga = modelMapper.map(myAnimeListMangaDependency, MangaModel.class);
 
-        String[] genres = myAnimeListEntryDependency.getGenres();
+        String[] genres = myAnimeListMangaDependency.getGenres();
         if (genres != null){
             Set<GenreModel> genresModel = new HashSet<>();
             for (String genre:genres){
@@ -35,21 +35,21 @@ public class TransformAnimeMapper {
                 genreModel.setName(genre);
                 genresModel.add(genreModel);
             }
-            anime.setGenres(genresModel);
+            manga.setGenres(genresModel);
         }
 
-        String[] producers = myAnimeListEntryDependency.getProducers();
-        if (producers != null){
-            Set<ProducerModel> producersModel = new HashSet<>();
-            for (String producer:producers){
-                ProducerModel producerModel = new ProducerModel();
-                producerModel.setName(producer);
-                producersModel.add(producerModel);
-            }
-            anime.setProducers(producersModel);
-        }
+//        String[] producers = myAnimeListMangaDependency.getProducers();
+//        if (producers != null){
+//            Set<ProducerModel> producersModel = new HashSet<>();
+//            for (String producer:producers){
+//                ProducerModel producerModel = new ProducerModel();
+//                producerModel.setName(producer);
+//                producersModel.add(producerModel);
+//            }
+//            manga.setProducers(producersModel);
+//        }
 
-        List<MyAnimeListCharacter> characters = myAnimeListEntryDependency.getCharacters();
+        List<MyAnimeListCharacter> characters = myAnimeListMangaDependency.getCharacters();
         if (characters != null) {
             CharacterModel characterModel;
             Set<CharacterModel> charactersModel = new HashSet<>();
@@ -61,55 +61,55 @@ public class TransformAnimeMapper {
                 characterModel.setLastName(character.getLastName());
                 charactersModel.add(characterModel);
             }
-            anime.setCharacters(charactersModel);
+            manga.setCharacters(charactersModel);
         }
 
 
-        if (myAnimeListEntryDependency.getFinishedAiringDate() != null){
+        if (myAnimeListMangaDependency.getFinishedAiringDate() != null){
             try {
                 DateFormat df = new SimpleDateFormat(DATE_FORMAT);
                 df.setLenient(false);
-                df.parse(myAnimeListEntryDependency.getFinishedAiringDate());
+                df.parse(myAnimeListMangaDependency.getFinishedAiringDate());
             } catch (ParseException e) {
-                anime.setFinishedAiringDate(null);
+                manga.setFinishedAiringDate(null);
             }
         }
 
-        if (myAnimeListEntryDependency.getStartedAiringDate() != null){
+        if (myAnimeListMangaDependency.getStartedAiringDate() != null){
             try {
                 DateFormat df = new SimpleDateFormat(DATE_FORMAT);
                 df.setLenient(false);
-                df.parse(myAnimeListEntryDependency.getStartedAiringDate());
+                df.parse(myAnimeListMangaDependency.getStartedAiringDate());
             } catch (ParseException e) {
-                anime.setStartedAiringDate(null);
+                manga.setStartedAiringDate(null);
             }
         }
 
-        String[] synonyms = myAnimeListEntryDependency.getSynonyms();
+        String[] synonyms = myAnimeListMangaDependency.getSynonyms();
         if (synonyms != null) {
             SynonymModel synonymModel;
             Set<SynonymModel> synonymsModel = new HashSet<>();
             for (String synonym : synonyms) {
                 synonymModel = new SynonymModel();
                 synonymModel.setTitle(synonym);
-                synonymModel.setEntry(anime);
+                synonymModel.setEntry(manga);
                 synonymsModel.add(synonymModel);
             }
-            anime.setSynonyms(synonymsModel);
+            manga.setSynonyms(synonymsModel);
         }
 
-        return anime;
+        return manga;
     }
 
-    public AnimeModel transformMyAnimeListAnimeToDAO(MyAnimeListAnime myAnimeListAnime){
-        AnimeModel anime;
+    public MangaModel transformMyAnimeListMangaToDAO(MyAnimeListManga myAnimeListManga){
+        MangaModel manga = new MangaModel();
 
-        System.out.println(myAnimeListAnime.toString());
+        System.out.println(myAnimeListManga.toString());
 
         ModelMapper modelMapper = new ModelMapper();
-        anime = modelMapper.map(myAnimeListAnime, AnimeModel.class);
+        manga = modelMapper.map(myAnimeListManga, MangaModel.class);
 
-        String[] genres = myAnimeListAnime.getGenres();
+        String[] genres = myAnimeListManga.getGenres();
         if (genres != null){
             Set<GenreModel> genresModel = new HashSet<>();
             for (String genre:genres){
@@ -117,21 +117,21 @@ public class TransformAnimeMapper {
                 genreModel.setName(genre);
                 genresModel.add(genreModel);
             }
-            anime.setGenres(genresModel);
+            manga.setGenres(genresModel);
         }
 
-        String[] producers = myAnimeListAnime.getProducers();
-        if (producers != null){
-            Set<ProducerModel> producersModel = new HashSet<>();
-            for (String producer:producers){
-                ProducerModel producerModel = new ProducerModel();
-                producerModel.setName(producer);
-                producersModel.add(producerModel);
-            }
-            anime.setProducers(producersModel);
-        }
+//        String[] producers = myAnimeListManga.getProducers();
+//        if (producers != null){
+//            Set<ProducerModel> producersModel = new HashSet<>();
+//            for (String producer:producers){
+//                ProducerModel producerModel = new ProducerModel();
+//                producerModel.setName(producer);
+//                producersModel.add(producerModel);
+//            }
+//            manga.setProducers(producersModel);
+//        }
 
-        List<MyAnimeListCharacter> characters = myAnimeListAnime.getCharacters();
+        List<MyAnimeListCharacter> characters = myAnimeListManga.getCharacters();
         if (characters != null) {
             CharacterModel characterModel;
             Set<CharacterModel> charactersModel = new HashSet<>();
@@ -143,44 +143,44 @@ public class TransformAnimeMapper {
                 characterModel.setLastName(character.getLastName());
                 charactersModel.add(characterModel);
             }
-            anime.setCharacters(charactersModel);
+            manga.setCharacters(charactersModel);
         }
 
 
-        if (myAnimeListAnime.getFinishedAiringDate() != null){
+        if (myAnimeListManga.getFinishedAiringDate() != null){
             try {
                 DateFormat df = new SimpleDateFormat(DATE_FORMAT);
                 df.setLenient(false);
-                df.parse(myAnimeListAnime.getFinishedAiringDate());
+                df.parse(myAnimeListManga.getFinishedAiringDate());
             } catch (ParseException e) {
-                anime.setFinishedAiringDate(null);
+                manga.setFinishedAiringDate(null);
             }
         }
 
-        if (myAnimeListAnime.getStartedAiringDate() != null){
+        if (myAnimeListManga.getStartedAiringDate() != null){
             try {
                 DateFormat df = new SimpleDateFormat(DATE_FORMAT);
                 df.setLenient(false);
-                df.parse(myAnimeListAnime.getStartedAiringDate());
+                df.parse(myAnimeListManga.getStartedAiringDate());
             } catch (ParseException e) {
-                anime.setStartedAiringDate(null);
+                manga.setStartedAiringDate(null);
             }
         }
 
-        String[] synonyms = myAnimeListAnime.getSynonyms();
+        String[] synonyms = myAnimeListManga.getSynonyms();
         if (synonyms != null) {
             SynonymModel synonymModel;
             Set<SynonymModel> synonymsModel = new HashSet<>();
             for (String synonym : synonyms) {
                 synonymModel = new SynonymModel();
                 synonymModel.setTitle(synonym);
-                synonymModel.setEntry(anime);
+                synonymModel.setEntry(manga);
                 synonymsModel.add(synonymModel);
             }
-            anime.setSynonyms(synonymsModel);
+            manga.setSynonyms(synonymsModel);
         }
 
-        String[] tags = myAnimeListAnime.getTags();
+        String[] tags = myAnimeListManga.getTags();
         if (tags != null) {
             TagModel tagModel;
             Set<TagModel> tagsModel = new HashSet<>();
@@ -189,9 +189,9 @@ public class TransformAnimeMapper {
                 tagModel.setName(tag);
                 tagsModel.add(tagModel);
             }
-            anime.setTags(tagsModel);
+            manga.setTags(tagsModel);
         }
 
-        return anime;
+        return manga;
     }
 }

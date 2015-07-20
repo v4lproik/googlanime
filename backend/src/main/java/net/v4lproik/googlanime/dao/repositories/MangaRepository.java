@@ -1,6 +1,6 @@
 package net.v4lproik.googlanime.dao.repositories;
 
-import net.v4lproik.googlanime.dao.api.AnimeDao;
+import net.v4lproik.googlanime.dao.api.MangaDao;
 import net.v4lproik.googlanime.service.api.entities.*;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -17,36 +17,36 @@ import java.util.List;
 import java.util.Set;
 
 @Repository
-public class AnimeRepository implements AnimeDao {
+public class MangaRepository implements MangaDao {
 
-    private static final Logger log = LoggerFactory.getLogger(AnimeRepository.class);
+    private static final Logger log = LoggerFactory.getLogger(MangaRepository.class);
     public final SessionFactory sessionFactory;
 
     @Autowired
-    public AnimeRepository(final SessionFactory sessionFactory) {
+    public MangaRepository(final SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 
     @Override
-    public Long save(AnimeModel anime) {
+    public Long save(MangaModel manga) {
         Transaction tx = currentSession().beginTransaction();
-        Object idSave = currentSession().save(anime);
+        Object idSave = currentSession().save(manga);
         tx.commit();
 
         return (Long) idSave;
     }
 
     @Override
-    public void saveOrUpdate(AnimeModel anime) {
-        long id = anime.getId();
+    public void saveOrUpdate(MangaModel manga) {
+        long id = manga.getId();
         Transaction tx;
 
         // Get the entities that need to be updated
         tx=currentSession().beginTransaction();
 
         Set<AuthorModel> authors = new HashSet<>();
-        if (anime.getAuthors() != null){
-            for (AuthorModel author:anime.getAuthors()){
+        if (manga.getAuthors() != null){
+            for (AuthorModel author:manga.getAuthors()){
                 Criteria criteria = currentSession().createCriteria(AuthorModel.class);
                 if (author.getFirstName() != null) criteria.add(Restrictions.eq("firstName", author.getFirstName()));
                 if (author.getLastName() != null) criteria.add(Restrictions.eq("lastName", author.getLastName()));
@@ -59,12 +59,12 @@ public class AnimeRepository implements AnimeDao {
                 }
             }
         }
-        anime.setAuthors(authors);
+        manga.setAuthors(authors);
 
 
         Set<CharacterModel> characters = new HashSet<>();
-        if (anime.getCharacters() != null){
-            for (CharacterModel character:anime.getCharacters()){
+        if (manga.getCharacters() != null){
+            for (CharacterModel character:manga.getCharacters()){
                 Criteria criteria = currentSession().createCriteria(CharacterModel.class);
                 if (character.getFirstName() != null) criteria.add(Restrictions.eq("firstName", character.getFirstName()));
                 if (character.getLastName() != null) criteria.add(Restrictions.eq("lastName", character.getLastName()));
@@ -77,12 +77,12 @@ public class AnimeRepository implements AnimeDao {
                 }
             }
         }
-        anime.setCharacters(characters);
+        manga.setCharacters(characters);
 
 
         Set<GenreModel> genres = new HashSet<>();
-        if (anime.getGenres() != null){
-            for (GenreModel genre:anime.getGenres()){
+        if (manga.getGenres() != null){
+            for (GenreModel genre:manga.getGenres()){
                 Criteria criteria = currentSession().createCriteria(GenreModel.class);
                 criteria.add(Restrictions.eq("name", genre.getName()));
                 GenreModel genreRes = (GenreModel) criteria.uniqueResult();
@@ -94,29 +94,12 @@ public class AnimeRepository implements AnimeDao {
             }
         }
 
-        anime.setGenres(genres);
-
-
-        Set<ProducerModel> producers = new HashSet<>();
-        if (anime.getProducers() != null){
-            for (ProducerModel producer:anime.getProducers()){
-                Criteria criteria = currentSession().createCriteria(ProducerModel.class);
-                criteria.add(Restrictions.eq("name", producer.getName()));
-                ProducerModel producerRes = (ProducerModel) criteria.uniqueResult();
-                if (producerRes != null){
-                    producers.add(producerRes);
-                }else {
-                    producers.add(producer);
-                }
-            }
-        }
-
-        anime.setProducers(producers);
+        manga.setGenres(genres);
 
 
         Set<TagModel> tags = new HashSet<>();
-        if (anime.getTags() != null){
-            for (TagModel tag:anime.getTags()){
+        if (manga.getTags() != null){
+            for (TagModel tag:manga.getTags()){
                 Criteria criteria = currentSession().createCriteria(TagModel.class);
                 criteria.add(Restrictions.eq("name", tag.getName()));
                 TagModel tagRes = (TagModel) criteria.uniqueResult();
@@ -128,16 +111,16 @@ public class AnimeRepository implements AnimeDao {
             }
         }
 
-        anime.setTags(tags);
+        manga.setTags(tags);
 
 
 
         Set<SynonymModel> synonyms = new HashSet<>();
-        if (anime.getSynonyms() != null){
-            for (SynonymModel synonym:anime.getSynonyms()){
+        if (manga.getSynonyms() != null){
+            for (SynonymModel synonym:manga.getSynonyms()){
                 Criteria criteria = currentSession().createCriteria(SynonymModel.class);
                 criteria.add(Restrictions.eq("title", synonym.getTitle()));
-                criteria.add(Restrictions.eq("entry.id", id));
+                criteria.add(Restrictions.eq("manga.id", id));
                 SynonymModel synonymRes = (SynonymModel) criteria.uniqueResult();
 
                 if (synonymRes != null){
@@ -148,9 +131,9 @@ public class AnimeRepository implements AnimeDao {
             }
         }
 
-        anime.setSynonyms(synonyms);
+        manga.setSynonyms(synonyms);
 
-        // Avoid NonUniqueObjectException has the anime object has been already passed
+        // Avoid NonUniqueObjectException has the manga object has been already passed
         currentSession().flush();
         currentSession().clear();
         tx.commit();
@@ -158,15 +141,15 @@ public class AnimeRepository implements AnimeDao {
 
         // -----------------------------------------------------------------------------------------
         // Save Anime
-        log.debug(anime.toString());
+        log.debug(manga.toString());
         tx=currentSession().beginTransaction();
-        currentSession().saveOrUpdate(anime);
+        currentSession().saveOrUpdate(manga);
 
         // -----------------------------------------------------------------------------------------
         // Save OneToMany and ManyToMany with extra columns
 
-        if (anime.getAuthors() != null){
-            for (AuthorModel author:anime.getAuthors()) {
+        if (manga.getAuthors() != null){
+            for (AuthorModel author:manga.getAuthors()) {
                 final Integer idAuthor = author.getId();
 
                 List<String> jobs = author.getJobs();
@@ -191,8 +174,8 @@ public class AnimeRepository implements AnimeDao {
             }
         }
 
-        if (anime.getCharacters() != null){
-            for (CharacterModel character:anime.getCharacters()) {
+        if (manga.getCharacters() != null){
+            for (CharacterModel character:manga.getCharacters()) {
                 final Integer idCharacter = character.getId();
 
 
@@ -218,7 +201,7 @@ public class AnimeRepository implements AnimeDao {
         }
 
 
-        // Avoid NonUniqueObjectException has the anime object has been already passed
+        // Avoid NonUniqueObjectException has the manga object has been already passed
         currentSession().flush();
         currentSession().clear();
         tx.commit();
@@ -226,64 +209,64 @@ public class AnimeRepository implements AnimeDao {
 
         // -----------------------------------------------------------------------------------------
         // Save dependencies
-        if (anime.getSequels() != null){
-            for (AnimeIdModel sequel:anime.getSequels()){
+        if (manga.getSequels() != null){
+            for (AnimeIdModel sequel:manga.getSequels()){
                 tx=currentSession().beginTransaction();
                 currentSession().merge(sequel);
                 tx.commit();
             }
         }
 
-        if (anime.getAlternativeVersions() != null){
-            for (AnimeIdModel alter:anime.getAlternativeVersions()){
+        if (manga.getAlternativeVersions() != null){
+            for (AnimeIdModel alter:manga.getAlternativeVersions()){
                 tx=currentSession().beginTransaction();
                 currentSession().merge(alter);
                 tx.commit();
             }
         }
 
-        if (anime.getPrequels() != null){
-            for (AnimeIdModel prequel:anime.getPrequels()){
+        if (manga.getPrequels() != null){
+            for (AnimeIdModel prequel:manga.getPrequels()){
                 tx=currentSession().beginTransaction();
                 currentSession().merge(prequel);
                 tx.commit();
             }
         }
 
-        if (anime.getSpinoff() != null){
-            for (AnimeIdModel spinOff:anime.getSpinoff()){
+        if (manga.getSpinoff() != null){
+            for (AnimeIdModel spinOff:manga.getSpinoff()){
                 tx=currentSession().beginTransaction();
                 currentSession().merge(spinOff);
                 tx.commit();
             }
         }
 
-        if (anime.getSideStories() != null){
-            for (AnimeIdModel sideStory:anime.getSideStories()){
+        if (manga.getSideStories() != null){
+            for (AnimeIdModel sideStory:manga.getSideStories()){
                 tx=currentSession().beginTransaction();
                 currentSession().merge(sideStory);
                 tx.commit();
             }
         }
 
-        if (anime.getOthers() != null){
-            for (AnimeIdModel other:anime.getOthers()){
+        if (manga.getOthers() != null){
+            for (AnimeIdModel other:manga.getOthers()){
                 tx=currentSession().beginTransaction();
                 currentSession().merge(other);
                 tx.commit();
             }
         }
 
-        if (anime.getSummaries() != null){
-            for (AnimeIdModel summary:anime.getSummaries()){
+        if (manga.getSummaries() != null){
+            for (AnimeIdModel summary:manga.getSummaries()){
                 tx=currentSession().beginTransaction();
                 currentSession().merge(summary);
                 tx.commit();
             }
         }
 
-        if (anime.getAdaptations() != null){
-            for (AnimeIdModel adaptation:anime.getAdaptations()) {
+        if (manga.getAdaptations() != null){
+            for (AnimeIdModel adaptation:manga.getAdaptations()) {
                 tx=currentSession().beginTransaction();
                 currentSession().merge(adaptation);
                 tx.commit();
@@ -292,21 +275,21 @@ public class AnimeRepository implements AnimeDao {
     }
 
     @Override
-    public AnimeModel find(Long id){
+    public MangaModel find(Long id){
 
         Transaction tx=currentSession().beginTransaction();
-        Criteria criteria = currentSession().createCriteria(AnimeModel.class);
+        Criteria criteria = currentSession().createCriteria(MangaModel.class);
         criteria.add(Restrictions.eq("id", id));
-        AnimeModel animeRes = (AnimeModel) criteria.uniqueResult();
+        MangaModel mangaRes = (MangaModel) criteria.uniqueResult();
         tx.commit();
 
-        return animeRes;
+        return mangaRes;
     }
 
     @Override
-    public void delete(AnimeModel anime) {
+    public void delete(MangaModel manga) {
         Transaction tx=currentSession().beginTransaction();
-        currentSession().delete(anime);
+        currentSession().delete(manga);
         tx.commit();
     }
 

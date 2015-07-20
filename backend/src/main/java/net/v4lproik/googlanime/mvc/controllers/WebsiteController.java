@@ -5,10 +5,13 @@ import net.v4lproik.googlanime.mvc.models.JSONResponse;
 import net.v4lproik.googlanime.mvc.models.Website;
 import net.v4lproik.googlanime.mvc.models.WebsiteFactory;
 import net.v4lproik.googlanime.service.api.AnimeServiceWrite;
+import net.v4lproik.googlanime.service.api.MangaServiceWrite;
 import net.v4lproik.googlanime.service.api.common.ImportOptions;
 import net.v4lproik.googlanime.service.api.common.WebsiteAbstract;
-import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListAnime;
 import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListAnimeDependency;
+import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListEntry;
+import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListEntryDependency;
+import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListMangaDependency;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,7 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.Set;
 
 @Controller
 @RequestMapping(value = "/websites")
@@ -29,6 +32,9 @@ public class WebsiteController {
 
     @Autowired
     private AnimeServiceWrite animeServiceWrite;
+
+    @Autowired
+    private MangaServiceWrite mangaServiceWrite;
 
     @RequestMapping(value = "/import", method = RequestMethod.GET, params={"from", "type", "name"})
     @ResponseStatus(value = HttpStatus.OK)
@@ -48,7 +54,7 @@ public class WebsiteController {
         }
 
         try{
-            MyAnimeListAnime myAnimeListAnime = website.crawl(new ImportOptions(name, type, dependency));
+            MyAnimeListEntry myAnimeListAnime = website.crawl(new ImportOptions(name, type, dependency));
             log.debug(myAnimeListAnime.toString());
             response.setAnimes(myAnimeListAnime);
 
@@ -82,7 +88,7 @@ public class WebsiteController {
             final ImportOptions opts = new ImportOptions(id, type, dependency);
             log.debug(String.format("/import with options from=%s, type=%s, id=%s, dependency=%s", from, type, id.toString(), dependency.toString()));
 
-            MyAnimeListAnime myAnimeListAnime = website.crawlById(opts);
+            MyAnimeListEntry myAnimeListAnime = website.crawlById(opts);
 
             response.setAnimes(myAnimeListAnime);
 
@@ -116,17 +122,16 @@ public class WebsiteController {
             final ImportOptions opts = new ImportOptions(id, type, dependency);
             log.debug(String.format("/import/store with options from=%s, type=%s, id=%s, dependency=%s", from, type, id.toString(), dependency.toString()));
 
-            List<MyAnimeListAnimeDependency> animes = website.crawlByIdList(opts);
-            response.setAnimes(animes);
+            Set<MyAnimeListEntryDependency> entries = website.crawlByIdList(opts);
+            response.setAnimes(entries);
 
-            for (MyAnimeListAnimeDependency entity : animes){
+            for (MyAnimeListEntryDependency entity : entries){
 
-                //TODO
                 if (entity.getType().equals("anime")){
-                    animeServiceWrite.saveAnime(entity);
+                    animeServiceWrite.save((MyAnimeListAnimeDependency) entity);
                 }else
                 {
-                    animeServiceWrite.saveAnime(entity);
+                    mangaServiceWrite.save((MyAnimeListMangaDependency) entity);
                 }
             }
 

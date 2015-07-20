@@ -2,13 +2,16 @@ package net.v4lproik.googlanime.dao.repositories;
 
 import net.v4lproik.googlanime.client.mysql.DatabaseTestConfiguration;
 import net.v4lproik.googlanime.client.mysql.SqlDatabaseInitializer;
-import net.v4lproik.googlanime.dao.api.AnimeDAO;
+import net.v4lproik.googlanime.dao.api.AnimeDao;
+import net.v4lproik.googlanime.dao.api.MangaDao;
 import net.v4lproik.googlanime.service.api.AnimeServiceWrite;
 import net.v4lproik.googlanime.service.api.common.ImportOptions;
 import net.v4lproik.googlanime.service.api.entities.AnimeModel;
 import net.v4lproik.googlanime.service.api.myanimelist.MyAnimeList;
 import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListAnime;
+import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListEntry;
 import net.v4lproik.googlanime.service.api.utils.TransformAnimeMapper;
+import net.v4lproik.googlanime.service.api.utils.TransformMangaMapper;
 import org.hibernate.SessionFactory;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -44,8 +47,16 @@ public class AnimeRepositoryITest {
 
     @Autowired
     SessionFactory sessionFactoryConfig;
-    AnimeDAO animeDAO;
+
+    AnimeDao animeDao;
+
+    MangaDao mangaDao;
+
     AnimeServiceWrite service;
+
+    TransformAnimeMapper animeMapper;
+
+    TransformMangaMapper mangaMapper;
 
     @Spy
     private MyAnimeList myAnimeList;
@@ -60,36 +71,61 @@ public class AnimeRepositoryITest {
             // Something went wrong while importing the database schema
         }
 
-        animeDAO = new AnimeRepository(sessionFactoryConfig);
+        animeDao = new AnimeRepository(sessionFactoryConfig);
 
-        TransformAnimeMapper animeMapper = new TransformAnimeMapper();
+        mangaDao = new MangaRepository(sessionFactoryConfig);
 
+        animeMapper = new TransformAnimeMapper();
+
+        mangaMapper = new TransformMangaMapper();
     }
 
     @Test
-    public void test_saveAnime_shouldBeInserted() throws Exception {
-
-        //Given
-//        ImportOptions options = new ImportOptions(24, "manga", true);
+    public void test_saveAnimeWithDependencies_shouldBeInsertedWithItsDependencies() throws Exception{
+//        // Given
+//        ImportOptions options = new ImportOptions(8425, "anime", true);
 //        String type = options.getType();
 //        final Integer id = options.getId();
 //
 //        // When
-//        List<MyAnimeListAnimeDependency> response = myAnimeList.crawlByIdList(options);
-
-
-        // Then
-//        for (MyAnimeListAnimeDependency anime : response) {
+//        Set<MyAnimeListEntryDependency> response = myAnimeList.crawlByIdList(options);
 //
-//            TransformAnimeMapper mapper = new TransformAnimeMapper();
+//        // Then
+//        for (MyAnimeListEntryDependency entry : response) {
 //
-//            AnimeModel animeRes = mapper.transformMyAnimeListAnimeDependencyToDAO(anime);
+//            final String type2 = entry.getType();
 //
-//            if (anime.getTitle() != null) {
-//                animeDAO.saveOrUpdate(animeRes);
+//            net.v4lproik.googlanime.service.api.common.EntryTypeEnum typeEnum = net.v4lproik.googlanime.service.api.common.EntryTypeEnum.fromValue(type2);
+//
+//            if (typeEnum == null){
+//                throw new EnumConstantNotPresentException(net.v4lproik.googlanime.service.api.myanimelist.models.EntryTypeEnum.class, type);
+//            }
+//
+//            switch (typeEnum){
+//                case MANGA:
+//                    MangaModel mangaRes = mangaMapper.transformMyAnimeListMangaDependencyToDAO((MyAnimeListMangaDependency) entry);
+//
+//                    if (mangaRes.getTitle() != null) {
+//                        mangaDao.saveOrUpdate(mangaRes);
+//                    }
+//                    break;
+//
+//                case ANIME:
+//                    AnimeModel animeRes = animeMapper.transformMyAnimeListAnimeDependencyToDAO((MyAnimeListAnimeDependency) entry);
+//
+//                    if (animeRes.getTitle() != null) {
+//                        animeDao.saveOrUpdate(animeRes);
+//                    }
+//                    break;
+//
+//                default:
+//                    throw new IllegalArgumentException();
 //            }
 //        }
+    }
 
+    @Test
+    public void test_saveAnime_shouldBeInserted() throws Exception {
 
         // Given
         ImportOptions options = new ImportOptions(2904, "anime", false);
@@ -103,13 +139,11 @@ public class AnimeRepositoryITest {
         doReturn(doc).when(myAnimeList).getResultFromJSoup(url, type);
 
         // When
-        MyAnimeListAnime response = myAnimeList.crawlById(options);
+        MyAnimeListEntry response = myAnimeList.crawlById(options);
 
-        TransformAnimeMapper mapper = new TransformAnimeMapper();
+        AnimeModel animeRes = animeMapper.transformMyAnimeListAnimeToDAO((MyAnimeListAnime) response);
 
-        AnimeModel animeRes = mapper.transformMyAnimeListAnimeToDAO(response);
-
-        animeDAO.saveOrUpdate(animeRes);
+        animeDao.saveOrUpdate(animeRes);
 
     }
 
@@ -128,17 +162,15 @@ public class AnimeRepositoryITest {
         doReturn(doc).when(myAnimeList).getResultFromJSoup(url, type);
 
         // When
-        MyAnimeListAnime response = myAnimeList.crawlById(options);
+        MyAnimeListEntry response = myAnimeList.crawlById(options);
 
-        TransformAnimeMapper mapper = new TransformAnimeMapper();
+        AnimeModel animeRes = animeMapper.transformMyAnimeListAnimeToDAO((MyAnimeListAnime) response);
 
-        AnimeModel animeRes = mapper.transformMyAnimeListAnimeToDAO(response);
-
-        animeDAO.saveOrUpdate(animeRes);
+        animeDao.saveOrUpdate(animeRes);
         animeRes.setTitle(animeRes.getTitle() + "_UPDATED");
-        animeDAO.saveOrUpdate(animeRes);
+        animeDao.saveOrUpdate(animeRes);
 
-        AnimeModel animeFind = animeDAO.find(animeRes.getId());
+        AnimeModel animeFind = animeDao.find(animeRes.getId());
 
         String title = animeRes.getTitle();
 

@@ -55,7 +55,9 @@ public class ConfigMysql {
         c.setProperty("hibernate.connection.autoReconnect", "true");
         c.setProperty("hibernate.current_session_context_class", "thread");
         c.addPackage("net.v4lproik.googlanime");
+        c.addAnnotatedClass(Entry.class);
         c.addAnnotatedClass(AnimeModel.class);
+        c.addAnnotatedClass(MangaModel.class);
         c.addAnnotatedClass(AnimeIdModel.class);
         c.addAnnotatedClass(GenreModel.class);
         c.addAnnotatedClass(ProducerModel.class);

@@ -1,8 +1,5 @@
 package net.v4lproik.googlanime.service.api.myanimelist.models;
 
-/**
- * Created by joel on 18/05/2015.
- */
 public class MyAnimeListEpisode {
 
     private Integer id;
