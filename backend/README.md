@@ -23,6 +23,6 @@ This is a the main core of the project. It provides a powerful JEE RESTful API t
 3. `<ELASTICSEARCH_NODE_IP> es.googlanime` to add the dns name to your /etc/hosts file 
 4. `cd` to backend/
 5. `mvn clean compile jetty:run -Dspring.profiles.active="test"` to launch the server (Reachable at http://localhost:8080/ by default)
-6. `python -m maestro start` to start docker containers 
+6. `docker-compose -d up` to start docker containers
 6. `sh scripts/fill-elasticsearch.sh` to fill elasticsearch with some data
 7. `http://localhost:8080/animes/?query=geass&fields=title&type=entry&render=mal` to browse to a test page
