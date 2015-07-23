@@ -12,6 +12,7 @@ import net.v4lproik.googlanime.service.api.utils.TransformMangaMapper;
 import org.hibernate.SessionFactory;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -69,28 +70,6 @@ public class MangaRepositoryITest {
     }
 
     @Test
-    public void test_saveAnimeWithDependencies_shouldBeInsertedWithItsDependencies() throws Exception{
-//        // Given
-//        ImportOptions options = new ImportOptions(24, "manga", true);
-//        String type = options.getType();
-//        final Integer id = options.getId();
-//
-//        // When
-//        List<MyAnimeListEntryDependency> response = myAnimeList.crawlByIdList(options);
-//
-//
-//        // Then
-//        for (MyAnimeListEntryDependency manga : response) {
-//
-//            AnimeModel animeRes = mapper.transformMyAnimeListMangaDependencyToDAO((MyAnimeListMangaDependency) manga);
-//
-//            if (manga.getTitle() != null) {
-//                mangaDao.saveOrUpdate(animeRes);
-//            }
-//        }
-    }
-
-    @Test
     public void test_saveManga_shouldBeInserted() throws Exception {
 
         // Given
@@ -136,12 +115,23 @@ public class MangaRepositoryITest {
         mangaRes.setTitle(mangaRes.getTitle() + "_UPDATED");
         mangaDao.saveOrUpdate(mangaRes);
 
-        MangaModel mangaFind = mangaDao.find(mangaRes.getId());
+        MangaModel mangaFind = mangaDao.findById(mangaRes.getId());
 
         String title = mangaRes.getTitle();
 
         // Then
         assertEquals(title, mangaFind.getTitle());
 
+    }
+
+    @Test
+    public void init_DB() throws Exception {
+
+
+    }
+
+    @After
+    public void rollBack() throws Exception{
+        mangaDao.deleteById(new Long(11));
     }
 }

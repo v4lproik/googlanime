@@ -20,6 +20,12 @@ public class AnimeRoleCharacter implements Serializable {
     public AnimeRoleCharacter() {
     }
 
+    public AnimeRoleCharacter(Long idAnime, Integer idCharacter, String role) {
+        this.idAnime = idAnime;
+        this.idCharacter = idCharacter;
+        this.role = role;
+    }
+
     public Long getIdAnime() {
         return idAnime;
     }

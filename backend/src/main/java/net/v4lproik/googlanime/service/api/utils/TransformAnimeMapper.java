@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Set;
 
 @Component
-public class TransformAnimeMapper {
+public class TransformAnimeMapper extends TransformAbstractMapper {
 
     public final static String DATE_FORMAT = "dd-MM-yyyy";
 
@@ -59,6 +59,15 @@ public class TransformAnimeMapper {
                 characterModel.setFirstName(character.getFirstName());
                 characterModel.setJapaneseName(character.getJapaneseName());
                 characterModel.setLastName(character.getLastName());
+
+                Set<CharacterNicknameModel> characterNicknamesModel = new HashSet<>();
+                if (character.getNickNames() != null){
+                    for (String nickname:character.getNickNames()){
+                        characterNicknamesModel.add(new CharacterNicknameModel(nickname));
+                    }
+                }
+                characterModel.setNicknames(characterNicknamesModel);
+
                 charactersModel.add(characterModel);
             }
             anime.setCharacters(charactersModel);
@@ -96,6 +105,18 @@ public class TransformAnimeMapper {
                 synonymsModel.add(synonymModel);
             }
             anime.setSynonyms(synonymsModel);
+        }
+
+        String[] tags = myAnimeListEntryDependency.getTags();
+        if (tags != null) {
+            TagModel tagModel;
+            Set<TagModel> tagsModel = new HashSet<>();
+            for (String tag : tags) {
+                tagModel = new TagModel();
+                tagModel.setName(tag);
+                tagsModel.add(tagModel);
+            }
+            anime.setTags(tagsModel);
         }
 
         return anime;
@@ -141,6 +162,15 @@ public class TransformAnimeMapper {
                 characterModel.setFirstName(character.getFirstName());
                 characterModel.setJapaneseName(character.getJapaneseName());
                 characterModel.setLastName(character.getLastName());
+
+                Set<CharacterNicknameModel> characterNicknamesModel = new HashSet<>();
+                if (character.getNickNames() != null){
+                    for (String nickname:character.getNickNames()){
+                        characterNicknamesModel.add(new CharacterNicknameModel(nickname));
+                    }
+                }
+                characterModel.setNicknames(characterNicknamesModel);
+
                 charactersModel.add(characterModel);
             }
             anime.setCharacters(charactersModel);

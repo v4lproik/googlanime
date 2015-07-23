@@ -9,6 +9,7 @@ import net.v4lproik.googlanime.service.api.common.ImportOptions;
 import net.v4lproik.googlanime.service.api.entities.AnimeModel;
 import net.v4lproik.googlanime.service.api.myanimelist.MyAnimeList;
 import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListAnime;
+import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListCharacter;
 import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListEntry;
 import net.v4lproik.googlanime.service.api.utils.TransformAnimeMapper;
 import net.v4lproik.googlanime.service.api.utils.TransformMangaMapper;
@@ -80,10 +81,10 @@ public class AnimeRepositoryITest {
         mangaMapper = new TransformMangaMapper();
     }
 
-    @Test
-    public void test_saveAnimeWithDependencies_shouldBeInsertedWithItsDependencies() throws Exception{
+//    @Test
+//    public void test_saveAnimeWithDependencies_shouldBeInsertedWithItsDependencies() throws Exception{
 //        // Given
-//        ImportOptions options = new ImportOptions(8425, "anime", true);
+//        ImportOptions options = new ImportOptions(2904, "anime", true);
 //        String type = options.getType();
 //        final Integer id = options.getId();
 //
@@ -106,7 +107,16 @@ public class AnimeRepositoryITest {
 //                    MangaModel mangaRes = mangaMapper.transformMyAnimeListMangaDependencyToDAO((MyAnimeListMangaDependency) entry);
 //
 //                    if (mangaRes.getTitle() != null) {
-//                        mangaDao.saveOrUpdate(mangaRes);
+//
+//                        if (mangaRes.getId() != null){
+//
+//                            if (mangaDao.findById(mangaRes.getId()) == null){
+//                                AnimeIdModel entryId = mangaMapper.transformEntryToEntryId(mangaRes);
+//                                mangaDao.save(entryId);
+//                            }
+//
+//                            mangaDao.saveOrUpdate(mangaRes);
+//                        }
 //                    }
 //                    break;
 //
@@ -114,7 +124,16 @@ public class AnimeRepositoryITest {
 //                    AnimeModel animeRes = animeMapper.transformMyAnimeListAnimeDependencyToDAO((MyAnimeListAnimeDependency) entry);
 //
 //                    if (animeRes.getTitle() != null) {
-//                        animeDao.saveOrUpdate(animeRes);
+//
+//                        if (animeRes.getId() != null){
+//
+//                            if (animeDao.findById(animeRes.getId()) == null){
+//                                AnimeIdModel entryId = animeMapper.transformEntryToEntryId(animeRes);
+//                                animeDao.save(entryId);
+//                            }
+//
+//                            animeDao.saveOrUpdate(animeRes);
+//                        }
 //                    }
 //                    break;
 //
@@ -122,7 +141,35 @@ public class AnimeRepositoryITest {
 //                    throw new IllegalArgumentException();
 //            }
 //        }
-    }
+//    }
+//
+//    @Test
+//    public void test_saveAnimeWithoutDependencies_shouldBeInsertedAndItsDependenciesWithoutAnyDetails() throws Exception{
+//        // Given
+//        ImportOptions options = new ImportOptions(2904, "anime", false);
+//        String type = options.getType();
+//        final Integer id = options.getId();
+//
+//        // When
+//        MyAnimeListEntry response = myAnimeList.crawlById(options);
+//
+//        // Then
+//        AnimeModel animeRes = animeMapper.transformMyAnimeListAnimeToDAO((MyAnimeListAnime) response);
+//
+//        if (animeRes.getTitle() != null) {
+//
+//            if (animeRes.getId() != null){
+//
+//                if (animeDao.findById(animeRes.getId()) == null){
+//                    AnimeIdModel entryId = animeMapper.transformEntryToEntryId(animeRes);
+//                    animeDao.save(entryId);
+//                }
+//
+//                animeDao.saveOrUpdate(animeRes);
+//            }
+//        }
+//
+//    }
 
     @Test
     public void test_saveAnime_shouldBeInserted() throws Exception {
@@ -141,10 +188,57 @@ public class AnimeRepositoryITest {
         // When
         MyAnimeListEntry response = myAnimeList.crawlById(options);
 
-        AnimeModel animeRes = animeMapper.transformMyAnimeListAnimeToDAO((MyAnimeListAnime) response);
+        // If more details needed
+        final Integer idCharacter = response.getCharacters().get(2).getId();
+        final MyAnimeListCharacter character = response.getCharacters().get(2);
+        final String urlCharacter = myAnimeList.createCharacterURL(idCharacter);
+        input = new File("src/test/resource/lelouch-lamperouge.character");
+        doc = Jsoup.parse(input, "UTF-8", url);
 
-        animeDao.saveOrUpdate(animeRes);
+        myAnimeList.scrapCharacter(doc, urlCharacter, character);
 
+        AnimeModel anime = animeMapper.transformMyAnimeListAnimeToDAO((MyAnimeListAnime) response);
+
+//        AnimeModel animeResDB = animeDao.find(anime);
+//
+//
+//        if (animeResDB != null){
+//
+//            //update the different fields before updating
+//            anime.setProducers(animeResDB.getProducers());
+//            anime.setType(animeResDB.getType());
+//            anime.setEpisodeCount(animeResDB.getEpisodeCount());
+//            anime.setEpisodeLength(animeResDB.getEpisodeLength());
+//            anime.setShowType(animeResDB.getShowType());
+//            anime.setAdaptations(animeResDB.getAdaptations());
+//            anime.setAgeRating(animeResDB.getAgeRating());
+//            anime.setAlternativeVersions(animeResDB.getAlternativeVersions());
+//            anime.setAuthors(animeResDB.getAuthors());
+//            anime.setCharacters(animeResDB.getCharacters());
+//            anime.setEnglishTitle(animeResDB.getEnglishTitle());
+//            anime.setFinishedAiringDate(animeResDB.getFinishedAiringDate());
+//            anime.setGenres(animeResDB.getGenres());
+//            anime.setId(animeResDB.getId());
+//            anime.setJapaneseTitle(animeResDB.getJapaneseTitle());
+//            anime.setOthers(animeResDB.getOthers());
+//            anime.setPopularity(animeResDB.getPopularity());
+//            anime.setPosterImage(animeResDB.getPosterImage());
+//            anime.setPrequels(animeResDB.getPrequels());
+//            anime.setRank(animeResDB.getRank());
+//            anime.setScore(animeResDB.getScore());
+//            anime.setSideStories(animeResDB.getSideStories());
+//            anime.setSpinoff(animeResDB.getSpinoff());
+//            anime.setStartedAiringDate(animeResDB.getStartedAiringDate());
+//            anime.setSummaries(animeResDB.getSummaries());
+//            anime.setSynonyms(animeResDB.getSynonyms());
+//            anime.setSynopsis(animeResDB.getSynopsis());
+//            anime.setTags(animeResDB.getTags());
+//            anime.setTitle(animeResDB.getTitle());
+//
+//            anime = animeResDB;
+//        }
+
+        animeDao.saveOrUpdate(anime);
     }
 
     @Test
@@ -170,12 +264,45 @@ public class AnimeRepositoryITest {
         animeRes.setTitle(animeRes.getTitle() + "_UPDATED");
         animeDao.saveOrUpdate(animeRes);
 
-        AnimeModel animeFind = animeDao.find(animeRes.getId());
+        AnimeModel animeFind = animeDao.findById(animeRes.getId());
 
         String title = animeRes.getTitle();
 
         // Then
         assertEquals(title, animeFind.getTitle());
 
+    }
+
+    @Test
+    public void deleteAnime_shouldBeOK() throws Exception{
+
+        // Given
+        ImportOptions options = new ImportOptions(2904, "anime", false);
+        String type = options.getType();
+        Integer id = options.getId();
+        String url = myAnimeList.createEntryURL(id, type);
+
+        File input = new File("src/test/resource/code-geass-r2.anime");
+        Document doc = Jsoup.parse(input, "UTF-8", url);
+
+        doReturn(doc).when(myAnimeList).getResultFromJSoup(url, type);
+
+        // When
+        MyAnimeListEntry response = myAnimeList.crawlById(options);
+
+        // If more details needed
+        final Integer idCharacter = response.getCharacters().get(2).getId();
+        final MyAnimeListCharacter character = response.getCharacters().get(2);
+        final String urlCharacter = myAnimeList.createCharacterURL(idCharacter);
+        input = new File("src/test/resource/lelouch-lamperouge.character");
+        doc = Jsoup.parse(input, "UTF-8", url);
+
+        myAnimeList.scrapCharacter(doc, urlCharacter, character);
+
+        AnimeModel anime = animeMapper.transformMyAnimeListAnimeToDAO((MyAnimeListAnime) response);
+
+        animeDao.saveOrUpdate(anime);
+
+        animeDao.deleteById(new Long(2904));
     }
 }

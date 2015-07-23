@@ -12,10 +12,9 @@ import java.util.*;
 
 public class ElasticsearchIndexInitializer {
 
+    public final static String CONF_ELASTICSEARCH_BASE_FOLDER = "elasticsearch/mapping/";
     @NotNull
     private Client client;
-
-    public final static String CONF_ELASTICSEARCH_BASE_FOLDER = "elasticsearch/mapping/";
 
     public ElasticsearchIndexInitializer(Client client) {
         this.client = client;
@@ -24,7 +23,6 @@ public class ElasticsearchIndexInitializer {
     public void createIndex() throws Exception {
 
         Map<String, List<String>> mapIndexesIndices = getIndexIndices();
-
 
         if (mapIndexesIndices.size() > 0){
             Iterator it = mapIndexesIndices.entrySet().iterator();

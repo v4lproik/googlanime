@@ -67,7 +67,7 @@ public class MyAnimeListCharacter {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
+        return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE)
                 .append("id", id)
                 .append("firstName", firstName)
                 .append("lastName", lastName)

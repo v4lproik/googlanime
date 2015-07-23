@@ -64,6 +64,8 @@ public abstract class MyAnimeListEntryDependency {
 
     protected List<MyAnimeListEntryDependencyId> adaptations = new ArrayList<MyAnimeListEntryDependencyId>();
 
+    protected List<MyAnimeListEntryDependencyId> parentStories = new ArrayList<MyAnimeListEntryDependencyId>();
+
     protected List<MyAnimeListCharacter> characters = new ArrayList<MyAnimeListCharacter>();
 
     public MyAnimeListEntryDependency(Integer id) {
@@ -278,7 +280,6 @@ public abstract class MyAnimeListEntryDependency {
         this.adaptations = adaptations;
     }
 
-
     public String getType() {
         return type;
     }
@@ -295,6 +296,13 @@ public abstract class MyAnimeListEntryDependency {
         this.parent = parent;
     }
 
+    public List<MyAnimeListEntryDependencyId> getParentStories() {
+        return parentStories;
+    }
+
+    public void setParentStories(List<MyAnimeListEntryDependencyId> parentStories) {
+        this.parentStories = parentStories;
+    }
 
     @Override
     public boolean equals(Object o) {

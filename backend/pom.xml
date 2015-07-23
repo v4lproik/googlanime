@@ -26,6 +26,9 @@
                     <source>1.8</source>
                     <target>1.8</target>
                     <showWarnings>true</showWarnings>
+		    		<fork>true</fork>
+		            <meminitial>512m</meminitial>
+		            <maxmem>2048m</maxmem>
                 </configuration>
             </plugin>
             <plugin>

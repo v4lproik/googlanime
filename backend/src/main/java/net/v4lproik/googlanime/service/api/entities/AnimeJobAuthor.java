@@ -3,10 +3,7 @@ package net.v4lproik.googlanime.service.api.entities;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
@@ -19,11 +16,15 @@ public class AnimeJobAuthor implements Serializable {
     @Id
     private Integer idAuthor;
 
-
-    @Column(name="job")
     private String job;
 
     public AnimeJobAuthor() {
+    }
+
+    public AnimeJobAuthor(Long idAnime, Integer idAuthor, String job) {
+        this.idAnime = idAnime;
+        this.idAuthor = idAuthor;
+        this.job = job;
     }
 
     public Long getIdAnime() {

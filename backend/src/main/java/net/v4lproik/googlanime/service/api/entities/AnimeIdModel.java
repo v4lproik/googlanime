@@ -17,6 +17,8 @@ public class AnimeIdModel {
 
     private String type;
 
+    private String type_jpa;
+
     public AnimeIdModel(Long id) {
         this.id = id;
     }
@@ -38,6 +40,7 @@ public class AnimeIdModel {
 
     public void setType(String type) {
         this.type = type;
+        this.type_jpa = type;
     }
 
     @Override

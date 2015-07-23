@@ -18,6 +18,7 @@ public class MyAnimeListAnimeDependency extends MyAnimeListEntryDependency{
 
     public MyAnimeListAnimeDependency(Integer id) {
         super(id);
+        setType("anime");
     }
 
     public MyAnimeListAnimeDependency() {

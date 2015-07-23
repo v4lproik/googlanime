@@ -1,5 +1,8 @@
 package net.v4lproik.googlanime.service.api.myanimelist.models;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 public class MyAnimeListEntryGenre {
 
     String name;
@@ -14,5 +17,12 @@ public class MyAnimeListEntryGenre {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE)
+                .append("name", name)
+                .toString();
     }
 }

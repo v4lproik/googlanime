@@ -22,6 +22,7 @@ public class MyAnimeListManga extends MyAnimeListEntry{
 
     public MyAnimeListManga(Integer id) {
         super(id);
+        setType("manga");
     }
 
     public Integer getNbVolumes() {

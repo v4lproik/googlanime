@@ -2,6 +2,7 @@ package net.v4lproik.googlanime.service.impl;
 
 import net.v4lproik.googlanime.dao.api.AnimeDao;
 import net.v4lproik.googlanime.service.api.AnimeServiceWrite;
+import net.v4lproik.googlanime.service.api.entities.AnimeIdModel;
 import net.v4lproik.googlanime.service.api.entities.AnimeModel;
 import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListAnime;
 import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListAnimeDependency;
@@ -30,13 +31,23 @@ public class AnimeServiceWriteImpl implements AnimeServiceWrite {
     @Transactional( readOnly = false)
     @Override
     public void save(MyAnimeListAnimeDependency anime) {
-        AnimeModel entity = animeMapper.transformMyAnimeListAnimeDependencyToDAO(anime);
-        if (!isSavable(entity)){
-            return;
-        }
+        AnimeModel animeRes = animeMapper.transformMyAnimeListAnimeDependencyToDAO(anime);
 
-        log.debug(entity.toString());
-        animeDao.saveOrUpdate(entity);
+        if (isSavable(animeRes)) {
+
+            if (animeRes.getId() != null){
+
+                if (animeDao.findById(animeRes.getId()) == null){
+                    AnimeIdModel entryId = animeMapper.transformEntryToEntryId(animeRes);
+                    animeDao.save(entryId);
+                }
+
+                animeDao.saveOrUpdate(animeRes);
+            }else{
+                //get an Id first
+
+            }
+        }
     }
 
     @Transactional( readOnly = false)
