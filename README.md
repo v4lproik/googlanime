@@ -16,8 +16,9 @@ Backend :
 ## Quick Overview
 
 *To be able to work on this project (we love pull requests), you need to have :*
-- Java JDK 1.7
+- Java JDK 1.8
 - ElasticSearch >= v1.4
+- Mysql >= 5.7
 
 *More details regarding the backend can be found [here](https://github.com/v4lproik/googlanime/tree/master/backend/) and regarding the frontend [here](https://github.com/v4lproik/googlanime/tree/master/frontend).
 
