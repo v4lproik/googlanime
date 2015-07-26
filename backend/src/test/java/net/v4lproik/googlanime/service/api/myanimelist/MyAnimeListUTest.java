@@ -39,6 +39,7 @@ public class MyAnimeListUTest {
 
         //Then
         assertEquals("Naruto", response.getTitle());
+        assertEquals("manga", response.getType());
         assertEquals("http://cdn.myanimelist.net/images/manga/3/117681l.jpg", response.getPosterImage());
     }
 
@@ -61,24 +62,6 @@ public class MyAnimeListUTest {
         //Then
         assertEquals("Code Geass: Hangyaku no Lelouch R2", response.getTitle());
     }
-
-//    @Test
-//    public void testCrawlById_withGoodOptionsAnimeXXXXXXXXXXXXXXXXXXXXXXXX_shouldBeOK() throws Exception {
-//        // Given
-//        ImportOptions options = new ImportOptions(24, "manga", true);
-//        String type = options.getType();
-//        final Integer id = options.getId();
-//
-//        // When
-//        MyAnimeListAnime response = myAnimeList.crawlById(options);
-//
-//
-//        System.out.println("------------RESPONSE------------");
-//        System.out.println(response.toString());
-//
-//        //Then
-//        assertEquals("Code Geass: Hangyaku no Lelouch R2", response.getTitle());
-//    }
 
     @Test(expected = IOException.class)
     public void testCrawlById_withGoodOptions_withNoDataToCrawl_shouldThrowIOException() throws Exception {

@@ -67,7 +67,7 @@ public abstract class MyAnimeListEntry {
 
     private List<MyAnimeListEntry> adaptations = new ArrayList<MyAnimeListEntry>();
 
-    private List<MyAnimeListEntry> parentStories = new ArrayList<MyAnimeListEntry>();
+//    private List<MyAnimeListEntry> parentStories = new ArrayList<MyAnimeListEntry>();
 
     private List<MyAnimeListCharacter> characters = new ArrayList<MyAnimeListCharacter>();
 
@@ -299,14 +299,6 @@ public abstract class MyAnimeListEntry {
         this.parent = parent;
     }
 
-    public List<MyAnimeListEntry> getParentStories() {
-        return parentStories;
-    }
-
-    public void setParentStories(List<MyAnimeListEntry> parentStories) {
-        this.parentStories = parentStories;
-    }
-
     public String getBackground() {
         return background;
     }
@@ -341,32 +333,6 @@ public abstract class MyAnimeListEntry {
                 .append("id", id)
                 .append("type", type)
                 .append("title", title)
-                .append("background", background)
-                .append("synonyms", synonyms)
-                .append("englishTitle", englishTitle)
-                .append("japaneseTitle", japaneseTitle)
-                .append("synopsis", synopsis)
-                .append("startedAiringDate", startedAiringDate)
-                .append("finishedAiringDate", finishedAiringDate)
-                .append("rank", rank)
-                .append("popularity", popularity)
-                .append("score", score)
-                .append("genres", genres)
-                .append("ageRating", ageRating)
-                .append("posterImage", posterImage)
-                .append("parent", parent)
-                .append("authors", authors)
-                .append("tags", tags)
-                .append("sequels", sequels)
-                .append("alternativeVersions", alternativeVersions)
-                .append("prequels", prequels)
-                .append("spinoff", spinoff)
-                .append("sideStories", sideStories)
-                .append("others", others)
-                .append("summaries", summaries)
-                .append("adaptations", adaptations)
-                .append("parentStories", parentStories)
-                .append("characters", characters)
                 .toString();
     }
 

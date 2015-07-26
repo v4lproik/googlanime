@@ -13,11 +13,12 @@ public final class AnimeModel extends Entry{
 
     private String showType;
 
-    @OneToMany(cascade=CascadeType.ALL)
+    @ManyToMany(cascade=CascadeType.ALL)
     @JoinTable(name="Anime_has_Producer",
             joinColumns={@JoinColumn(name="idAnime", referencedColumnName="id")},
             inverseJoinColumns={@JoinColumn(name="idProducer", referencedColumnName="id")
             })
+    @ElementCollection
     private Set<ProducerModel> producers;
 
     public AnimeModel() {
@@ -45,6 +46,14 @@ public final class AnimeModel extends Entry{
 
     public void setProducers(Set<ProducerModel> producers) {
         this.producers = producers;
+    }
+
+    public String getShowType() {
+        return showType;
+    }
+
+    public void setShowType(String showType) {
+        this.showType = showType;
     }
 
     @Override

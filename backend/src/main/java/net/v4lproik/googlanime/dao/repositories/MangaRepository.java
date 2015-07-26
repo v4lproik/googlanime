@@ -2,22 +2,18 @@ package net.v4lproik.googlanime.dao.repositories;
 
 import net.v4lproik.googlanime.dao.api.MangaDao;
 import net.v4lproik.googlanime.service.api.entities.*;
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
+import org.hibernate.*;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 @Repository
-public class MangaRepository implements MangaDao {
+public class MangaRepository extends AbstractRepositoryHelper implements MangaDao {
 
     private static final Logger log = LoggerFactory.getLogger(MangaRepository.class);
     public final SessionFactory sessionFactory;
@@ -30,7 +26,22 @@ public class MangaRepository implements MangaDao {
     @Override
     public Long save(MangaModel manga) {
         Transaction tx = currentSession().beginTransaction();
+
         Object idSave = currentSession().save(manga);
+
+        currentSession().flush();
+        tx.commit();
+
+        return (Long) idSave;
+    }
+
+    @Override
+    public Long save(AnimeIdModel manga) {
+        Transaction tx = currentSession().beginTransaction();
+
+        Object idSave = currentSession().save(manga);
+
+        currentSession().flush();
         tx.commit();
 
         return (Long) idSave;
@@ -38,244 +49,437 @@ public class MangaRepository implements MangaDao {
 
     @Override
     public void saveOrUpdate(MangaModel manga) {
-        long id = manga.getId();
         Transaction tx;
-
-        // Get the entities that need to be updated
-        tx=currentSession().beginTransaction();
-
-        Set<AuthorModel> authors = new HashSet<>();
-        if (manga.getAuthors() != null){
-            for (AuthorModel author:manga.getAuthors()){
-                Criteria criteria = currentSession().createCriteria(AuthorModel.class);
-                if (author.getFirstName() != null) criteria.add(Restrictions.eq("firstName", author.getFirstName()));
-                if (author.getLastName() != null) criteria.add(Restrictions.eq("lastName", author.getLastName()));
-                if (author.getBiography() != null) criteria.add(Restrictions.eq("biography", author.getBiography()));
-                AuthorModel authorRes = (AuthorModel) criteria.uniqueResult();
-                if (authorRes != null){
-                    authors.add(authorRes);
-                }else {
-                    authors.add(author);
-                }
-            }
-        }
-        manga.setAuthors(authors);
-
-
-        Set<CharacterModel> characters = new HashSet<>();
-        if (manga.getCharacters() != null){
-            for (CharacterModel character:manga.getCharacters()){
-                Criteria criteria = currentSession().createCriteria(CharacterModel.class);
-                if (character.getFirstName() != null) criteria.add(Restrictions.eq("firstName", character.getFirstName()));
-                if (character.getLastName() != null) criteria.add(Restrictions.eq("lastName", character.getLastName()));
-                CharacterModel characterRes = (CharacterModel) criteria.uniqueResult();
-
-                if (characterRes != null){
-                    characters.add(characterRes);
-                }else {
-                    characters.add(character);
-                }
-            }
-        }
-        manga.setCharacters(characters);
-
-
-        Set<GenreModel> genres = new HashSet<>();
-        if (manga.getGenres() != null){
-            for (GenreModel genre:manga.getGenres()){
-                Criteria criteria = currentSession().createCriteria(GenreModel.class);
-                criteria.add(Restrictions.eq("name", genre.getName()));
-                GenreModel genreRes = (GenreModel) criteria.uniqueResult();
-                if (genreRes != null){
-                    genres.add(genreRes);
-                }else {
-                    genres.add(genre);
-                }
-            }
-        }
-
-        manga.setGenres(genres);
-
-
-        Set<TagModel> tags = new HashSet<>();
-        if (manga.getTags() != null){
-            for (TagModel tag:manga.getTags()){
-                Criteria criteria = currentSession().createCriteria(TagModel.class);
-                criteria.add(Restrictions.eq("name", tag.getName()));
-                TagModel tagRes = (TagModel) criteria.uniqueResult();
-                if (tagRes != null){
-                    tags.add(tagRes);
-                }else {
-                    tags.add(tag);
-                }
-            }
-        }
-
-        manga.setTags(tags);
-
-
-
-        Set<SynonymModel> synonyms = new HashSet<>();
-        if (manga.getSynonyms() != null){
-            for (SynonymModel synonym:manga.getSynonyms()){
-                Criteria criteria = currentSession().createCriteria(SynonymModel.class);
-                criteria.add(Restrictions.eq("title", synonym.getTitle()));
-                criteria.add(Restrictions.eq("manga.id", id));
-                SynonymModel synonymRes = (SynonymModel) criteria.uniqueResult();
-
-                if (synonymRes != null){
-                    synonyms.add(synonymRes);
-                }else {
-                    synonyms.add(synonym);
-                }
-            }
-        }
-
-        manga.setSynonyms(synonyms);
-
-        // Avoid NonUniqueObjectException has the manga object has been already passed
-        currentSession().flush();
-        currentSession().clear();
-        tx.commit();
-
+        long id = manga.getId();
 
         // -----------------------------------------------------------------------------------------
-        // Save Anime
-        log.debug(manga.toString());
+        // Save ManyToMany/OneToMany Entities
+
         tx=currentSession().beginTransaction();
+
+        if (manga.getAuthors() != null) {
+            for (AuthorModel author : manga.getAuthors()) {
+                Integer idAuthor = author.getId();
+
+                if (author.getId() != null) {
+                    currentSession().update(author);
+                } else {
+                    Map<String, String> conditions = new HashMap<String, String>() {{
+                        put("firstName", author.getFirstName());
+                        put("lastName", author.getLastName());
+                    }};
+
+                    AuthorModel authorDB = (AuthorModel) getBySimpleCondition(currentSession(), AuthorModel.class, conditions);
+
+                    if (authorDB == null) {
+                        idAuthor = (Integer) currentSession().save(author);
+                        author.setId(idAuthor);
+                    } else {
+                        author.setId(authorDB.getId());
+                    }
+                }
+            }
+        }
+
+        if (manga.getCharacters() != null) {
+            for (CharacterModel character : manga.getCharacters()) {
+                Integer idCharacter = character.getId();
+
+                if (character.getId() != null) {
+                    currentSession().update(character);
+                } else {
+                    Map<String, String> conditions = new HashMap<String, String>() {{
+                        put("firstName", character.getFirstName());
+                        put("lastName", character.getLastName());
+                    }};
+
+                    CharacterModel characterDB = (CharacterModel) getBySimpleCondition(currentSession(), CharacterModel.class, conditions);
+
+                    if (characterDB == null) {
+                        idCharacter = (Integer) currentSession().save(character);
+                        character.setId(idCharacter);
+                    } else {
+                        character.setId(characterDB.getId());
+                    }
+                }
+            }
+        }
+
+        if (manga.getGenres() != null) {
+            for (GenreModel genre : manga.getGenres()) {
+                Integer idGenre = genre.getId();
+
+                if (genre.getId() != null) {
+                    currentSession().update(genre);
+                } else {
+                    GenreModel genreDB = (GenreModel) getBySimpleCondition(currentSession(), GenreModel.class, "name", genre.getName());
+                    if (genreDB == null) {
+                        idGenre = (Integer) currentSession().save(genre);
+                        genre.setId(idGenre);
+                    } else {
+                        genre.setId(genreDB.getId());
+                    }
+                }
+            }
+        }
+
+        if (manga.getTags() != null) {
+            for (TagModel tag : manga.getTags()) {
+                Integer idTag = tag.getId();
+
+                if (tag.getId() != null) {
+                    currentSession().update(tag);
+                } else {
+                    TagModel tagDB = (TagModel) getBySimpleCondition(currentSession(), TagModel.class, "name", tag.getName());
+                    if (tagDB == null) {
+                        idTag = (Integer) currentSession().save(tag);
+                        tag.setId(idTag);
+                    } else {
+                        tag.setId(tagDB.getId());
+                    }
+                }
+            }
+        }
+
+        if (manga.getSynonyms() != null) {
+            for (SynonymModel synonym : manga.getSynonyms()) {
+                Integer idTag = synonym.getId();
+
+                if (synonym.getId() != null) {
+                    currentSession().update(synonym);
+                } else {
+
+                    Map<String, Object> conditions = new HashMap<String, Object>() {{
+                        put("title", synonym.getTitle());
+                        put("entry", synonym.getEntry());
+                    }};
+                    SynonymModel synonymDB = (SynonymModel) getBySimpleConditionObject(currentSession(), SynonymModel.class, conditions);
+                    if (synonymDB == null) {
+                        idTag = (Integer) currentSession().save(synonym);
+                        synonym.setId(idTag);
+                    } else {
+                        synonym.setId(synonymDB.getId());
+                    }
+                }
+            }
+        }
+
+        currentSession().flush();
+        tx.commit();
+
+        // -----------------------------------------------------------------------------------------
+        // Save Manga
+
+        tx=currentSession().beginTransaction();
+
         currentSession().saveOrUpdate(manga);
 
-        // -----------------------------------------------------------------------------------------
-        // Save OneToMany and ManyToMany with extra columns
-
-        if (manga.getAuthors() != null){
-            for (AuthorModel author:manga.getAuthors()) {
-                final Integer idAuthor = author.getId();
-
-                List<String> jobs = author.getJobs();
-                if (jobs != null){
-                    for (String job:jobs){
-                        AnimeJobAuthor animeJobAuthor = new AnimeJobAuthor();
-                        animeJobAuthor.setIdAnime(id);
-                        animeJobAuthor.setIdAuthor(idAuthor);
-                        animeJobAuthor.setJob(job);
-
-                        Criteria criteria = currentSession().createCriteria(AnimeJobAuthor.class);
-                        criteria.add(Restrictions.eq("idAnime", id));
-                        criteria.add(Restrictions.eq("idAuthor", idAuthor));
-                        AnimeJobAuthor relationAnimeJobAuthor = (AnimeJobAuthor) criteria.uniqueResult();
-
-                        if (relationAnimeJobAuthor != null){
-                            relationAnimeJobAuthor.setJob(job);
-                            currentSession().update(relationAnimeJobAuthor);
-                        }
-                    }
-                }
-            }
-        }
-
-        if (manga.getCharacters() != null){
-            for (CharacterModel character:manga.getCharacters()) {
-                final Integer idCharacter = character.getId();
-
-
-                String role = character.getRole();
-                if (role != null){
-                    AnimeRoleCharacter animeRoleCharacter = null;
-                    animeRoleCharacter = new AnimeRoleCharacter();
-                    animeRoleCharacter.setIdAnime(id);
-                    animeRoleCharacter.setIdCharacter(idCharacter);
-                    animeRoleCharacter.setRole(role);
-
-                    Criteria criteria = currentSession().createCriteria(AnimeRoleCharacter.class);
-                    criteria.add(Restrictions.eq("idAnime", id));
-                    criteria.add(Restrictions.eq("idCharacter", idCharacter));
-                    AnimeRoleCharacter relationAnimeRoleCharacter = (AnimeRoleCharacter) criteria.uniqueResult();
-
-                    if (relationAnimeRoleCharacter != null){
-                        relationAnimeRoleCharacter.setRole(role);
-                        currentSession().update(relationAnimeRoleCharacter);
-                    }
-                }
-            }
-        }
-
-
-        // Avoid NonUniqueObjectException has the manga object has been already passed
         currentSession().flush();
-        currentSession().clear();
         tx.commit();
 
 
         // -----------------------------------------------------------------------------------------
-        // Save dependencies
+        // Save Alternatives, SidesStories etc
+
         if (manga.getSequels() != null){
             for (AnimeIdModel sequel:manga.getSequels()){
-                tx=currentSession().beginTransaction();
-                currentSession().merge(sequel);
-                tx.commit();
+                if (sequel.getId() != id){
+
+                    if (findById(sequel.getId()) != null){
+
+                        tx=currentSession().beginTransaction();
+
+                        currentSession().update(sequel);
+
+                        currentSession().flush();
+                        tx.commit();
+                    }else{
+
+                        tx=currentSession().beginTransaction();
+
+                        currentSession().merge(sequel);
+
+                        currentSession().flush();
+                        tx.commit();
+                    }
+
+                    tx=currentSession().beginTransaction();
+
+                    currentSession().saveOrUpdate(new Sequels(id, sequel.getId()));
+
+                    currentSession().flush();
+                    tx.commit();
+                }
             }
         }
 
         if (manga.getAlternativeVersions() != null){
             for (AnimeIdModel alter:manga.getAlternativeVersions()){
-                tx=currentSession().beginTransaction();
-                currentSession().merge(alter);
-                tx.commit();
+                if (alter.getId() != id) {
+
+                    if (findById(alter.getId()) != null){
+
+                        tx=currentSession().beginTransaction();
+
+                        currentSession().update(alter);
+
+                        currentSession().flush();
+                        tx.commit();
+                    }else{
+
+                        tx=currentSession().beginTransaction();
+
+                        currentSession().merge(alter);
+
+                        currentSession().flush();
+                        tx.commit();
+                    }
+
+
+                    tx=currentSession().beginTransaction();
+
+                    currentSession().saveOrUpdate(new Sequels(id, alter.getId()));
+
+                    currentSession().flush();
+                    tx.commit();
+                }
             }
         }
 
         if (manga.getPrequels() != null){
             for (AnimeIdModel prequel:manga.getPrequels()){
-                tx=currentSession().beginTransaction();
-                currentSession().merge(prequel);
-                tx.commit();
+                if (prequel.getId() != id){
+
+                    if (findById(prequel.getId()) != null){
+
+                        tx=currentSession().beginTransaction();
+
+                        currentSession().update(prequel);
+
+                        currentSession().flush();
+                        tx.commit();
+                    }else{
+
+                        tx=currentSession().beginTransaction();
+
+                        currentSession().merge(prequel);
+
+                        currentSession().flush();
+                        tx.commit();
+                    }
+
+
+                    tx=currentSession().beginTransaction();
+
+                    currentSession().saveOrUpdate(new Prequels(id, prequel.getId()));
+
+                    currentSession().flush();
+                    tx.commit();
+                }
             }
         }
 
         if (manga.getSpinoff() != null){
             for (AnimeIdModel spinOff:manga.getSpinoff()){
-                tx=currentSession().beginTransaction();
-                currentSession().merge(spinOff);
-                tx.commit();
+                if (spinOff.getId() != id){
+
+                    if (findById(spinOff.getId()) != null){
+
+                        tx=currentSession().beginTransaction();
+
+                        currentSession().update(spinOff);
+
+                        currentSession().flush();
+                        tx.commit();
+                    }else{
+
+                        tx=currentSession().beginTransaction();
+
+                        currentSession().merge(spinOff);
+
+                        currentSession().flush();
+                        tx.commit();
+                    }
+
+
+                    tx=currentSession().beginTransaction();
+
+                    currentSession().saveOrUpdate(new SpinOffs(id, spinOff.getId()));
+
+                    currentSession().flush();
+                    tx.commit();
+                }
             }
         }
 
         if (manga.getSideStories() != null){
             for (AnimeIdModel sideStory:manga.getSideStories()){
-                tx=currentSession().beginTransaction();
-                currentSession().merge(sideStory);
-                tx.commit();
+                if (sideStory.getId() != id){
+
+                    if (findById(sideStory.getId()) != null){
+
+                        tx=currentSession().beginTransaction();
+
+                        currentSession().update(sideStory);
+
+                        currentSession().flush();
+                        tx.commit();
+                    }else{
+
+                        tx=currentSession().beginTransaction();
+
+                        currentSession().merge(sideStory);
+
+                        currentSession().flush();
+                        tx.commit();
+                    }
+
+
+                    tx=currentSession().beginTransaction();
+
+                    currentSession().saveOrUpdate(new SideStories(id, sideStory.getId()));
+
+                    currentSession().flush();
+                    tx.commit();
+                }
             }
         }
 
         if (manga.getOthers() != null){
             for (AnimeIdModel other:manga.getOthers()){
-                tx=currentSession().beginTransaction();
-                currentSession().merge(other);
-                tx.commit();
+                if (other.getId() != id){
+
+                    if (findById(other.getId()) != null){
+
+                        tx=currentSession().beginTransaction();
+
+                        currentSession().update(other);
+
+                        currentSession().flush();
+                        tx.commit();
+                    }else{
+
+                        tx=currentSession().beginTransaction();
+
+                        currentSession().merge(other);
+
+                        currentSession().flush();
+                        tx.commit();
+                    }
+
+
+                    tx=currentSession().beginTransaction();
+
+                    currentSession().saveOrUpdate(new Others(id, other.getId()));
+
+                    currentSession().flush();
+                    tx.commit();
+
+                }
             }
         }
 
         if (manga.getSummaries() != null){
             for (AnimeIdModel summary:manga.getSummaries()){
-                tx=currentSession().beginTransaction();
-                currentSession().merge(summary);
-                tx.commit();
+                if (summary.getId() != id){
+
+                    if (findById(summary.getId()) != null){
+
+                        tx=currentSession().beginTransaction();
+
+                        currentSession().update(summary);
+
+                        currentSession().flush();
+                        tx.commit();
+                    }else{
+
+                        tx=currentSession().beginTransaction();
+
+                        currentSession().merge(summary);
+
+                        currentSession().flush();
+                        tx.commit();
+                    }
+
+                    tx=currentSession().beginTransaction();
+
+                    currentSession().saveOrUpdate(new Summaries(id, summary.getId()));
+
+                    currentSession().flush();
+                    tx.commit();
+                }
             }
         }
 
         if (manga.getAdaptations() != null){
             for (AnimeIdModel adaptation:manga.getAdaptations()) {
-                tx=currentSession().beginTransaction();
-                currentSession().merge(adaptation);
-                tx.commit();
+                if (adaptation.getId() != id){
+
+                    if (findById(adaptation.getId()) != null){
+
+                        tx=currentSession().beginTransaction();
+
+                        currentSession().update(adaptation);
+
+                        currentSession().flush();
+                        tx.commit();
+
+                    }else{
+
+                        tx=currentSession().beginTransaction();
+
+                        currentSession().merge(adaptation);
+
+                        currentSession().flush();
+                        tx.commit();
+                    }
+
+
+
+                    tx=currentSession().beginTransaction();
+
+                    currentSession().saveOrUpdate(new Adaptations(id, adaptation.getId()));
+
+                    currentSession().flush();
+                    tx.commit();
+                }
             }
         }
+
+
+        // -----------------------------------------------------------------------------------------
+        // Save ManyToMany Extra Columns
+
+        tx=currentSession().beginTransaction();
+
+        if (manga.getAuthors() != null) {
+            for (AuthorModel author : manga.getAuthors()) {
+                Integer idAuthor = author.getId();
+
+                if (author.getJobs() != null){
+                    for (String job:author.getJobs()){
+                        currentSession().saveOrUpdate(new AnimeJobAuthor(id, idAuthor, job));
+                    }
+                }
+            }
+        }
+
+        if (manga.getCharacters() != null) {
+            for (CharacterModel character : manga.getCharacters()) {
+                Integer idCharacter = character.getId();
+
+                if (character.getRole() != null){
+                    currentSession().saveOrUpdate(new AnimeRoleCharacter(id, idCharacter, character.getRole()));
+                }
+            }
+        }
+
+        currentSession().flush();
+        tx.commit();
     }
 
     @Override
-    public MangaModel find(Long id){
+    public MangaModel findById(Long id){
 
         Transaction tx=currentSession().beginTransaction();
         Criteria criteria = currentSession().createCriteria(MangaModel.class);
@@ -287,10 +491,49 @@ public class MangaRepository implements MangaDao {
     }
 
     @Override
+    public MangaModel find(MangaModel manga){
+        final Long id = manga.getId();
+        final String type = manga.getType();
+        final String serialization = manga.getSerialization();
+        final String title = manga.getTitle();
+
+        Transaction tx=currentSession().beginTransaction();
+        Criteria criteria = currentSession().createCriteria(AnimeModel.class);
+        if (id != null) criteria.add(Restrictions.eq("id", id));
+        if (type != null) criteria.add(Restrictions.eq("type", type));
+        if (serialization != null) criteria.add(Restrictions.eq("serialization", serialization));
+        if (title != null) criteria.add(Restrictions.eq("showType", serialization));
+
+        MangaModel mangaRes = (MangaModel) criteria.uniqueResult();
+        tx.commit();
+
+        return mangaRes;
+    }
+
+    @Override
     public void delete(MangaModel manga) {
         Transaction tx=currentSession().beginTransaction();
+
         currentSession().delete(manga);
+
+        currentSession().flush();
         tx.commit();
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        Transaction tx=currentSession().beginTransaction();
+
+        try{
+            MangaModel manga = (MangaModel)currentSession().load(MangaModel.class, id);
+            currentSession().delete(manga);
+
+            currentSession().flush();
+            tx.commit();
+        } catch (Exception ex) {
+            tx.rollback();
+            throw ex;
+        }
     }
 
     private Session currentSession() {

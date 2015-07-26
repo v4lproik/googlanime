@@ -18,6 +18,7 @@ public class MyAnimeListAnime extends MyAnimeListEntry{
 
     public MyAnimeListAnime(Integer id) {
         super(id);
+        setType("anime");
     }
 
     public MyAnimeListAnime() {

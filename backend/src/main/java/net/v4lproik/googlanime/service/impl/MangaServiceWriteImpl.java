@@ -2,6 +2,7 @@ package net.v4lproik.googlanime.service.impl;
 
 import net.v4lproik.googlanime.dao.api.MangaDao;
 import net.v4lproik.googlanime.service.api.MangaServiceWrite;
+import net.v4lproik.googlanime.service.api.entities.AnimeIdModel;
 import net.v4lproik.googlanime.service.api.entities.MangaModel;
 import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListManga;
 import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListMangaDependency;
@@ -19,30 +20,37 @@ public class MangaServiceWriteImpl implements MangaServiceWrite {
 
     public final MangaDao mangaDao;
 
-    public final TransformMangaMapper animeMapper;
+    public final TransformMangaMapper mangaMapper;
 
     @Autowired
-    public MangaServiceWriteImpl(final MangaDao mangaDao, final TransformMangaMapper animeMapper) {
+    public MangaServiceWriteImpl(final MangaDao mangaDao, final TransformMangaMapper mangaMapper) {
         this.mangaDao = mangaDao;
-        this.animeMapper = animeMapper;
+        this.mangaMapper = mangaMapper;
     }
 
     @Transactional( readOnly = false)
     @Override
     public void save(MyAnimeListMangaDependency manga) {
-        MangaModel entity = animeMapper.transformMyAnimeListMangaDependencyToDAO(manga);
-        if (!isSavable(entity)){
-            return;
-        }
+        MangaModel mangaRes = mangaMapper.transformMyAnimeListMangaDependencyToDAO(manga);
 
-        log.debug(entity.toString());
-        mangaDao.saveOrUpdate(entity);
+        if (mangaRes.getTitle() != null) {
+
+            if (mangaRes.getId() != null){
+
+                if (mangaDao.findById(mangaRes.getId()) == null){
+                    AnimeIdModel entryId = mangaMapper.transformEntryToEntryId(mangaRes);
+                    mangaDao.save(entryId);
+                }
+
+                mangaDao.saveOrUpdate(mangaRes);
+            }
+        }
     }
 
     @Transactional( readOnly = false)
     @Override
     public void save(MyAnimeListManga manga) {
-        MangaModel entity = animeMapper.transformMyAnimeListMangaToDAO(manga);
+        MangaModel entity = mangaMapper.transformMyAnimeListMangaToDAO(manga);
         log.debug(entity.toString());
         mangaDao.save(entity);
     }
@@ -50,7 +58,7 @@ public class MangaServiceWriteImpl implements MangaServiceWrite {
     @Transactional( readOnly = false)
     @Override
     public void delete(MyAnimeListManga manga) {
-        MangaModel entity = animeMapper.transformMyAnimeListMangaToDAO(manga);
+        MangaModel entity = mangaMapper.transformMyAnimeListMangaToDAO(manga);
         mangaDao.delete(entity);
     }
 

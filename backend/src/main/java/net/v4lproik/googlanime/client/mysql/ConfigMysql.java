@@ -64,9 +64,19 @@ public class ConfigMysql {
         c.addAnnotatedClass(SynonymModel.class);
         c.addAnnotatedClass(TagModel.class);
         c.addAnnotatedClass(CharacterModel.class);
+        c.addAnnotatedClass(CharacterNicknameModel.class);
         c.addAnnotatedClass(AuthorModel.class);
         c.addAnnotatedClass(AnimeJobAuthor.class);
         c.addAnnotatedClass(AnimeRoleCharacter.class);
+        c.addAnnotatedClass(Adaptations.class);
+        c.addAnnotatedClass(Alternatives.class);
+        c.addAnnotatedClass(SpinOffs.class);
+        c.addAnnotatedClass(Summaries.class);
+        c.addAnnotatedClass(Prequels.class);
+        c.addAnnotatedClass(Sequels.class);
+        c.addAnnotatedClass(Others.class);
+        c.addAnnotatedClass(SideStories.class);
+        c.addAnnotatedClass(AnimeProducer.class);
 
         c.setProperty("connection.provider_class", "org.hibernate.connection.C3P0ConnectionProvider");
         c.setProperty("c3p0.min_size", "5");

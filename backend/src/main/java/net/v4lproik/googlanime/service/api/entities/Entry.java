@@ -1,11 +1,11 @@
 package net.v4lproik.googlanime.service.api.entities;
 
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -42,35 +42,41 @@ public class Entry {
 
     private String posterImage;
 
-    @OneToMany(cascade=CascadeType.ALL, mappedBy = "entry")
+
+    @OneToMany(cascade=CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "entry")
+    @ElementCollection
     private Set<SynonymModel> synonyms;
 
-    @OneToMany(cascade=CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(name="Anime_has_Genre",
             joinColumns={@JoinColumn(name="idAnime", referencedColumnName="id")},
             inverseJoinColumns={@JoinColumn(name="idGenre", referencedColumnName="id")
             })
+    @ElementCollection
     private Set<GenreModel> genres;
 
-    @ManyToMany(cascade=CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(name="Anime_has_Author",
             joinColumns={@JoinColumn(name="idAnime", referencedColumnName="id")},
             inverseJoinColumns={@JoinColumn(name="idAuthor", referencedColumnName="id")
             })
+    @ElementCollection
     private Set<AuthorModel> authors;
 
-    @ManyToMany(cascade=CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(name="Anime_has_Tag",
             joinColumns={@JoinColumn(name="idAnime", referencedColumnName="id")},
             inverseJoinColumns={@JoinColumn(name="idTag", referencedColumnName="id")
             })
+    @ElementCollection
     private Set<TagModel> tags;
 
-    @ManyToMany(cascade=CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(name="Anime_has_Character",
             joinColumns={@JoinColumn(name="idAnime", referencedColumnName="id")},
             inverseJoinColumns={@JoinColumn(name="idCharacter", referencedColumnName="id")
             })
+    @ElementCollection
     private Set<CharacterModel> characters;
 
     //Recursive dependecnies
@@ -98,6 +104,9 @@ public class Entry {
 
     @Transient
     private List<AnimeIdModel> adaptations;
+
+    @Transient
+    private List<AnimeIdModel> parentStories;
 
 
     public Entry(Long id) {
@@ -316,10 +325,17 @@ public class Entry {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Entry)) return false;
+        Entry entry = (Entry) o;
+        return Objects.equals(getType(), entry.getType()) &&
+                Objects.equals(getTitle(), entry.getTitle());
+    }
+
+    @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37)
-                .append(id)
-                .toHashCode();
+        return Objects.hash(getType(), getTitle());
     }
 
     @Override

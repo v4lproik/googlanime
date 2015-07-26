@@ -1,6 +1,7 @@
 package net.v4lproik.googlanime.service.api.myanimelist.models;
 
-import com.google.common.base.Objects;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class MyAnimeListAuthor {
 
@@ -50,11 +51,11 @@ public class MyAnimeListAuthor {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
-                .add("id", id)
-                .add("firstName", firstName)
-                .add("lastName", lastName)
-                .add("job", job)
+        return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE)
+                .append("id", id)
+                .append("firstName", firstName)
+                .append("lastName", lastName)
+                .append("job", job)
                 .toString();
     }
 }

@@ -15,14 +15,12 @@ import java.util.List;
 import java.util.Set;
 
 @Component
-public class TransformMangaMapper {
+public class TransformMangaMapper extends TransformAbstractMapper {
 
     public final static String DATE_FORMAT = "dd-MM-yyyy";
 
     public MangaModel transformMyAnimeListMangaDependencyToDAO(MyAnimeListMangaDependency myAnimeListMangaDependency){
         MangaModel manga = new MangaModel();
-
-        System.out.println(myAnimeListMangaDependency.toString());
 
         ModelMapper modelMapper = new ModelMapper();
         manga = modelMapper.map(myAnimeListMangaDependency, MangaModel.class);
@@ -38,17 +36,6 @@ public class TransformMangaMapper {
             manga.setGenres(genresModel);
         }
 
-//        String[] producers = myAnimeListMangaDependency.getProducers();
-//        if (producers != null){
-//            Set<ProducerModel> producersModel = new HashSet<>();
-//            for (String producer:producers){
-//                ProducerModel producerModel = new ProducerModel();
-//                producerModel.setName(producer);
-//                producersModel.add(producerModel);
-//            }
-//            manga.setProducers(producersModel);
-//        }
-
         List<MyAnimeListCharacter> characters = myAnimeListMangaDependency.getCharacters();
         if (characters != null) {
             CharacterModel characterModel;
@@ -59,6 +46,15 @@ public class TransformMangaMapper {
                 characterModel.setFirstName(character.getFirstName());
                 characterModel.setJapaneseName(character.getJapaneseName());
                 characterModel.setLastName(character.getLastName());
+
+                Set<CharacterNicknameModel> characterNicknamesModel = new HashSet<>();
+                if (character.getNickNames() != null){
+                    for (String nickname:character.getNickNames()){
+                        characterNicknamesModel.add(new CharacterNicknameModel(nickname));
+                    }
+                }
+                characterModel.setNicknames(characterNicknamesModel);
+
                 charactersModel.add(characterModel);
             }
             manga.setCharacters(charactersModel);
@@ -98,13 +94,23 @@ public class TransformMangaMapper {
             manga.setSynonyms(synonymsModel);
         }
 
+        String[] tags = myAnimeListMangaDependency.getTags();
+        if (tags != null) {
+            TagModel tagModel;
+            Set<TagModel> tagsModel = new HashSet<>();
+            for (String tag : tags) {
+                tagModel = new TagModel();
+                tagModel.setName(tag);
+                tagsModel.add(tagModel);
+            }
+            manga.setTags(tagsModel);
+        }
+
         return manga;
     }
 
     public MangaModel transformMyAnimeListMangaToDAO(MyAnimeListManga myAnimeListManga){
         MangaModel manga = new MangaModel();
-
-        System.out.println(myAnimeListManga.toString());
 
         ModelMapper modelMapper = new ModelMapper();
         manga = modelMapper.map(myAnimeListManga, MangaModel.class);
@@ -120,17 +126,6 @@ public class TransformMangaMapper {
             manga.setGenres(genresModel);
         }
 
-//        String[] producers = myAnimeListManga.getProducers();
-//        if (producers != null){
-//            Set<ProducerModel> producersModel = new HashSet<>();
-//            for (String producer:producers){
-//                ProducerModel producerModel = new ProducerModel();
-//                producerModel.setName(producer);
-//                producersModel.add(producerModel);
-//            }
-//            manga.setProducers(producersModel);
-//        }
-
         List<MyAnimeListCharacter> characters = myAnimeListManga.getCharacters();
         if (characters != null) {
             CharacterModel characterModel;
@@ -141,6 +136,15 @@ public class TransformMangaMapper {
                 characterModel.setFirstName(character.getFirstName());
                 characterModel.setJapaneseName(character.getJapaneseName());
                 characterModel.setLastName(character.getLastName());
+
+                Set<CharacterNicknameModel> characterNicknamesModel = new HashSet<>();
+                if (character.getNickNames() != null){
+                    for (String nickname:character.getNickNames()){
+                        characterNicknamesModel.add(new CharacterNicknameModel(nickname));
+                    }
+                }
+                characterModel.setNicknames(characterNicknamesModel);
+
                 charactersModel.add(characterModel);
             }
             manga.setCharacters(charactersModel);

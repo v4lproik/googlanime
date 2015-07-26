@@ -15,7 +15,8 @@ public class SynonymModel {
 
     private String title;
 
-    @ManyToOne
+
+    @ManyToOne(cascade = { CascadeType.ALL }, fetch = FetchType.LAZY)
     @JoinColumn(name="idAnime")
     private Entry entry;
 

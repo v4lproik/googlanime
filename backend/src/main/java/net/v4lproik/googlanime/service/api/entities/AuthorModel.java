@@ -5,6 +5,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "Author")
@@ -20,6 +21,9 @@ public class AuthorModel {
     private String lastName;
 
     private String biography;
+
+    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.LAZY, mappedBy = "authors")
+    private Set<Entry> entries;
 
     @Transient
     private List<String> jobs;
@@ -65,6 +69,14 @@ public class AuthorModel {
 
     public void setBiography(String biography) {
         this.biography = biography;
+    }
+
+    public Set<Entry> getEntries() {
+        return entries;
+    }
+
+    public void setEntries(Set<Entry> entries) {
+        this.entries = entries;
     }
 
     @Override

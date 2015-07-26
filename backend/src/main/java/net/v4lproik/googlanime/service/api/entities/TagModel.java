@@ -3,6 +3,7 @@ package net.v4lproik.googlanime.service.api.entities;
 import com.google.common.base.Objects;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name="Tag")
@@ -14,6 +15,9 @@ public class TagModel {
     private Integer id;
 
     private String name;
+
+    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.LAZY, mappedBy = "tags")
+    private Set<Entry> entries;
 
     public TagModel() {
     }
@@ -36,6 +40,14 @@ public class TagModel {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Set<Entry> getEntries() {
+        return entries;
+    }
+
+    public void setEntries(Set<Entry> entries) {
+        this.entries = entries;
     }
 
     @Override
