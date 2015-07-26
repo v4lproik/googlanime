@@ -124,12 +124,6 @@ public class MangaRepositoryITest {
 
     }
 
-    @Test
-    public void init_DB() throws Exception {
-
-
-    }
-
     @After
     public void rollBack() throws Exception{
         mangaDao.deleteById(new Long(11));
