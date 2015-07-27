@@ -445,8 +445,6 @@ public class MyAnimeList extends WebsiteAbstract {
         //get type
         myAnimeListEntry.setType(type);
 
-        log.debug("DOC " + doc.text());
-
         //get main title
         myAnimeListEntry.setTitle(doc.select("h1").first().ownText());
 
@@ -904,7 +902,7 @@ public class MyAnimeList extends WebsiteAbstract {
                     }
                 }else {
                     //Add authors for anime
-                    if (h2.text().equals("Add staff | More staffStaff")) {
+                    if (h2.text().startsWith("More staffStaff")) {
                         log.debug("Authors have been found");
 
                         Node current = h2.nextElementSibling();
@@ -919,7 +917,7 @@ public class MyAnimeList extends WebsiteAbstract {
                             try{
                                 String characterFullName = tr.select("td").get(1).select("a").text();
                                 String[] jobs = tr.select("td").get(1).select("small").text().split(" ,");
-                                String[] parts = characterFullName.split(",");
+                                String[] parts = characterFullName.split(", ");
 
                                 if (parts.length == 2){
                                     author.setFirstName(parts[0]);
