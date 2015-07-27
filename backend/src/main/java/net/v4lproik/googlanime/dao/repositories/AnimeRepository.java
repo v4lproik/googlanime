@@ -3,7 +3,6 @@ package net.v4lproik.googlanime.dao.repositories;
 import net.v4lproik.googlanime.dao.api.AnimeDao;
 import net.v4lproik.googlanime.service.api.entities.*;
 import org.hibernate.Criteria;
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
@@ -29,36 +28,17 @@ public class AnimeRepository extends AbstractRepository implements AnimeDao{
 
     @Override
     public Long save(AnimeModel anime) {
-        Transaction tx = currentSession().beginTransaction();
-
-        Object idSave = currentSession().save(anime);
-
-        currentSession().flush();
-        tx.commit();
-
-        return (Long) idSave;
+        return (Long) save(anime);
     }
 
     @Override
-    public Long save(AnimeIdModel manga) {
-        Transaction tx = currentSession().beginTransaction();
-
-        Object idSave = currentSession().save(manga);
-
-        currentSession().flush();
-        tx.commit();
-
-        return (Long) idSave;
+    public Long save(AnimeIdModel animeId) {
+        return (Long) save(animeId);
     }
 
     @Override
     public void update(AnimeModel anime){
-        Transaction tx=currentSession().beginTransaction();
-
-        currentSession().update(anime);
-
-        currentSession().flush();
-        tx.commit();
+        update(anime);
     }
 
     @Override
@@ -81,7 +61,7 @@ public class AnimeRepository extends AbstractRepository implements AnimeDao{
                         put("lastName", author.getLastName());
                     }};
 
-                    AuthorModel authorDB = (AuthorModel) getBySimpleCondition(currentSession(), AuthorModel.class, conditions);
+                    AuthorModel authorDB = (AuthorModel) getBySimpleCondition(AuthorModel.class, conditions);
 
                     if (authorDB == null) {
                         idAuthor = (Integer) save(author);
@@ -106,7 +86,7 @@ public class AnimeRepository extends AbstractRepository implements AnimeDao{
                         put("lastName", character.getLastName());
                     }};
 
-                    CharacterModel characterDB = (CharacterModel) getBySimpleCondition(currentSession(), CharacterModel.class, conditions);
+                    CharacterModel characterDB = (CharacterModel) getBySimpleCondition(CharacterModel.class, conditions);
 
                     if (characterDB == null) {
                         idCharacter = (Integer) save(character);
@@ -124,7 +104,7 @@ public class AnimeRepository extends AbstractRepository implements AnimeDao{
                 Integer idProducer = producer.getId();
 
                 if (producer.getId() == null) {
-                    ProducerModel producerDB = (ProducerModel) getBySimpleCondition(currentSession(), ProducerModel.class, "name", producer.getName());
+                    ProducerModel producerDB = (ProducerModel) getBySimpleCondition(ProducerModel.class, "name", producer.getName());
                     if (producerDB == null) {
                         idProducer = (Integer) save(producer);
                         producer.setId(idProducer);
@@ -142,7 +122,7 @@ public class AnimeRepository extends AbstractRepository implements AnimeDao{
                 if (genre.getId() != null) {
                     update(genre);
                 } else {
-                    GenreModel genreDB = (GenreModel) getBySimpleCondition(currentSession(), GenreModel.class, "name", genre.getName());
+                    GenreModel genreDB = (GenreModel) getBySimpleCondition(GenreModel.class, "name", genre.getName());
                     if (genreDB == null) {
                         idGenre = (Integer) save(genre);
                         genre.setId(idGenre);
@@ -160,7 +140,7 @@ public class AnimeRepository extends AbstractRepository implements AnimeDao{
                 if (tag.getId() != null) {
                     update(tag);
                 } else {
-                    TagModel tagDB = (TagModel) getBySimpleCondition(currentSession(), TagModel.class, "name", tag.getName());
+                    TagModel tagDB = (TagModel) getBySimpleCondition(TagModel.class, "name", tag.getName());
                     if (tagDB == null) {
                         idTag = (Integer) save(tag);
                         tag.setId(idTag);
@@ -183,7 +163,7 @@ public class AnimeRepository extends AbstractRepository implements AnimeDao{
                         put("title", synonym.getTitle());
                         put("entry", synonym.getEntry());
                     }};
-                    SynonymModel synonymDB = (SynonymModel) getBySimpleConditionObject(currentSession(), SynonymModel.class, conditions);
+                    SynonymModel synonymDB = (SynonymModel) getBySimpleConditionObject(SynonymModel.class, conditions);
                     if (synonymDB == null) {
                         idSynonym = (Integer) save(synonym);
                         synonym.setId(idSynonym);
@@ -358,17 +338,7 @@ public class AnimeRepository extends AbstractRepository implements AnimeDao{
 
     @Override
     public AnimeModel findById(Long id){
-
-        Transaction tx=currentSession().beginTransaction();
-
-        Criteria criteria = currentSession().createCriteria(AnimeModel.class);
-        criteria.add(Restrictions.eq("id", id));
-        AnimeModel animeRes = (AnimeModel) criteria.uniqueResult();
-
-        currentSession().flush();
-        tx.commit();
-
-        return animeRes;
+        return (AnimeModel) getById(id);
     }
 
     @Override
@@ -393,34 +363,7 @@ public class AnimeRepository extends AbstractRepository implements AnimeDao{
 
     @Override
     public void delete(AnimeModel anime) {
-        Transaction tx=currentSession().beginTransaction();
-
-        currentSession().delete(anime);
-
-        currentSession().flush();
-        tx.commit();
+        delete(anime);
     }
-
-    @Override
-    public void deleteById(Long id) {
-        Transaction tx=currentSession().beginTransaction();
-
-        try{
-            AnimeModel anime = (AnimeModel)currentSession().load(AnimeModel.class, id);
-
-            currentSession().delete(anime);
-
-            currentSession().flush();
-            tx.commit();
-        } catch (Exception ex) {
-            tx.rollback();
-            throw ex;
-        }
-    }
-
-    private Session currentSession() {
-        return sessionFactory.getCurrentSession();
-    }
-
 }
 

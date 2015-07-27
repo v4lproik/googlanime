@@ -89,7 +89,22 @@ public abstract class AbstractRepository<E, I extends Serializable> {
         tx.commit();
     }
 
-    protected Object getBySimpleCondition(Session currentSession, Class<?> type, String columnName, String columnValue){
+    public void deleteById(Long id) {
+        Transaction tx=currentSession().beginTransaction();
+
+        try{
+            Object E =  currentSession().load(klazz, id);
+
+            currentSession().delete(E);
+
+            currentSession().flush();
+            tx.commit();
+        } catch (Exception ex) {
+            tx.rollback();
+            throw ex;
+        }
+    }
+    protected Object getBySimpleCondition(Class<?> type, String columnName, String columnValue){
         Transaction tx=currentSession().beginTransaction();
 
         Criteria criteria =  currentSession().createCriteria(type);
@@ -102,7 +117,7 @@ public abstract class AbstractRepository<E, I extends Serializable> {
         return obj;
     }
 
-    protected Object getBySimpleCondition(Session currentSession, Class<?> type, Map<String, String> conditions){
+    protected Object getBySimpleCondition(Class<?> type, Map<String, String> conditions){
         Object obj = null;
 
         Transaction tx=currentSession().beginTransaction();
@@ -123,7 +138,7 @@ public abstract class AbstractRepository<E, I extends Serializable> {
         return obj;
     }
 
-    protected Object getBySimpleConditionObject(Session currentSession, Class<?> type, Map<String, Object> conditions){
+    protected Object getBySimpleConditionObject(Class<?> type, Map<String, Object> conditions){
         Object obj = null;
 
         Transaction tx=currentSession().beginTransaction();
@@ -143,7 +158,7 @@ public abstract class AbstractRepository<E, I extends Serializable> {
         return obj;
     }
 
-    private Session currentSession() {
+    protected Session currentSession() {
         return sessionFactoryConfig.getCurrentSession();
     }
 }
