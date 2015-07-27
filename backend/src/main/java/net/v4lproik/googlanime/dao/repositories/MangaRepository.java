@@ -13,13 +13,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Repository
-public class MangaRepository extends AbstractRepositoryHelper implements MangaDao {
+public class MangaRepository extends AbstractRepository implements MangaDao {
 
     private static final Logger log = LoggerFactory.getLogger(MangaRepository.class);
     public final SessionFactory sessionFactory;
 
     @Autowired
     public MangaRepository(final SessionFactory sessionFactory) {
+        super(MangaModel.class, sessionFactory);
         this.sessionFactory = sessionFactory;
     }
 

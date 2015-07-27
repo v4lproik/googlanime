@@ -238,6 +238,8 @@ public class AnimeRepositoryITest {
 //            anime = animeResDB;
 //        }
 
+        System.out.println(anime.toString());
+
         animeDao.saveOrUpdate(anime);
     }
 
@@ -297,7 +299,7 @@ public class AnimeRepositoryITest {
         input = new File("src/test/resource/lelouch-lamperouge.character");
         doc = Jsoup.parse(input, "UTF-8", url);
 
-        myAnimeList.scrapCharacter(doc, urlCharacter, character);
+        response.getCharacters().set(2, myAnimeList.scrapCharacter(doc, urlCharacter, character));
 
         AnimeModel anime = animeMapper.transformMyAnimeListAnimeToDAO((MyAnimeListAnime) response);
 

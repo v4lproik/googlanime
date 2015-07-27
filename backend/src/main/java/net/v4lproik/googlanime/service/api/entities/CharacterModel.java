@@ -29,6 +29,7 @@ public class CharacterModel {
     private Set<Entry> entries;
 
     @OneToMany(cascade=CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "character", orphanRemoval = true)
+    @ElementCollection
     private Set<CharacterNicknameModel> nicknames;
 
     @Transient

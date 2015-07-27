@@ -1,6 +1,7 @@
 package net.v4lproik.googlanime.service.api.utils;
 
 import net.v4lproik.googlanime.service.api.entities.*;
+import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListAuthor;
 import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListCharacter;
 import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListManga;
 import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListMangaDependency;
@@ -60,6 +61,27 @@ public class TransformMangaMapper extends TransformAbstractMapper {
             manga.setCharacters(charactersModel);
         }
 
+        List<MyAnimeListAuthor> authors = myAnimeListMangaDependency.getAuthors();
+        if (authors != null) {
+            AuthorModel authorModel;
+            Set<AuthorModel> authorsModel = new HashSet<>();
+            for (MyAnimeListAuthor author : authors) {
+                authorModel = new AuthorModel();
+                authorModel.setFirstName(author.getFirstName());
+                authorModel.setLastName(author.getLastName());
+
+                Set<String> jobs = new HashSet<>();
+                if (author.getJob() != null){
+                    for (String job:author.getJob()){
+                        jobs.add(job);
+                    }
+                }
+                authorModel.setJobs(jobs);
+
+                authorsModel.add(authorModel);
+            }
+            manga.setAuthors(authorsModel);
+        }
 
         if (myAnimeListMangaDependency.getFinishedAiringDate() != null){
             try {
@@ -150,6 +172,27 @@ public class TransformMangaMapper extends TransformAbstractMapper {
             manga.setCharacters(charactersModel);
         }
 
+        List<MyAnimeListAuthor> authors = myAnimeListManga.getAuthors();
+        if (authors != null) {
+            AuthorModel authorModel;
+            Set<AuthorModel> authorsModel = new HashSet<>();
+            for (MyAnimeListAuthor author : authors) {
+                authorModel = new AuthorModel();
+                authorModel.setFirstName(author.getFirstName());
+                authorModel.setLastName(author.getLastName());
+
+                Set<String> jobs = new HashSet<>();
+                if (author.getJob() != null){
+                    for (String job:author.getJob()){
+                        jobs.add(job);
+                    }
+                }
+                authorModel.setJobs(jobs);
+
+                authorsModel.add(authorModel);
+            }
+            manga.setAuthors(authorsModel);
+        }
 
         if (myAnimeListManga.getFinishedAiringDate() != null){
             try {

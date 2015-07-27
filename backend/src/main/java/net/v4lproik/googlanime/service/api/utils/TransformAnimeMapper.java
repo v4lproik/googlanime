@@ -3,6 +3,7 @@ package net.v4lproik.googlanime.service.api.utils;
 import net.v4lproik.googlanime.service.api.entities.*;
 import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListAnime;
 import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListAnimeDependency;
+import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListAuthor;
 import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListCharacter;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
@@ -73,6 +74,27 @@ public class TransformAnimeMapper extends TransformAbstractMapper {
             anime.setCharacters(charactersModel);
         }
 
+        List<MyAnimeListAuthor> authors = myAnimeListEntryDependency.getAuthors();
+        if (authors != null) {
+            AuthorModel authorModel;
+            Set<AuthorModel> authorsModel = new HashSet<>();
+            for (MyAnimeListAuthor author : authors) {
+                authorModel = new AuthorModel();
+                authorModel.setFirstName(author.getFirstName());
+                authorModel.setLastName(author.getLastName());
+
+                Set<String> jobs = new HashSet<>();
+                if (author.getJob() != null){
+                    for (String job:author.getJob()){
+                        jobs.add(job);
+                    }
+                }
+                authorModel.setJobs(jobs);
+
+                authorsModel.add(authorModel);
+            }
+            anime.setAuthors(authorsModel);
+        }
 
         if (myAnimeListEntryDependency.getFinishedAiringDate() != null){
             try {
@@ -125,8 +147,6 @@ public class TransformAnimeMapper extends TransformAbstractMapper {
     public AnimeModel transformMyAnimeListAnimeToDAO(MyAnimeListAnime myAnimeListAnime){
         AnimeModel anime;
 
-        System.out.println(myAnimeListAnime.toString());
-
         ModelMapper modelMapper = new ModelMapper();
         anime = modelMapper.map(myAnimeListAnime, AnimeModel.class);
 
@@ -176,6 +196,27 @@ public class TransformAnimeMapper extends TransformAbstractMapper {
             anime.setCharacters(charactersModel);
         }
 
+        List<MyAnimeListAuthor> authors = myAnimeListAnime.getAuthors();
+        if (authors != null) {
+            AuthorModel authorModel;
+            Set<AuthorModel> authorsModel = new HashSet<>();
+            for (MyAnimeListAuthor author : authors) {
+                authorModel = new AuthorModel();
+                authorModel.setFirstName(author.getFirstName());
+                authorModel.setLastName(author.getLastName());
+
+                Set<String> jobs = new HashSet<>();
+                if (author.getJob() != null){
+                    for (String job:author.getJob()){
+                        jobs.add(job);
+                    }
+                }
+                authorModel.setJobs(jobs);
+
+                authorsModel.add(authorModel);
+            }
+            anime.setAuthors(authorsModel);
+        }
 
         if (myAnimeListAnime.getFinishedAiringDate() != null){
             try {
