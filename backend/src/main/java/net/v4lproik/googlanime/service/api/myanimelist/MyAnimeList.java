@@ -468,8 +468,37 @@ public class MyAnimeList extends WebsiteAbstract {
 
                         String line = elt.text();
 
-                            if (line.startsWith("Sequel:")) {
-                                log.debug("Sequel has been found");
+                        if (line.startsWith("Sequel:")) {
+                            log.debug("Sequel has been found");
+
+                            Document docTmp = Jsoup.parse(line);
+                            List<Node> links = elt.parentNode().childNodes();
+
+                            Document docTmp2 = Jsoup.parse(links.get(1).toString());
+                            Elements linksX = docTmp2.select("a");
+
+                            for (Element link : linksX) {
+                                String linkHref = link.attr("href");
+                                String title = link.text();
+                                id = this.getIdFromLink(linkHref);
+                                type = this.getTypeFromLink(linkHref);
+
+                                if (id != null) {
+                                    List<MyAnimeListEntry> sequels = new ArrayList<>();
+                                    MyAnimeListEntry sequel = entityFactory.getEntity(type, id);
+                                    sequel.setId(id);
+                                    sequel.setType(type);
+                                    sequel.setTitle(title);
+                                    sequel.setParent(myAnimeListEntry);
+
+                                    //get sequels
+                                    sequels = myAnimeListEntry.getSequels();
+                                    sequels.add(sequel);
+                                }
+                            }
+                        } else {
+                            if (line.startsWith("Side story:")) {
+                                log.debug("Side Stories have been found");
 
                                 Document docTmp = Jsoup.parse(line);
                                 List<Node> links = elt.parentNode().childNodes();
@@ -484,21 +513,22 @@ public class MyAnimeList extends WebsiteAbstract {
                                     type = this.getTypeFromLink(linkHref);
 
                                     if (id != null) {
-                                        List<MyAnimeListEntry> sequels = new ArrayList<>();
-                                        MyAnimeListEntry sequel = entityFactory.getEntity(type, id);
-                                        sequel.setId(id);
-                                        sequel.setType(type);
-                                        sequel.setTitle(title);
-                                        sequel.setParent(myAnimeListEntry);
+                                        List<MyAnimeListEntry> sideStories = new ArrayList<>();
+                                        MyAnimeListEntry sideStory = entityFactory.getEntity(type, id);
+                                        sideStory.setId(id);
+                                        sideStory.setType(type);
+                                        sideStory.setTitle(title);
+                                        sideStory.setParent(myAnimeListEntry);
+
 
                                         //get sequels
-                                        sequels = myAnimeListEntry.getSequels();
-                                        sequels.add(sequel);
+                                        sideStories = myAnimeListEntry.getSideStories();
+                                        sideStories.add(sideStory);
                                     }
                                 }
                             } else {
-                                if (line.startsWith("Side story:")) {
-                                    log.debug("Side Stories have been found");
+                                if (line.startsWith("Spin-off:")) {
+                                    log.debug("Spin Off have been found");
 
                                     Document docTmp = Jsoup.parse(line);
                                     List<Node> links = elt.parentNode().childNodes();
@@ -513,22 +543,21 @@ public class MyAnimeList extends WebsiteAbstract {
                                         type = this.getTypeFromLink(linkHref);
 
                                         if (id != null) {
-                                            List<MyAnimeListEntry> sideStories = new ArrayList<>();
-                                            MyAnimeListEntry sideStory = entityFactory.getEntity(type, id);
-                                            sideStory.setId(id);
-                                            sideStory.setType(type);
-                                            sideStory.setTitle(title);
-                                            sideStory.setParent(myAnimeListEntry);
-
+                                            List<MyAnimeListEntry> spinOffs = new ArrayList<>();
+                                            MyAnimeListEntry spinOff = entityFactory.getEntity(type, id);
+                                            spinOff.setId(id);
+                                            spinOff.setType(type);
+                                            spinOff.setTitle(title);
+                                            spinOff.setParent(myAnimeListEntry);
 
                                             //get sequels
-                                            sideStories = myAnimeListEntry.getSideStories();
-                                            sideStories.add(sideStory);
+                                            spinOffs = myAnimeListEntry.getSpinoff();
+                                            spinOffs.add(spinOff);
                                         }
                                     }
                                 } else {
-                                    if (line.startsWith("Spin-off:")) {
-                                        log.debug("Spin Off have been found");
+                                    if (line.startsWith("Other:")) {
+                                        log.debug("Others have been found");
 
                                         Document docTmp = Jsoup.parse(line);
                                         List<Node> links = elt.parentNode().childNodes();
@@ -543,21 +572,22 @@ public class MyAnimeList extends WebsiteAbstract {
                                             type = this.getTypeFromLink(linkHref);
 
                                             if (id != null) {
-                                                List<MyAnimeListEntry> spinOffs = new ArrayList<>();
-                                                MyAnimeListEntry spinOff = entityFactory.getEntity(type, id);
-                                                spinOff.setId(id);
-                                                spinOff.setType(type);
-                                                spinOff.setTitle(title);
-                                                spinOff.setParent(myAnimeListEntry);
+                                                List<MyAnimeListEntry> others = new ArrayList<>();
+                                                MyAnimeListEntry other = entityFactory.getEntity(type, id);
+                                                other.setId(id);
+                                                other.setType(type);
+                                                other.setTitle(title);
+                                                other.setParent(myAnimeListEntry);
+
 
                                                 //get sequels
-                                                spinOffs = myAnimeListEntry.getSpinoff();
-                                                spinOffs.add(spinOff);
+                                                others = myAnimeListEntry.getOthers();
+                                                others.add(other);
                                             }
                                         }
                                     } else {
-                                        if (line.startsWith("Other:")) {
-                                            log.debug("Others have been found");
+                                        if (line.startsWith("Prequel:")) {
+                                            log.debug("Prequels have been found");
 
                                             Document docTmp = Jsoup.parse(line);
                                             List<Node> links = elt.parentNode().childNodes();
@@ -572,22 +602,21 @@ public class MyAnimeList extends WebsiteAbstract {
                                                 type = this.getTypeFromLink(linkHref);
 
                                                 if (id != null) {
-                                                    List<MyAnimeListEntry> others = new ArrayList<>();
-                                                    MyAnimeListEntry other = entityFactory.getEntity(type, id);
-                                                    other.setId(id);
-                                                    other.setType(type);
-                                                    other.setTitle(title);
-                                                    other.setParent(myAnimeListEntry);
-
+                                                    List<MyAnimeListEntry> prequels = new ArrayList<>();
+                                                    MyAnimeListEntry prequel = entityFactory.getEntity(type, id);
+                                                    prequel.setId(id);
+                                                    prequel.setType(type);
+                                                    prequel.setTitle(title);
+                                                    prequel.setParent(myAnimeListEntry);
 
                                                     //get sequels
-                                                    others = myAnimeListEntry.getOthers();
-                                                    others.add(other);
+                                                    prequels = myAnimeListEntry.getPrequels();
+                                                    prequels.add(prequel);
                                                 }
                                             }
                                         } else {
-                                            if (line.startsWith("Prequel:")) {
-                                                log.debug("Prequels have been found");
+                                            if (line.startsWith("Alternative version:")) {
+                                                log.debug("Alternative versions have been found");
 
                                                 Document docTmp = Jsoup.parse(line);
                                                 List<Node> links = elt.parentNode().childNodes();
@@ -602,21 +631,21 @@ public class MyAnimeList extends WebsiteAbstract {
                                                     type = this.getTypeFromLink(linkHref);
 
                                                     if (id != null) {
-                                                        List<MyAnimeListEntry> prequels = new ArrayList<>();
-                                                        MyAnimeListEntry prequel = entityFactory.getEntity(type, id);
-                                                        prequel.setId(id);
-                                                        prequel.setType(type);
-                                                        prequel.setTitle(title);
-                                                        prequel.setParent(myAnimeListEntry);
+                                                        List<MyAnimeListEntry> alternativeVersions = new ArrayList<>();
+                                                        MyAnimeListEntry alternativeVersion = entityFactory.getEntity(type, id);
+                                                        alternativeVersion.setId(id);
+                                                        alternativeVersion.setType(type);
+                                                        alternativeVersion.setTitle(title);
+                                                        alternativeVersion.setParent(myAnimeListEntry);
 
                                                         //get sequels
-                                                        prequels = myAnimeListEntry.getPrequels();
-                                                        prequels.add(prequel);
+                                                        alternativeVersions = myAnimeListEntry.getAlternativeVersions();
+                                                        alternativeVersions.add(alternativeVersion);
                                                     }
                                                 }
                                             } else {
-                                                if (line.startsWith("Alternative version:")) {
-                                                    log.debug("Alternative versions have been found");
+                                                if (line.startsWith("Adaptation")) {
+                                                    log.debug("Adaptations have been found");
 
                                                     Document docTmp = Jsoup.parse(line);
                                                     List<Node> links = elt.parentNode().childNodes();
@@ -631,21 +660,21 @@ public class MyAnimeList extends WebsiteAbstract {
                                                         type = this.getTypeFromLink(linkHref);
 
                                                         if (id != null) {
-                                                            List<MyAnimeListEntry> alternativeVersions = new ArrayList<>();
-                                                            MyAnimeListEntry alternativeVersion = entityFactory.getEntity(type, id);
-                                                            alternativeVersion.setId(id);
-                                                            alternativeVersion.setType(type);
-                                                            alternativeVersion.setTitle(title);
-                                                            alternativeVersion.setParent(myAnimeListEntry);
+                                                            List<MyAnimeListEntry> adaptations = new ArrayList<>();
+                                                            MyAnimeListEntry adaptation = entityFactory.getEntity(type, id);
+                                                            adaptation.setId(id);
+                                                            adaptation.setType(type);
+                                                            adaptation.setTitle(title);
+                                                            adaptation.setParent(myAnimeListEntry);
 
                                                             //get sequels
-                                                            alternativeVersions = myAnimeListEntry.getAlternativeVersions();
-                                                            alternativeVersions.add(alternativeVersion);
+                                                            adaptations = myAnimeListEntry.getAdaptations();
+                                                            adaptations.add(adaptation);
                                                         }
                                                     }
                                                 } else {
-                                                    if (line.startsWith("Adaptation")) {
-                                                        log.debug("Adaptations have been found");
+                                                    if (line.startsWith("Summary")) {
+                                                        log.debug("Summaries have been found");
 
                                                         Document docTmp = Jsoup.parse(line);
                                                         List<Node> links = elt.parentNode().childNodes();
@@ -660,56 +689,26 @@ public class MyAnimeList extends WebsiteAbstract {
                                                             type = this.getTypeFromLink(linkHref);
 
                                                             if (id != null) {
-                                                                List<MyAnimeListEntry> adaptations = new ArrayList<>();
-                                                                MyAnimeListEntry adaptation = entityFactory.getEntity(type, id);
-                                                                adaptation.setId(id);
-                                                                adaptation.setType(type);
-                                                                adaptation.setTitle(title);
-                                                                adaptation.setParent(myAnimeListEntry);
+                                                                List<MyAnimeListEntry> summaries = new ArrayList<>();
+                                                                MyAnimeListEntry summary = entityFactory.getEntity(type, id);
+                                                                summary.setId(id);
+                                                                summary.setType(type);
+                                                                summary.setTitle(title);
+                                                                summary.setParent(myAnimeListEntry);
 
                                                                 //get sequels
-                                                                adaptations = myAnimeListEntry.getAdaptations();
-                                                                adaptations.add(adaptation);
+                                                                summaries = myAnimeListEntry.getSummaries();
+                                                                summaries.add(summary);
                                                             }
                                                         }
-                                                    } else {
-                                                        if (line.startsWith("Summary")) {
-                                                            log.debug("Summaries have been found");
 
-                                                            Document docTmp = Jsoup.parse(line);
-                                                            List<Node> links = elt.parentNode().childNodes();
-
-                                                            Document docTmp2 = Jsoup.parse(links.get(1).toString());
-                                                            Elements linksX = docTmp2.select("a");
-
-                                                            for (Element link : linksX) {
-                                                                String linkHref = link.attr("href");
-                                                                String title = link.text();
-                                                                id = this.getIdFromLink(linkHref);
-                                                                type = this.getTypeFromLink(linkHref);
-
-                                                                if (id != null) {
-                                                                    List<MyAnimeListEntry> summaries = new ArrayList<>();
-                                                                    MyAnimeListEntry summary = entityFactory.getEntity(type, id);
-                                                                    summary.setId(id);
-                                                                    summary.setType(type);
-                                                                    summary.setTitle(title);
-                                                                    summary.setParent(myAnimeListEntry);
-
-                                                                    //get sequels
-                                                                    summaries = myAnimeListEntry.getSummaries();
-                                                                    summaries.add(summary);
-                                                                }
-                                                            }
-
-                                                        }
                                                     }
                                                 }
                                             }
                                         }
                                     }
                                 }
-
+                            }
                         }
                     }
                 }
@@ -789,7 +788,7 @@ public class MyAnimeList extends WebsiteAbstract {
                 try{
                     manga.setMbChapters(Integer.parseInt(div.text().substring(10, div.text().length())));
                 }catch (Exception e){
-                    log.debug("Error parsing volumes number");
+                    log.debug("Error parsing chapters number");
                 }
             }
 
@@ -805,16 +804,27 @@ public class MyAnimeList extends WebsiteAbstract {
                     for (int i = 0; i < parts.length; i = i + 2) {
                         MyAnimeListAuthor author = new MyAnimeListAuthor();
                         try {
-                            //if firstname and lastname
                             author.setFirstName(parts[i]);
                             author.setLastName(parts[i + 1].split(" ")[0]);
 
-                            author.setJob(new String[]{parts[i + 1].split(" ")[1]});
+                            try {
+                                String[] jobsExtracted = parts[i + 1].substring(parts[i + 1].indexOf("(") + 1, parts[i + 1].indexOf(")")).split(" & ");
+                                author.setJob(jobsExtracted);
+                            }catch (Exception e1){
+                                log.debug("Error trying to get author's jobs");
+                            }
+
                         } catch (ArrayIndexOutOfBoundsException e) {
                             author.setLastName(parts[i]);
 
-                            author.setJob(new String[]{parts[i].split(" ")[1]});
+                            try {
+                                String[] jobsExtracted = parts[i].substring(parts[i].indexOf("(") + 1, parts[i].indexOf(")")).split(" & ");
+                                author.setJob(jobsExtracted);
+                            }catch (Exception e2){
+                                log.debug("Error trying to get author's jobs");
+                            }
                         }
+
                         myAnimeListEntry.getAuthors().add(author);
                         log.info(String.format("Add new author %s", author.toString()));
                     }
@@ -887,7 +897,7 @@ public class MyAnimeList extends WebsiteAbstract {
 
                             log.debug(String.format("Add new character %s", character.toString()));
                         }catch (Exception e){
-                            log.debug("Error when trying to get character's name");
+                            log.debug("Error trying to get character's name");
                         }
 
                         current = current.nextSibling();
@@ -909,7 +919,6 @@ public class MyAnimeList extends WebsiteAbstract {
                             try{
                                 String characterFullName = tr.select("td").get(1).select("a").text();
                                 String[] jobs = tr.select("td").get(1).select("small").text().split(" ,");
-
                                 String[] parts = characterFullName.split(",");
 
                                 if (parts.length == 2){
@@ -924,7 +933,7 @@ public class MyAnimeList extends WebsiteAbstract {
 
                                 log.info(String.format("Add new author %s", author.toString()));
                             }catch (Exception e){
-                                log.debug("Error when trying to get author's name");
+                                log.debug("Error trying to get author's name");
                             }
                         }
 
@@ -954,7 +963,7 @@ public class MyAnimeList extends WebsiteAbstract {
             String nicknames = header.split("\"")[1];
             character.setNickNames(nicknames.split(","));
         }catch (Exception e){
-            log.debug("Error when trying to get character's nicknames");
+            log.debug("Error trying to get character's nicknames");
         }
 
         Elements content = base.select("#content").select("table").first().select("tbody").first().select("tr").first()
@@ -966,7 +975,7 @@ public class MyAnimeList extends WebsiteAbstract {
             String japaneseName = allNames.split("\\(")[1].split("\\)")[0];
             character.setJapaneseName(japaneseName);
         }catch (Exception e){
-            log.debug("Error when trying to get character's japanese name");
+            log.debug("Error trying to get character's japanese name");
         }
 
         return character;
