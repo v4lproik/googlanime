@@ -2,7 +2,9 @@ package net.v4lproik.googlanime.dao.repositories;
 
 import net.v4lproik.googlanime.dao.api.MangaDao;
 import net.v4lproik.googlanime.service.api.entities.*;
-import org.hibernate.*;
+import org.hibernate.Criteria;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,38 +15,25 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Repository
-public class MangaRepository extends AbstractRepositoryHelper implements MangaDao {
+public class MangaRepository extends AbstractRepository implements MangaDao{
 
-    private static final Logger log = LoggerFactory.getLogger(MangaRepository.class);
+    private static final Logger log = LoggerFactory.getLogger(AnimeRepository.class);
     public final SessionFactory sessionFactory;
 
     @Autowired
     public MangaRepository(final SessionFactory sessionFactory) {
+        super(MangaModel.class, sessionFactory);
         this.sessionFactory = sessionFactory;
     }
 
     @Override
     public Long save(MangaModel manga) {
-        Transaction tx = currentSession().beginTransaction();
-
-        Object idSave = currentSession().save(manga);
-
-        currentSession().flush();
-        tx.commit();
-
-        return (Long) idSave;
+        return (Long) save(manga);
     }
 
     @Override
-    public Long save(AnimeIdModel manga) {
-        Transaction tx = currentSession().beginTransaction();
-
-        Object idSave = currentSession().save(manga);
-
-        currentSession().flush();
-        tx.commit();
-
-        return (Long) idSave;
+    public Long save(AnimeIdModel mangaId) {
+        return (Long) save(mangaId);
     }
 
     @Override
@@ -55,27 +44,26 @@ public class MangaRepository extends AbstractRepositoryHelper implements MangaDa
         // -----------------------------------------------------------------------------------------
         // Save ManyToMany/OneToMany Entities
 
-        tx=currentSession().beginTransaction();
-
         if (manga.getAuthors() != null) {
             for (AuthorModel author : manga.getAuthors()) {
                 Integer idAuthor = author.getId();
 
                 if (author.getId() != null) {
-                    currentSession().update(author);
+                    update(author);
                 } else {
                     Map<String, String> conditions = new HashMap<String, String>() {{
                         put("firstName", author.getFirstName());
                         put("lastName", author.getLastName());
                     }};
 
-                    AuthorModel authorDB = (AuthorModel) getBySimpleCondition(currentSession(), AuthorModel.class, conditions);
+                    AuthorModel authorDB = (AuthorModel) getBySimpleCondition(AuthorModel.class, conditions);
 
                     if (authorDB == null) {
-                        idAuthor = (Integer) currentSession().save(author);
+                        idAuthor = (Integer) save(author);
                         author.setId(idAuthor);
                     } else {
                         author.setId(authorDB.getId());
+                        update(author);
                     }
                 }
             }
@@ -86,35 +74,37 @@ public class MangaRepository extends AbstractRepositoryHelper implements MangaDa
                 Integer idCharacter = character.getId();
 
                 if (character.getId() != null) {
-                    currentSession().update(character);
+                    update(character);
                 } else {
                     Map<String, String> conditions = new HashMap<String, String>() {{
                         put("firstName", character.getFirstName());
                         put("lastName", character.getLastName());
                     }};
 
-                    CharacterModel characterDB = (CharacterModel) getBySimpleCondition(currentSession(), CharacterModel.class, conditions);
+                    CharacterModel characterDB = (CharacterModel) getBySimpleCondition(CharacterModel.class, conditions);
 
                     if (characterDB == null) {
-                        idCharacter = (Integer) currentSession().save(character);
+                        idCharacter = (Integer) save(character);
                         character.setId(idCharacter);
                     } else {
                         character.setId(characterDB.getId());
+                        update(character);
                     }
                 }
             }
         }
+
 
         if (manga.getGenres() != null) {
             for (GenreModel genre : manga.getGenres()) {
                 Integer idGenre = genre.getId();
 
                 if (genre.getId() != null) {
-                    currentSession().update(genre);
+                    update(genre);
                 } else {
-                    GenreModel genreDB = (GenreModel) getBySimpleCondition(currentSession(), GenreModel.class, "name", genre.getName());
+                    GenreModel genreDB = (GenreModel) getBySimpleCondition(GenreModel.class, "name", genre.getName());
                     if (genreDB == null) {
-                        idGenre = (Integer) currentSession().save(genre);
+                        idGenre = (Integer) save(genre);
                         genre.setId(idGenre);
                     } else {
                         genre.setId(genreDB.getId());
@@ -128,11 +118,11 @@ public class MangaRepository extends AbstractRepositoryHelper implements MangaDa
                 Integer idTag = tag.getId();
 
                 if (tag.getId() != null) {
-                    currentSession().update(tag);
+                    update(tag);
                 } else {
-                    TagModel tagDB = (TagModel) getBySimpleCondition(currentSession(), TagModel.class, "name", tag.getName());
+                    TagModel tagDB = (TagModel) getBySimpleCondition(TagModel.class, "name", tag.getName());
                     if (tagDB == null) {
-                        idTag = (Integer) currentSession().save(tag);
+                        idTag = (Integer) save(tag);
                         tag.setId(idTag);
                     } else {
                         tag.setId(tagDB.getId());
@@ -143,20 +133,20 @@ public class MangaRepository extends AbstractRepositoryHelper implements MangaDa
 
         if (manga.getSynonyms() != null) {
             for (SynonymModel synonym : manga.getSynonyms()) {
-                Integer idTag = synonym.getId();
+                Integer idSynonym = synonym.getId();
 
                 if (synonym.getId() != null) {
-                    currentSession().update(synonym);
+                    update(synonym);
                 } else {
 
                     Map<String, Object> conditions = new HashMap<String, Object>() {{
                         put("title", synonym.getTitle());
                         put("entry", synonym.getEntry());
                     }};
-                    SynonymModel synonymDB = (SynonymModel) getBySimpleConditionObject(currentSession(), SynonymModel.class, conditions);
+                    SynonymModel synonymDB = (SynonymModel) getBySimpleConditionObject(SynonymModel.class, conditions);
                     if (synonymDB == null) {
-                        idTag = (Integer) currentSession().save(synonym);
-                        synonym.setId(idTag);
+                        idSynonym = (Integer) save(synonym);
+                        synonym.setId(idSynonym);
                     } else {
                         synonym.setId(synonymDB.getId());
                     }
@@ -164,11 +154,8 @@ public class MangaRepository extends AbstractRepositoryHelper implements MangaDa
             }
         }
 
-        currentSession().flush();
-        tx.commit();
-
         // -----------------------------------------------------------------------------------------
-        // Save Manga
+        // Save Anime
 
         tx=currentSession().beginTransaction();
 
@@ -186,29 +173,12 @@ public class MangaRepository extends AbstractRepositoryHelper implements MangaDa
                 if (sequel.getId() != id){
 
                     if (findById(sequel.getId()) != null){
-
-                        tx=currentSession().beginTransaction();
-
-                        currentSession().update(sequel);
-
-                        currentSession().flush();
-                        tx.commit();
+                        update(sequel);
                     }else{
-
-                        tx=currentSession().beginTransaction();
-
-                        currentSession().merge(sequel);
-
-                        currentSession().flush();
-                        tx.commit();
+                        merge(sequel);
                     }
 
-                    tx=currentSession().beginTransaction();
-
-                    currentSession().saveOrUpdate(new Sequels(id, sequel.getId()));
-
-                    currentSession().flush();
-                    tx.commit();
+                    saveOrUpdate(new Sequels(id, sequel.getId()));
                 }
             }
         }
@@ -218,30 +188,12 @@ public class MangaRepository extends AbstractRepositoryHelper implements MangaDa
                 if (alter.getId() != id) {
 
                     if (findById(alter.getId()) != null){
-
-                        tx=currentSession().beginTransaction();
-
-                        currentSession().update(alter);
-
-                        currentSession().flush();
-                        tx.commit();
+                        update(alter);
                     }else{
-
-                        tx=currentSession().beginTransaction();
-
-                        currentSession().merge(alter);
-
-                        currentSession().flush();
-                        tx.commit();
+                        merge(alter);
                     }
 
-
-                    tx=currentSession().beginTransaction();
-
-                    currentSession().saveOrUpdate(new Sequels(id, alter.getId()));
-
-                    currentSession().flush();
-                    tx.commit();
+                    saveOrUpdate(new Sequels(id, alter.getId()));
                 }
             }
         }
@@ -251,30 +203,12 @@ public class MangaRepository extends AbstractRepositoryHelper implements MangaDa
                 if (prequel.getId() != id){
 
                     if (findById(prequel.getId()) != null){
-
-                        tx=currentSession().beginTransaction();
-
-                        currentSession().update(prequel);
-
-                        currentSession().flush();
-                        tx.commit();
+                        update(prequel);
                     }else{
-
-                        tx=currentSession().beginTransaction();
-
-                        currentSession().merge(prequel);
-
-                        currentSession().flush();
-                        tx.commit();
+                        merge(prequel);
                     }
 
-
-                    tx=currentSession().beginTransaction();
-
-                    currentSession().saveOrUpdate(new Prequels(id, prequel.getId()));
-
-                    currentSession().flush();
-                    tx.commit();
+                    saveOrUpdate(new Prequels(id, prequel.getId()));
                 }
             }
         }
@@ -284,30 +218,12 @@ public class MangaRepository extends AbstractRepositoryHelper implements MangaDa
                 if (spinOff.getId() != id){
 
                     if (findById(spinOff.getId()) != null){
-
-                        tx=currentSession().beginTransaction();
-
-                        currentSession().update(spinOff);
-
-                        currentSession().flush();
-                        tx.commit();
+                        update(spinOff);
                     }else{
-
-                        tx=currentSession().beginTransaction();
-
-                        currentSession().merge(spinOff);
-
-                        currentSession().flush();
-                        tx.commit();
+                        merge(spinOff);
                     }
 
-
-                    tx=currentSession().beginTransaction();
-
-                    currentSession().saveOrUpdate(new SpinOffs(id, spinOff.getId()));
-
-                    currentSession().flush();
-                    tx.commit();
+                    saveOrUpdate(new SpinOffs(id, spinOff.getId()));
                 }
             }
         }
@@ -317,30 +233,12 @@ public class MangaRepository extends AbstractRepositoryHelper implements MangaDa
                 if (sideStory.getId() != id){
 
                     if (findById(sideStory.getId()) != null){
-
-                        tx=currentSession().beginTransaction();
-
-                        currentSession().update(sideStory);
-
-                        currentSession().flush();
-                        tx.commit();
+                        update(sideStory);
                     }else{
-
-                        tx=currentSession().beginTransaction();
-
-                        currentSession().merge(sideStory);
-
-                        currentSession().flush();
-                        tx.commit();
+                        merge(sideStory);
                     }
 
-
-                    tx=currentSession().beginTransaction();
-
-                    currentSession().saveOrUpdate(new SideStories(id, sideStory.getId()));
-
-                    currentSession().flush();
-                    tx.commit();
+                    saveOrUpdate(new SideStories(id, sideStory.getId()));
                 }
             }
         }
@@ -350,31 +248,12 @@ public class MangaRepository extends AbstractRepositoryHelper implements MangaDa
                 if (other.getId() != id){
 
                     if (findById(other.getId()) != null){
-
-                        tx=currentSession().beginTransaction();
-
                         currentSession().update(other);
-
-                        currentSession().flush();
-                        tx.commit();
                     }else{
-
-                        tx=currentSession().beginTransaction();
-
-                        currentSession().merge(other);
-
-                        currentSession().flush();
-                        tx.commit();
+                        merge(other);
                     }
 
-
-                    tx=currentSession().beginTransaction();
-
-                    currentSession().saveOrUpdate(new Others(id, other.getId()));
-
-                    currentSession().flush();
-                    tx.commit();
-
+                    saveOrUpdate(new Others(id, other.getId()));
                 }
             }
         }
@@ -384,29 +263,12 @@ public class MangaRepository extends AbstractRepositoryHelper implements MangaDa
                 if (summary.getId() != id){
 
                     if (findById(summary.getId()) != null){
-
-                        tx=currentSession().beginTransaction();
-
-                        currentSession().update(summary);
-
-                        currentSession().flush();
-                        tx.commit();
+                        update(summary);
                     }else{
-
-                        tx=currentSession().beginTransaction();
-
-                        currentSession().merge(summary);
-
-                        currentSession().flush();
-                        tx.commit();
+                        merge(summary);
                     }
 
-                    tx=currentSession().beginTransaction();
-
-                    currentSession().saveOrUpdate(new Summaries(id, summary.getId()));
-
-                    currentSession().flush();
-                    tx.commit();
+                    saveOrUpdate(new Summaries(id, summary.getId()));
                 }
             }
         }
@@ -416,41 +278,20 @@ public class MangaRepository extends AbstractRepositoryHelper implements MangaDa
                 if (adaptation.getId() != id){
 
                     if (findById(adaptation.getId()) != null){
-
-                        tx=currentSession().beginTransaction();
-
-                        currentSession().update(adaptation);
-
-                        currentSession().flush();
-                        tx.commit();
-
+                        update(adaptation);
                     }else{
-
-                        tx=currentSession().beginTransaction();
-
-                        currentSession().merge(adaptation);
-
-                        currentSession().flush();
-                        tx.commit();
+                        merge(adaptation);
                     }
 
-
-
-                    tx=currentSession().beginTransaction();
-
-                    currentSession().saveOrUpdate(new Adaptations(id, adaptation.getId()));
-
-                    currentSession().flush();
-                    tx.commit();
+                    saveOrUpdate(new Adaptations(id, adaptation.getId()));
                 }
             }
         }
 
 
+
         // -----------------------------------------------------------------------------------------
         // Save ManyToMany Extra Columns
-
-        tx=currentSession().beginTransaction();
 
         if (manga.getAuthors() != null) {
             for (AuthorModel author : manga.getAuthors()) {
@@ -458,7 +299,7 @@ public class MangaRepository extends AbstractRepositoryHelper implements MangaDa
 
                 if (author.getJobs() != null){
                     for (String job:author.getJobs()){
-                        currentSession().saveOrUpdate(new AnimeJobAuthor(id, idAuthor, job));
+                        saveOrUpdate(new AnimeJobAuthor(id, idAuthor, job));
                     }
                 }
             }
@@ -469,40 +310,28 @@ public class MangaRepository extends AbstractRepositoryHelper implements MangaDa
                 Integer idCharacter = character.getId();
 
                 if (character.getRole() != null){
-                    currentSession().saveOrUpdate(new AnimeRoleCharacter(id, idCharacter, character.getRole()));
+                    saveOrUpdate(new AnimeRoleCharacter(id, idCharacter, character.getRole()));
                 }
             }
         }
-
-        currentSession().flush();
-        tx.commit();
     }
 
     @Override
     public MangaModel findById(Long id){
-
-        Transaction tx=currentSession().beginTransaction();
-        Criteria criteria = currentSession().createCriteria(MangaModel.class);
-        criteria.add(Restrictions.eq("id", id));
-        MangaModel mangaRes = (MangaModel) criteria.uniqueResult();
-        tx.commit();
-
-        return mangaRes;
+        return (MangaModel) getById(id);
     }
 
     @Override
     public MangaModel find(MangaModel manga){
         final Long id = manga.getId();
         final String type = manga.getType();
-        final String serialization = manga.getSerialization();
         final String title = manga.getTitle();
 
         Transaction tx=currentSession().beginTransaction();
-        Criteria criteria = currentSession().createCriteria(AnimeModel.class);
+        Criteria criteria = currentSession().createCriteria(MangaModel.class);
         if (id != null) criteria.add(Restrictions.eq("id", id));
         if (type != null) criteria.add(Restrictions.eq("type", type));
-        if (serialization != null) criteria.add(Restrictions.eq("serialization", serialization));
-        if (title != null) criteria.add(Restrictions.eq("showType", serialization));
+        if (title != null) criteria.add(Restrictions.eq("title", title));
 
         MangaModel mangaRes = (MangaModel) criteria.uniqueResult();
         tx.commit();
@@ -511,34 +340,8 @@ public class MangaRepository extends AbstractRepositoryHelper implements MangaDa
     }
 
     @Override
-    public void delete(MangaModel manga) {
-        Transaction tx=currentSession().beginTransaction();
-
-        currentSession().delete(manga);
-
-        currentSession().flush();
-        tx.commit();
+    public void delete(MangaModel anime) {
+        delete(anime);
     }
-
-    @Override
-    public void deleteById(Long id) {
-        Transaction tx=currentSession().beginTransaction();
-
-        try{
-            MangaModel manga = (MangaModel)currentSession().load(MangaModel.class, id);
-            currentSession().delete(manga);
-
-            currentSession().flush();
-            tx.commit();
-        } catch (Exception ex) {
-            tx.rollback();
-            throw ex;
-        }
-    }
-
-    private Session currentSession() {
-        return sessionFactory.getCurrentSession();
-    }
-
 }
 

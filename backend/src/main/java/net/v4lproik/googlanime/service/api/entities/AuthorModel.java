@@ -3,7 +3,6 @@ package net.v4lproik.googlanime.service.api.entities;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -22,11 +21,15 @@ public class AuthorModel {
 
     private String biography;
 
-    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.LAZY, mappedBy = "authors")
+    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.LAZY)
+    @JoinTable(name="Anime_has_Author",
+            joinColumns={@JoinColumn(name="idAuthor", referencedColumnName="id")},
+            inverseJoinColumns={@JoinColumn(name="idAnime", referencedColumnName="id")
+            })
     private Set<Entry> entries;
 
     @Transient
-    private List<String> jobs;
+    private Set<String> jobs;
 
     public AuthorModel() {
     }
@@ -55,11 +58,11 @@ public class AuthorModel {
         this.lastName = lastName;
     }
 
-    public List<String> getJobs() {
+    public Set<String> getJobs() {
         return jobs;
     }
 
-    public void setJobs(List<String> jobs) {
+    public void setJobs(Set<String> jobs) {
         this.jobs = jobs;
     }
 

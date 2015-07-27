@@ -3,7 +3,6 @@ package net.v4lproik.googlanime.dao.repositories;
 import net.v4lproik.googlanime.dao.api.AnimeDao;
 import net.v4lproik.googlanime.service.api.entities.*;
 import org.hibernate.Criteria;
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
@@ -16,48 +15,30 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Repository
-public class AnimeRepository extends AbstractRepositoryHelper implements AnimeDao{
+public class AnimeRepository extends AbstractRepository implements AnimeDao{
 
     private static final Logger log = LoggerFactory.getLogger(AnimeRepository.class);
     public final SessionFactory sessionFactory;
 
     @Autowired
     public AnimeRepository(final SessionFactory sessionFactory) {
+        super(AnimeModel.class, sessionFactory);
         this.sessionFactory = sessionFactory;
     }
 
     @Override
     public Long save(AnimeModel anime) {
-        Transaction tx = currentSession().beginTransaction();
-
-        Object idSave = currentSession().save(anime);
-
-        currentSession().flush();
-        tx.commit();
-
-        return (Long) idSave;
+        return (Long) save(anime);
     }
 
     @Override
-    public Long save(AnimeIdModel manga) {
-        Transaction tx = currentSession().beginTransaction();
-
-        Object idSave = currentSession().save(manga);
-
-        currentSession().flush();
-        tx.commit();
-
-        return (Long) idSave;
+    public Long save(AnimeIdModel animeId) {
+        return (Long) save(animeId);
     }
 
     @Override
     public void update(AnimeModel anime){
-        Transaction tx=currentSession().beginTransaction();
-
-        currentSession().update(anime);
-
-        currentSession().flush();
-        tx.commit();
+        update(anime);
     }
 
     @Override
@@ -68,27 +49,26 @@ public class AnimeRepository extends AbstractRepositoryHelper implements AnimeDa
         // -----------------------------------------------------------------------------------------
         // Save ManyToMany/OneToMany Entities
 
-        tx=currentSession().beginTransaction();
-
         if (anime.getAuthors() != null) {
             for (AuthorModel author : anime.getAuthors()) {
                 Integer idAuthor = author.getId();
 
                 if (author.getId() != null) {
-                    currentSession().update(author);
+                    update(author);
                 } else {
                     Map<String, String> conditions = new HashMap<String, String>() {{
                         put("firstName", author.getFirstName());
                         put("lastName", author.getLastName());
                     }};
 
-                    AuthorModel authorDB = (AuthorModel) getBySimpleCondition(currentSession(), AuthorModel.class, conditions);
+                    AuthorModel authorDB = (AuthorModel) getBySimpleCondition(AuthorModel.class, conditions);
 
                     if (authorDB == null) {
-                        idAuthor = (Integer) currentSession().save(author);
+                        idAuthor = (Integer) save(author);
                         author.setId(idAuthor);
                     } else {
                         author.setId(authorDB.getId());
+                        update(author);
                     }
                 }
             }
@@ -99,20 +79,21 @@ public class AnimeRepository extends AbstractRepositoryHelper implements AnimeDa
                 Integer idCharacter = character.getId();
 
                 if (character.getId() != null) {
-                    currentSession().update(character);
+                    update(character);
                 } else {
                     Map<String, String> conditions = new HashMap<String, String>() {{
                         put("firstName", character.getFirstName());
                         put("lastName", character.getLastName());
                     }};
 
-                    CharacterModel characterDB = (CharacterModel) getBySimpleCondition(currentSession(), CharacterModel.class, conditions);
+                    CharacterModel characterDB = (CharacterModel) getBySimpleCondition(CharacterModel.class, conditions);
 
                     if (characterDB == null) {
-                        idCharacter = (Integer) currentSession().save(character);
+                        idCharacter = (Integer) save(character);
                         character.setId(idCharacter);
                     } else {
                         character.setId(characterDB.getId());
+                        update(character);
                     }
                 }
             }
@@ -123,9 +104,9 @@ public class AnimeRepository extends AbstractRepositoryHelper implements AnimeDa
                 Integer idProducer = producer.getId();
 
                 if (producer.getId() == null) {
-                    ProducerModel producerDB = (ProducerModel) getBySimpleCondition(currentSession(), ProducerModel.class, "name", producer.getName());
+                    ProducerModel producerDB = (ProducerModel) getBySimpleCondition(ProducerModel.class, "name", producer.getName());
                     if (producerDB == null) {
-                        idProducer = (Integer) currentSession().save(producer);
+                        idProducer = (Integer) save(producer);
                         producer.setId(idProducer);
                     } else {
                         producer.setId(producerDB.getId());
@@ -134,17 +115,16 @@ public class AnimeRepository extends AbstractRepositoryHelper implements AnimeDa
             }
         }
 
-
         if (anime.getGenres() != null) {
             for (GenreModel genre : anime.getGenres()) {
                 Integer idGenre = genre.getId();
 
                 if (genre.getId() != null) {
-                    currentSession().update(genre);
+                    update(genre);
                 } else {
-                    GenreModel genreDB = (GenreModel) getBySimpleCondition(currentSession(), GenreModel.class, "name", genre.getName());
+                    GenreModel genreDB = (GenreModel) getBySimpleCondition(GenreModel.class, "name", genre.getName());
                     if (genreDB == null) {
-                        idGenre = (Integer) currentSession().save(genre);
+                        idGenre = (Integer) save(genre);
                         genre.setId(idGenre);
                     } else {
                         genre.setId(genreDB.getId());
@@ -158,11 +138,11 @@ public class AnimeRepository extends AbstractRepositoryHelper implements AnimeDa
                 Integer idTag = tag.getId();
 
                 if (tag.getId() != null) {
-                    currentSession().update(tag);
+                    update(tag);
                 } else {
-                    TagModel tagDB = (TagModel) getBySimpleCondition(currentSession(), TagModel.class, "name", tag.getName());
+                    TagModel tagDB = (TagModel) getBySimpleCondition(TagModel.class, "name", tag.getName());
                     if (tagDB == null) {
-                        idTag = (Integer) currentSession().save(tag);
+                        idTag = (Integer) save(tag);
                         tag.setId(idTag);
                     } else {
                         tag.setId(tagDB.getId());
@@ -176,16 +156,16 @@ public class AnimeRepository extends AbstractRepositoryHelper implements AnimeDa
                 Integer idSynonym = synonym.getId();
 
                 if (synonym.getId() != null) {
-                    currentSession().update(synonym);
+                    update(synonym);
                 } else {
 
                     Map<String, Object> conditions = new HashMap<String, Object>() {{
                         put("title", synonym.getTitle());
                         put("entry", synonym.getEntry());
                     }};
-                    SynonymModel synonymDB = (SynonymModel) getBySimpleConditionObject(currentSession(), SynonymModel.class, conditions);
+                    SynonymModel synonymDB = (SynonymModel) getBySimpleConditionObject(SynonymModel.class, conditions);
                     if (synonymDB == null) {
-                        idSynonym = (Integer) currentSession().save(synonym);
+                        idSynonym = (Integer) save(synonym);
                         synonym.setId(idSynonym);
                     } else {
                         synonym.setId(synonymDB.getId());
@@ -194,11 +174,8 @@ public class AnimeRepository extends AbstractRepositoryHelper implements AnimeDa
             }
         }
 
-        currentSession().flush();
-        tx.commit();
-
         // -----------------------------------------------------------------------------------------
-        // Save Manga
+        // Save Anime
 
         tx=currentSession().beginTransaction();
 
@@ -211,37 +188,17 @@ public class AnimeRepository extends AbstractRepositoryHelper implements AnimeDa
         // -----------------------------------------------------------------------------------------
         // Save Alternatives, SidesStories etc
 
-// -----------------------------------------------------------------------------------------
-        // Save Alternatives, SidesStories etc
-
         if (anime.getSequels() != null){
             for (AnimeIdModel sequel:anime.getSequels()){
                 if (sequel.getId() != id){
 
                     if (findById(sequel.getId()) != null){
-
-                        tx=currentSession().beginTransaction();
-
-                        currentSession().update(sequel);
-
-                        currentSession().flush();
-                        tx.commit();
+                        update(sequel);
                     }else{
-
-                        tx=currentSession().beginTransaction();
-
-                        currentSession().merge(sequel);
-
-                        currentSession().flush();
-                        tx.commit();
+                        merge(sequel);
                     }
 
-                    tx=currentSession().beginTransaction();
-
-                    currentSession().saveOrUpdate(new Sequels(id, sequel.getId()));
-
-                    currentSession().flush();
-                    tx.commit();
+                    saveOrUpdate(new Sequels(id, sequel.getId()));
                 }
             }
         }
@@ -251,30 +208,12 @@ public class AnimeRepository extends AbstractRepositoryHelper implements AnimeDa
                 if (alter.getId() != id) {
 
                     if (findById(alter.getId()) != null){
-
-                        tx=currentSession().beginTransaction();
-
-                        currentSession().update(alter);
-
-                        currentSession().flush();
-                        tx.commit();
+                        update(alter);
                     }else{
-
-                        tx=currentSession().beginTransaction();
-
-                        currentSession().merge(alter);
-
-                        currentSession().flush();
-                        tx.commit();
+                        merge(alter);
                     }
 
-
-                    tx=currentSession().beginTransaction();
-
-                    currentSession().saveOrUpdate(new Sequels(id, alter.getId()));
-
-                    currentSession().flush();
-                    tx.commit();
+                    saveOrUpdate(new Sequels(id, alter.getId()));
                 }
             }
         }
@@ -284,30 +223,12 @@ public class AnimeRepository extends AbstractRepositoryHelper implements AnimeDa
                 if (prequel.getId() != id){
 
                     if (findById(prequel.getId()) != null){
-
-                        tx=currentSession().beginTransaction();
-
-                        currentSession().update(prequel);
-
-                        currentSession().flush();
-                        tx.commit();
+                        update(prequel);
                     }else{
-
-                        tx=currentSession().beginTransaction();
-
-                        currentSession().merge(prequel);
-
-                        currentSession().flush();
-                        tx.commit();
+                        merge(prequel);
                     }
 
-
-                    tx=currentSession().beginTransaction();
-
-                    currentSession().saveOrUpdate(new Prequels(id, prequel.getId()));
-
-                    currentSession().flush();
-                    tx.commit();
+                    saveOrUpdate(new Prequels(id, prequel.getId()));
                 }
             }
         }
@@ -317,30 +238,12 @@ public class AnimeRepository extends AbstractRepositoryHelper implements AnimeDa
                 if (spinOff.getId() != id){
 
                     if (findById(spinOff.getId()) != null){
-
-                        tx=currentSession().beginTransaction();
-
-                        currentSession().update(spinOff);
-
-                        currentSession().flush();
-                        tx.commit();
+                        update(spinOff);
                     }else{
-
-                        tx=currentSession().beginTransaction();
-
-                        currentSession().merge(spinOff);
-
-                        currentSession().flush();
-                        tx.commit();
+                        merge(spinOff);
                     }
 
-
-                    tx=currentSession().beginTransaction();
-
-                    currentSession().saveOrUpdate(new SpinOffs(id, spinOff.getId()));
-
-                    currentSession().flush();
-                    tx.commit();
+                    saveOrUpdate(new SpinOffs(id, spinOff.getId()));
                 }
             }
         }
@@ -350,30 +253,12 @@ public class AnimeRepository extends AbstractRepositoryHelper implements AnimeDa
                 if (sideStory.getId() != id){
 
                     if (findById(sideStory.getId()) != null){
-
-                        tx=currentSession().beginTransaction();
-
-                        currentSession().update(sideStory);
-
-                        currentSession().flush();
-                        tx.commit();
+                        update(sideStory);
                     }else{
-
-                        tx=currentSession().beginTransaction();
-
-                        currentSession().merge(sideStory);
-
-                        currentSession().flush();
-                        tx.commit();
+                        merge(sideStory);
                     }
 
-
-                    tx=currentSession().beginTransaction();
-
-                    currentSession().saveOrUpdate(new SideStories(id, sideStory.getId()));
-
-                    currentSession().flush();
-                    tx.commit();
+                    saveOrUpdate(new SideStories(id, sideStory.getId()));
                 }
             }
         }
@@ -383,31 +268,12 @@ public class AnimeRepository extends AbstractRepositoryHelper implements AnimeDa
                 if (other.getId() != id){
 
                     if (findById(other.getId()) != null){
-
-                        tx=currentSession().beginTransaction();
-
                         currentSession().update(other);
-
-                        currentSession().flush();
-                        tx.commit();
                     }else{
-
-                        tx=currentSession().beginTransaction();
-
-                        currentSession().merge(other);
-
-                        currentSession().flush();
-                        tx.commit();
+                        merge(other);
                     }
 
-
-                    tx=currentSession().beginTransaction();
-
-                    currentSession().saveOrUpdate(new Others(id, other.getId()));
-
-                    currentSession().flush();
-                    tx.commit();
-
+                    saveOrUpdate(new Others(id, other.getId()));
                 }
             }
         }
@@ -417,29 +283,12 @@ public class AnimeRepository extends AbstractRepositoryHelper implements AnimeDa
                 if (summary.getId() != id){
 
                     if (findById(summary.getId()) != null){
-
-                        tx=currentSession().beginTransaction();
-
-                        currentSession().update(summary);
-
-                        currentSession().flush();
-                        tx.commit();
+                        update(summary);
                     }else{
-
-                        tx=currentSession().beginTransaction();
-
-                        currentSession().merge(summary);
-
-                        currentSession().flush();
-                        tx.commit();
+                        merge(summary);
                     }
 
-                    tx=currentSession().beginTransaction();
-
-                    currentSession().saveOrUpdate(new Summaries(id, summary.getId()));
-
-                    currentSession().flush();
-                    tx.commit();
+                    saveOrUpdate(new Summaries(id, summary.getId()));
                 }
             }
         }
@@ -449,32 +298,12 @@ public class AnimeRepository extends AbstractRepositoryHelper implements AnimeDa
                 if (adaptation.getId() != id){
 
                     if (findById(adaptation.getId()) != null){
-
-                        tx=currentSession().beginTransaction();
-
-                        currentSession().update(adaptation);
-
-                        currentSession().flush();
-                        tx.commit();
-
+                        update(adaptation);
                     }else{
-
-                        tx=currentSession().beginTransaction();
-
-                        currentSession().merge(adaptation);
-
-                        currentSession().flush();
-                        tx.commit();
+                        merge(adaptation);
                     }
 
-
-
-                    tx=currentSession().beginTransaction();
-
-                    currentSession().saveOrUpdate(new Adaptations(id, adaptation.getId()));
-
-                    currentSession().flush();
-                    tx.commit();
+                    saveOrUpdate(new Adaptations(id, adaptation.getId()));
                 }
             }
         }
@@ -484,15 +313,13 @@ public class AnimeRepository extends AbstractRepositoryHelper implements AnimeDa
         // -----------------------------------------------------------------------------------------
         // Save ManyToMany Extra Columns
 
-        tx=currentSession().beginTransaction();
-
         if (anime.getAuthors() != null) {
             for (AuthorModel author : anime.getAuthors()) {
                 Integer idAuthor = author.getId();
 
                 if (author.getJobs() != null){
                     for (String job:author.getJobs()){
-                        currentSession().saveOrUpdate(new AnimeJobAuthor(id, idAuthor, job));
+                        saveOrUpdate(new AnimeJobAuthor(id, idAuthor, job));
                     }
                 }
             }
@@ -503,28 +330,15 @@ public class AnimeRepository extends AbstractRepositoryHelper implements AnimeDa
                 Integer idCharacter = character.getId();
 
                 if (character.getRole() != null){
-                    currentSession().saveOrUpdate(new AnimeRoleCharacter(id, idCharacter, character.getRole()));
+                    saveOrUpdate(new AnimeRoleCharacter(id, idCharacter, character.getRole()));
                 }
             }
         }
-
-        currentSession().flush();
-        tx.commit();
     }
 
     @Override
     public AnimeModel findById(Long id){
-
-        Transaction tx=currentSession().beginTransaction();
-
-        Criteria criteria = currentSession().createCriteria(AnimeModel.class);
-        criteria.add(Restrictions.eq("id", id));
-        AnimeModel animeRes = (AnimeModel) criteria.uniqueResult();
-
-        currentSession().flush();
-        tx.commit();
-
-        return animeRes;
+        return (AnimeModel) getById(id);
     }
 
     @Override
@@ -549,34 +363,7 @@ public class AnimeRepository extends AbstractRepositoryHelper implements AnimeDa
 
     @Override
     public void delete(AnimeModel anime) {
-        Transaction tx=currentSession().beginTransaction();
-
-        currentSession().delete(anime);
-
-        currentSession().flush();
-        tx.commit();
+        delete(anime);
     }
-
-    @Override
-    public void deleteById(Long id) {
-        Transaction tx=currentSession().beginTransaction();
-
-        try{
-            AnimeModel anime = (AnimeModel)currentSession().load(AnimeModel.class, id);
-
-            currentSession().delete(anime);
-
-            currentSession().flush();
-            tx.commit();
-        } catch (Exception ex) {
-            tx.rollback();
-            throw ex;
-        }
-    }
-
-    private Session currentSession() {
-        return sessionFactory.getCurrentSession();
-    }
-
 }
 
