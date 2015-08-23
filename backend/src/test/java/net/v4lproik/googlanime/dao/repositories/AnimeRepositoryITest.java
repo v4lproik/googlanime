@@ -142,34 +142,6 @@ public class AnimeRepositoryITest {
 //            }
 //        }
 //    }
-//
-//    @Test
-//    public void test_saveAnimeWithoutDependencies_shouldBeInsertedAndItsDependenciesWithoutAnyDetails() throws Exception{
-//        // Given
-//        ImportOptions options = new ImportOptions(2904, "anime", false);
-//        String type = options.getType();
-//        final Integer id = options.getId();
-//
-//        // When
-//        MyAnimeListEntry response = myAnimeList.crawlById(options);
-//
-//        // Then
-//        AnimeModel animeRes = animeMapper.transformMyAnimeListAnimeToDAO((MyAnimeListAnime) response);
-//
-//        if (animeRes.getTitle() != null) {
-//
-//            if (animeRes.getId() != null){
-//
-//                if (animeDao.findById(animeRes.getId()) == null){
-//                    AnimeIdModel entryId = animeMapper.transformEntryToEntryId(animeRes);
-//                    animeDao.save(entryId);
-//                }
-//
-//                animeDao.saveOrUpdate(animeRes);
-//            }
-//        }
-//
-//    }
 
     @Test
     public void test_saveAnime_shouldBeInserted() throws Exception {
@@ -198,47 +170,6 @@ public class AnimeRepositoryITest {
         myAnimeList.scrapCharacter(doc, urlCharacter, character);
 
         AnimeModel anime = animeMapper.transformMyAnimeListAnimeToDAO((MyAnimeListAnime) response);
-
-//        AnimeModel animeResDB = animeDao.find(anime);
-//
-//
-//        if (animeResDB != null){
-//
-//            //update the different fields before updating
-//            anime.setProducers(animeResDB.getProducers());
-//            anime.setType(animeResDB.getType());
-//            anime.setEpisodeCount(animeResDB.getEpisodeCount());
-//            anime.setEpisodeLength(animeResDB.getEpisodeLength());
-//            anime.setShowType(animeResDB.getShowType());
-//            anime.setAdaptations(animeResDB.getAdaptations());
-//            anime.setAgeRating(animeResDB.getAgeRating());
-//            anime.setAlternativeVersions(animeResDB.getAlternativeVersions());
-//            anime.setAuthors(animeResDB.getAuthors());
-//            anime.setCharacters(animeResDB.getCharacters());
-//            anime.setEnglishTitle(animeResDB.getEnglishTitle());
-//            anime.setFinishedAiringDate(animeResDB.getFinishedAiringDate());
-//            anime.setGenres(animeResDB.getGenres());
-//            anime.setId(animeResDB.getId());
-//            anime.setJapaneseTitle(animeResDB.getJapaneseTitle());
-//            anime.setOthers(animeResDB.getOthers());
-//            anime.setPopularity(animeResDB.getPopularity());
-//            anime.setPosterImage(animeResDB.getPosterImage());
-//            anime.setPrequels(animeResDB.getPrequels());
-//            anime.setRank(animeResDB.getRank());
-//            anime.setScore(animeResDB.getScore());
-//            anime.setSideStories(animeResDB.getSideStories());
-//            anime.setSpinoff(animeResDB.getSpinoff());
-//            anime.setStartedAiringDate(animeResDB.getStartedAiringDate());
-//            anime.setSummaries(animeResDB.getSummaries());
-//            anime.setSynonyms(animeResDB.getSynonyms());
-//            anime.setSynopsis(animeResDB.getSynopsis());
-//            anime.setTags(animeResDB.getTags());
-//            anime.setTitle(animeResDB.getTitle());
-//
-//            anime = animeResDB;
-//        }
-
-        System.out.println(anime.toString());
 
         animeDao.saveOrUpdate(anime);
     }

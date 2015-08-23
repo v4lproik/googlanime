@@ -28,12 +28,26 @@ public class AnimeRepository extends AbstractRepository implements AnimeDao{
 
     @Override
     public Long save(AnimeModel anime) {
-        return (Long) save(anime);
+        Transaction tx=currentSession().beginTransaction();
+
+        Object idSave = currentSession().save(anime);
+
+        currentSession().flush();
+        tx.commit();
+
+        return new Long(String.valueOf(idSave));
     }
 
     @Override
-    public Long save(AnimeIdModel animeId) {
-        return (Long) save(animeId);
+    public Long save(AnimeIdModel anime) {
+        Transaction tx=currentSession().beginTransaction();
+
+        Object idSave = currentSession().save(anime);
+
+        currentSession().flush();
+        tx.commit();
+
+        return new Long(String.valueOf(idSave));
     }
 
     @Override
@@ -64,7 +78,7 @@ public class AnimeRepository extends AbstractRepository implements AnimeDao{
                     AuthorModel authorDB = (AuthorModel) getBySimpleCondition(AuthorModel.class, conditions);
 
                     if (authorDB == null) {
-                        idAuthor = (Integer) save(author);
+                        idAuthor = save(author).intValue();
                         author.setId(idAuthor);
                     } else {
                         author.setId(authorDB.getId());
@@ -89,7 +103,7 @@ public class AnimeRepository extends AbstractRepository implements AnimeDao{
                     CharacterModel characterDB = (CharacterModel) getBySimpleCondition(CharacterModel.class, conditions);
 
                     if (characterDB == null) {
-                        idCharacter = (Integer) save(character);
+                        idCharacter = (Integer) save(character).intValue();
                         character.setId(idCharacter);
                     } else {
                         character.setId(characterDB.getId());
@@ -106,7 +120,7 @@ public class AnimeRepository extends AbstractRepository implements AnimeDao{
                 if (producer.getId() == null) {
                     ProducerModel producerDB = (ProducerModel) getBySimpleCondition(ProducerModel.class, "name", producer.getName());
                     if (producerDB == null) {
-                        idProducer = (Integer) save(producer);
+                        idProducer = (Integer) save(producer).intValue();
                         producer.setId(idProducer);
                     } else {
                         producer.setId(producerDB.getId());
@@ -124,7 +138,7 @@ public class AnimeRepository extends AbstractRepository implements AnimeDao{
                 } else {
                     GenreModel genreDB = (GenreModel) getBySimpleCondition(GenreModel.class, "name", genre.getName());
                     if (genreDB == null) {
-                        idGenre = (Integer) save(genre);
+                        idGenre = save(genre).intValue();
                         genre.setId(idGenre);
                     } else {
                         genre.setId(genreDB.getId());
@@ -142,7 +156,7 @@ public class AnimeRepository extends AbstractRepository implements AnimeDao{
                 } else {
                     TagModel tagDB = (TagModel) getBySimpleCondition(TagModel.class, "name", tag.getName());
                     if (tagDB == null) {
-                        idTag = (Integer) save(tag);
+                        idTag = (Integer) save(tag).intValue();
                         tag.setId(idTag);
                     } else {
                         tag.setId(tagDB.getId());
@@ -165,7 +179,7 @@ public class AnimeRepository extends AbstractRepository implements AnimeDao{
                     }};
                     SynonymModel synonymDB = (SynonymModel) getBySimpleConditionObject(SynonymModel.class, conditions);
                     if (synonymDB == null) {
-                        idSynonym = (Integer) save(synonym);
+                        idSynonym = (Integer) save(synonym).intValue();
                         synonym.setId(idSynonym);
                     } else {
                         synonym.setId(synonymDB.getId());
@@ -268,7 +282,7 @@ public class AnimeRepository extends AbstractRepository implements AnimeDao{
                 if (other.getId() != id){
 
                     if (findById(other.getId()) != null){
-                        currentSession().update(other);
+                        update(other);
                     }else{
                         merge(other);
                     }

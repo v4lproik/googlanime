@@ -2,8 +2,8 @@ package net.v4lproik.googlanime.mvc.controllers;
 
 import net.v4lproik.googlanime.mvc.models.JSONResponse;
 import net.v4lproik.googlanime.mvc.models.Website;
-import net.v4lproik.googlanime.service.api.entities.AnimeModel;
 import net.v4lproik.googlanime.service.api.AnimeServiceRead;
+import net.v4lproik.googlanime.service.api.entities.Entry;
 import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListEntryDependency;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +34,7 @@ public class AnimeController {
 
         log.debug(String.format("/animes?query=%s&fields=%s&type=%s&render=%s", query, Arrays.asList(fields), Arrays.asList(type), render));
 
-        Class<?> toCast = AnimeModel.class;
+        Class<?> toCast = Entry.class;
         JSONResponse response = new JSONResponse();
 
         if (Website.containsValue(render) != null){
@@ -49,7 +49,7 @@ public class AnimeController {
             List<?> animes = service.find(query, type, fields, toCast);
             response.setAnimes(animes);
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("Unable to find any entry : " + e);
             response.setError(e.getMessage());
         }
 

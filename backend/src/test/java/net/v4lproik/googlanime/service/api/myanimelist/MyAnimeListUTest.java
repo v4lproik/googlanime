@@ -59,8 +59,17 @@ public class MyAnimeListUTest {
         // When
         MyAnimeListEntry response = myAnimeList.crawlById(options);
 
+
         //Then
         assertEquals("Code Geass: Hangyaku no Lelouch R2", response.getTitle());
+        assertEquals("2904", response.getId().toString());
+        assertEquals("anime", response.getType());
+        assertEquals("Code Geass: Lelouch of the Rebellion R2", response.getEnglishTitle());
+        assertEquals("コードギアス 反逆のルルーシュ 続編", response.getJapaneseTitle());
+        assertEquals(true, response.getSynopsis().startsWith("A year has passed since \"The Black Rebellion\" and the remaining Black Knights have vanished into the shadows, their leader and"));
+        assertEquals("Apr 6, 2008", response.getStartedAiringDate());
+        assertEquals("Sep 28, 2008", response.getFinishedAiringDate());
+        assertEquals("#112", response.getRank());
     }
 
     @Test(expected = IOException.class)

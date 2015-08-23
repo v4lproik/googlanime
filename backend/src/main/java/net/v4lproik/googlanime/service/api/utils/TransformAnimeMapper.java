@@ -8,9 +8,11 @@ import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListCharact
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -18,12 +20,10 @@ import java.util.Set;
 @Component
 public class TransformAnimeMapper extends TransformAbstractMapper {
 
-    public final static String DATE_FORMAT = "dd-MM-yyyy";
+    public final static String DATE_FORMAT = "MMM dd, yyyy";
 
     public AnimeModel transformMyAnimeListAnimeDependencyToDAO(MyAnimeListAnimeDependency myAnimeListEntryDependency){
         AnimeModel anime;
-
-        System.out.println(myAnimeListEntryDependency.toString());
 
         ModelMapper modelMapper = new ModelMapper();
         anime = modelMapper.map(myAnimeListEntryDependency, AnimeModel.class);
@@ -98,9 +98,10 @@ public class TransformAnimeMapper extends TransformAbstractMapper {
 
         if (myAnimeListEntryDependency.getFinishedAiringDate() != null){
             try {
-                DateFormat df = new SimpleDateFormat(DATE_FORMAT);
-                df.setLenient(false);
-                df.parse(myAnimeListEntryDependency.getFinishedAiringDate());
+                SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
+                Date date = formatter.parse(myAnimeListEntryDependency.getFinishedAiringDate());
+                LocalDateTime dateTime = LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
+                anime.setFinishedAiringDate(dateTime.toString());
             } catch (ParseException e) {
                 anime.setFinishedAiringDate(null);
             }
@@ -108,9 +109,10 @@ public class TransformAnimeMapper extends TransformAbstractMapper {
 
         if (myAnimeListEntryDependency.getStartedAiringDate() != null){
             try {
-                DateFormat df = new SimpleDateFormat(DATE_FORMAT);
-                df.setLenient(false);
-                df.parse(myAnimeListEntryDependency.getStartedAiringDate());
+                SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
+                Date date = formatter.parse(myAnimeListEntryDependency.getStartedAiringDate());
+                LocalDateTime dateTime = LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
+                anime.setStartedAiringDate(dateTime.toString());
             } catch (ParseException e) {
                 anime.setStartedAiringDate(null);
             }
@@ -220,9 +222,10 @@ public class TransformAnimeMapper extends TransformAbstractMapper {
 
         if (myAnimeListAnime.getFinishedAiringDate() != null){
             try {
-                DateFormat df = new SimpleDateFormat(DATE_FORMAT);
-                df.setLenient(false);
-                df.parse(myAnimeListAnime.getFinishedAiringDate());
+                SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
+                Date date = formatter.parse(myAnimeListAnime.getFinishedAiringDate());
+                LocalDateTime dateTime = LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
+                anime.setFinishedAiringDate(dateTime.toString());
             } catch (ParseException e) {
                 anime.setFinishedAiringDate(null);
             }
@@ -230,9 +233,10 @@ public class TransformAnimeMapper extends TransformAbstractMapper {
 
         if (myAnimeListAnime.getStartedAiringDate() != null){
             try {
-                DateFormat df = new SimpleDateFormat(DATE_FORMAT);
-                df.setLenient(false);
-                df.parse(myAnimeListAnime.getStartedAiringDate());
+                SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
+                Date date = formatter.parse(myAnimeListAnime.getStartedAiringDate());
+                LocalDateTime dateTime = LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
+                anime.setStartedAiringDate(dateTime.toString());
             } catch (ParseException e) {
                 anime.setStartedAiringDate(null);
             }
