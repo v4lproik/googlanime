@@ -34,7 +34,7 @@ public class AnimeServiceReadImpl implements AnimeServiceRead {
 
         QueryBuilder qb = fuzzyLikeThisQuery(fields)
                 .likeText(query)
-                .maxQueryTerms(12);
+                .maxQueryTerms(50);
 
         SearchResponse responseElastic = client.prepareSearch("animes", "mangas")
                 .setTypes(type)
@@ -57,13 +57,13 @@ public class AnimeServiceReadImpl implements AnimeServiceRead {
     @Override
     public List<?> find(String query, String[] type, String[] fields, Class<?> toCast) throws IllegalAccessException, InstantiationException {
 
-        log.debug(String.format("/animes?query=%s&fields=%s&type=%s&render=%s", query, Arrays.asList(fields), Arrays.asList(type), toCast.toString()));
+        log.debug(String.format("ES find /animes?query=%s&fields=%s&type=%s&render=%s", query, Arrays.asList(fields), Arrays.asList(type), toCast.toString()));
 
         List<Object> animes = new ArrayList<>();
 
         QueryBuilder qb = fuzzyLikeThisQuery(fields)
                 .likeText(query)
-                .maxQueryTerms(12);
+                .maxQueryTerms(50);
 
         SearchResponse responseElastic = client.prepareSearch("animes", "mangas")
                 .setTypes(type)
