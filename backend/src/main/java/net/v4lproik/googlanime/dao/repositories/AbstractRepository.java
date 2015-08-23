@@ -29,7 +29,7 @@ public abstract class AbstractRepository<E, I extends Serializable> {
         return currentSession().createCriteria(klazz).list();
     }
 
-    public Object save(E entity) {
+    public Long save(Object entity) {
         Transaction tx=currentSession().beginTransaction();
 
         Object idSave = currentSession().save(entity);
@@ -37,10 +37,10 @@ public abstract class AbstractRepository<E, I extends Serializable> {
         currentSession().flush();
         tx.commit();
 
-        return idSave;
+        return new Long(String.valueOf(idSave));
     }
 
-    public Object merge(E entity) {
+    public Object merge(Object entity) {
         Transaction tx=currentSession().beginTransaction();
 
         Object idSave = currentSession().merge(entity);
@@ -51,7 +51,7 @@ public abstract class AbstractRepository<E, I extends Serializable> {
         return idSave;
     }
 
-    public void saveOrUpdate(E entity) {
+    public void saveOrUpdate(Object entity) {
         Transaction tx=currentSession().beginTransaction();
 
         currentSession().saveOrUpdate(entity);
@@ -60,7 +60,7 @@ public abstract class AbstractRepository<E, I extends Serializable> {
         tx.commit();
     }
 
-    public void update(E entity) {
+    public void update(Object entity) {
         Transaction tx=currentSession().beginTransaction();
 
         currentSession().update(entity);

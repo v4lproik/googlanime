@@ -17,7 +17,8 @@ import java.util.Map;
 @Repository
 public class MangaRepository extends AbstractRepository implements MangaDao{
 
-    private static final Logger log = LoggerFactory.getLogger(AnimeRepository.class);
+    private static final Logger log = LoggerFactory.getLogger(MangaRepository.class);
+
     public final SessionFactory sessionFactory;
 
     @Autowired
@@ -28,12 +29,26 @@ public class MangaRepository extends AbstractRepository implements MangaDao{
 
     @Override
     public Long save(MangaModel manga) {
-        return (Long) save(manga);
+        Transaction tx=currentSession().beginTransaction();
+
+        Object idSave = currentSession().save(manga);
+
+        currentSession().flush();
+        tx.commit();
+
+        return new Long(String.valueOf(idSave));
     }
 
     @Override
-    public Long save(AnimeIdModel mangaId) {
-        return (Long) save(mangaId);
+    public Long save(AnimeIdModel manga) {
+        Transaction tx=currentSession().beginTransaction();
+
+        Object idSave = currentSession().save(manga);
+
+        currentSession().flush();
+        tx.commit();
+
+        return new Long(String.valueOf(idSave));
     }
 
     @Override
@@ -59,7 +74,7 @@ public class MangaRepository extends AbstractRepository implements MangaDao{
                     AuthorModel authorDB = (AuthorModel) getBySimpleCondition(AuthorModel.class, conditions);
 
                     if (authorDB == null) {
-                        idAuthor = (Integer) save(author);
+                        idAuthor = (Integer) save(author).intValue();
                         author.setId(idAuthor);
                     } else {
                         author.setId(authorDB.getId());
@@ -84,7 +99,7 @@ public class MangaRepository extends AbstractRepository implements MangaDao{
                     CharacterModel characterDB = (CharacterModel) getBySimpleCondition(CharacterModel.class, conditions);
 
                     if (characterDB == null) {
-                        idCharacter = (Integer) save(character);
+                        idCharacter = (Integer) save(character).intValue();
                         character.setId(idCharacter);
                     } else {
                         character.setId(characterDB.getId());
@@ -104,7 +119,7 @@ public class MangaRepository extends AbstractRepository implements MangaDao{
                 } else {
                     GenreModel genreDB = (GenreModel) getBySimpleCondition(GenreModel.class, "name", genre.getName());
                     if (genreDB == null) {
-                        idGenre = (Integer) save(genre);
+                        idGenre = (Integer) save(genre).intValue();
                         genre.setId(idGenre);
                     } else {
                         genre.setId(genreDB.getId());
@@ -122,7 +137,7 @@ public class MangaRepository extends AbstractRepository implements MangaDao{
                 } else {
                     TagModel tagDB = (TagModel) getBySimpleCondition(TagModel.class, "name", tag.getName());
                     if (tagDB == null) {
-                        idTag = (Integer) save(tag);
+                        idTag = (Integer) save(tag).intValue();
                         tag.setId(idTag);
                     } else {
                         tag.setId(tagDB.getId());
@@ -145,7 +160,7 @@ public class MangaRepository extends AbstractRepository implements MangaDao{
                     }};
                     SynonymModel synonymDB = (SynonymModel) getBySimpleConditionObject(SynonymModel.class, conditions);
                     if (synonymDB == null) {
-                        idSynonym = (Integer) save(synonym);
+                        idSynonym = (Integer) save(synonym).intValue();
                         synonym.setId(idSynonym);
                     } else {
                         synonym.setId(synonymDB.getId());
@@ -248,7 +263,7 @@ public class MangaRepository extends AbstractRepository implements MangaDao{
                 if (other.getId() != id){
 
                     if (findById(other.getId()) != null){
-                        currentSession().update(other);
+                        update(other);
                     }else{
                         merge(other);
                     }

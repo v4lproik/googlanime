@@ -1,7 +1,7 @@
 package net.v4lproik.googlanime.service.impl;
 
 import com.google.gson.Gson;
-import net.v4lproik.googlanime.service.api.AnimeServiceRead;
+import net.v4lproik.googlanime.service.api.MangaServiceRead;
 import net.v4lproik.googlanime.service.api.entities.AnimeModel;
 import org.apache.log4j.Logger;
 import org.elasticsearch.action.search.SearchResponse;
@@ -18,7 +18,7 @@ import java.util.List;
 import static org.elasticsearch.index.query.QueryBuilders.fuzzyLikeThisQuery;
 
 @Service
-public class MangaServiceReadImpl implements AnimeServiceRead {
+public class MangaServiceReadImpl implements MangaServiceRead {
 
     public static final int MAX_RETURN_SIZE = 20;
     static Logger log = Logger.getLogger(MangaServiceReadImpl.class.getName());

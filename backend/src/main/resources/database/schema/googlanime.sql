@@ -90,7 +90,7 @@ DROP TABLE IF EXISTS `Author`;
 
 CREATE TABLE `Author` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `firstName` varchar(50) CHARACTER SET latin1 NOT NULL DEFAULT '',
+  `firstName` varchar(50) CHARACTER SET latin1 DEFAULT NULL,
   `lastName` varchar(50) CHARACTER SET latin1 NOT NULL DEFAULT '',
   `biography` varchar(500) CHARACTER SET latin1 DEFAULT '',
   `bloodType` varchar(3) DEFAULT NULL,

@@ -49,7 +49,7 @@ public class AnimeController {
             List<?> animes = service.find(query, type, fields, toCast);
             response.setAnimes(animes);
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("Unable to find any entry : " + e.getMessage());
             response.setError(e.getMessage());
         }
 
