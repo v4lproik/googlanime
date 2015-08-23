@@ -84,7 +84,7 @@ public class ElasticsearchIndexInitializer {
     }
 
     private void waitES() {
-        client.admin().cluster().prepareHealth().setWaitForYellowStatus().setTimeout(TimeValue.timeValueSeconds(5)).get();
+        client.admin().cluster().prepareHealth().setWaitForYellowStatus().setTimeout(TimeValue.timeValueSeconds(1)).get();
     }
 
     private void refreshES(String index) {
