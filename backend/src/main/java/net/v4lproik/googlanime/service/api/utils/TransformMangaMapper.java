@@ -8,9 +8,11 @@ import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListMangaDe
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -18,7 +20,7 @@ import java.util.Set;
 @Component
 public class TransformMangaMapper extends TransformAbstractMapper {
 
-    public final static String DATE_FORMAT = "dd-MM-yyyy";
+    public final static String DATE_FORMAT = "MMM dd, yyyy";
 
     public MangaModel transformMyAnimeListMangaDependencyToDAO(MyAnimeListMangaDependency myAnimeListMangaDependency){
         MangaModel manga = new MangaModel();
@@ -85,9 +87,10 @@ public class TransformMangaMapper extends TransformAbstractMapper {
 
         if (myAnimeListMangaDependency.getFinishedAiringDate() != null){
             try {
-                DateFormat df = new SimpleDateFormat(DATE_FORMAT);
-                df.setLenient(false);
-                df.parse(myAnimeListMangaDependency.getFinishedAiringDate());
+                SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
+                Date date = formatter.parse(myAnimeListMangaDependency.getFinishedAiringDate());
+                LocalDateTime dateTime = LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
+                manga.setFinishedAiringDate(dateTime.toString());
             } catch (ParseException e) {
                 manga.setFinishedAiringDate(null);
             }
@@ -95,9 +98,10 @@ public class TransformMangaMapper extends TransformAbstractMapper {
 
         if (myAnimeListMangaDependency.getStartedAiringDate() != null){
             try {
-                DateFormat df = new SimpleDateFormat(DATE_FORMAT);
-                df.setLenient(false);
-                df.parse(myAnimeListMangaDependency.getStartedAiringDate());
+                SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
+                Date date = formatter.parse(myAnimeListMangaDependency.getStartedAiringDate());
+                LocalDateTime dateTime = LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
+                manga.setStartedAiringDate(dateTime.toString());
             } catch (ParseException e) {
                 manga.setStartedAiringDate(null);
             }
@@ -196,9 +200,10 @@ public class TransformMangaMapper extends TransformAbstractMapper {
 
         if (myAnimeListManga.getFinishedAiringDate() != null){
             try {
-                DateFormat df = new SimpleDateFormat(DATE_FORMAT);
-                df.setLenient(false);
-                df.parse(myAnimeListManga.getFinishedAiringDate());
+                SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
+                Date date = formatter.parse(myAnimeListManga.getFinishedAiringDate());
+                LocalDateTime dateTime = LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
+                manga.setFinishedAiringDate(dateTime.toString());
             } catch (ParseException e) {
                 manga.setFinishedAiringDate(null);
             }
@@ -206,9 +211,10 @@ public class TransformMangaMapper extends TransformAbstractMapper {
 
         if (myAnimeListManga.getStartedAiringDate() != null){
             try {
-                DateFormat df = new SimpleDateFormat(DATE_FORMAT);
-                df.setLenient(false);
-                df.parse(myAnimeListManga.getStartedAiringDate());
+                SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
+                Date date = formatter.parse(myAnimeListManga.getStartedAiringDate());
+                LocalDateTime dateTime = LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
+                manga.setStartedAiringDate(dateTime.toString());
             } catch (ParseException e) {
                 manga.setStartedAiringDate(null);
             }
