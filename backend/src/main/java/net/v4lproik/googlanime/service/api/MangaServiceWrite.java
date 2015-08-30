@@ -1,12 +1,12 @@
 package net.v4lproik.googlanime.service.api;
 
-import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListManga;
-import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListMangaDependency;
+import net.v4lproik.googlanime.service.api.entities.AnimeIdModel;
+import net.v4lproik.googlanime.service.api.entities.MangaModel;
 
 public interface MangaServiceWrite {
-    void save(MyAnimeListMangaDependency manga);
+    void save(AnimeIdModel manga);
 
-    void save(MyAnimeListManga manga);
+    void save(MangaModel manga);
 
-    void delete(MyAnimeListManga manga);
+    void delete(MangaModel manga);
 }

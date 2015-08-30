@@ -1,19 +1,18 @@
-package net.v4lproik.googlanime.service.api.common;
+package net.v4lproik.googlanime.mvc.models;
 
-import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListEntry;
-import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListEntryDependency;
+import net.v4lproik.googlanime.service.api.entities.Entry;
 
 import java.io.IOException;
 import java.util.Set;
 
-public abstract class WebsiteAbstract {
+public abstract class AbstractWebsite {
     /**
      * This functions aims to crawl an anime through the website
      * @param opts contains the type manga or anime and the query's name
      * @return a MyAnimeListAnimes. Its one object that contains all the depedencies
      * @throws IOException
      */
-    public abstract MyAnimeListEntry crawl(ImportOptions opts) throws IOException;
+    public abstract Entry crawl(String name, String type) throws IOException;
 
     /**
      * This functions aims to crawl an anime through the website by id
@@ -21,7 +20,7 @@ public abstract class WebsiteAbstract {
      * @return
      * @throws IOException
      */
-    public abstract MyAnimeListEntry crawlById(ImportOptions opts) throws IOException;
+    public abstract Entry crawl(Integer id, String type) throws IOException;
 
     /**
      * This functions aims to crawl an anime through the website by id
@@ -29,7 +28,7 @@ public abstract class WebsiteAbstract {
      * @return
      * @throws IOException
      */
-    public abstract Set<MyAnimeListEntryDependency> crawlByIdList(ImportOptions opts) throws IOException;
+    public abstract Set<Entry> crawlAndDependencies(Integer id, String type) throws IOException;
 
     /**
      * This function aims to call an API

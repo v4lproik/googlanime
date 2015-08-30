@@ -1,10 +1,10 @@
 package net.v4lproik.googlanime.service.api.utils;
 
 import net.v4lproik.googlanime.service.api.entities.*;
-import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListAuthor;
-import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListCharacter;
-import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListManga;
-import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListMangaDependency;
+import com.github.v4lproik.myanimelist.entities.Author;
+import com.github.v4lproik.myanimelist.entities.Character;
+import com.github.v4lproik.myanimelist.entities.Manga;
+import com.github.v4lproik.myanimelist.entities.MangaDependency;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +22,7 @@ public class TransformMangaMapper extends TransformAbstractMapper {
 
     public final static String DATE_FORMAT = "MMM dd, yyyy";
 
-    public MangaModel transformMyAnimeListMangaDependencyToDAO(MyAnimeListMangaDependency myAnimeListMangaDependency){
+    public MangaModel transformMyAnimeListMangaDependencyToDAO(MangaDependency myAnimeListMangaDependency){
         MangaModel manga = new MangaModel();
 
         ModelMapper modelMapper = new ModelMapper();
@@ -39,11 +39,11 @@ public class TransformMangaMapper extends TransformAbstractMapper {
             manga.setGenres(genresModel);
         }
 
-        List<MyAnimeListCharacter> characters = myAnimeListMangaDependency.getCharacters();
+        List<Character> characters = myAnimeListMangaDependency.getCharacters();
         if (characters != null) {
             CharacterModel characterModel;
             Set<CharacterModel> charactersModel = new HashSet<>();
-            for (MyAnimeListCharacter character : characters) {
+            for (Character character : characters) {
                 characterModel = new CharacterModel();
                 characterModel.setRole(character.getRole());
                 characterModel.setFirstName(character.getFirstName());
@@ -63,11 +63,11 @@ public class TransformMangaMapper extends TransformAbstractMapper {
             manga.setCharacters(charactersModel);
         }
 
-        List<MyAnimeListAuthor> authors = myAnimeListMangaDependency.getAuthors();
+        List<Author> authors = myAnimeListMangaDependency.getAuthors();
         if (authors != null) {
             AuthorModel authorModel;
             Set<AuthorModel> authorsModel = new HashSet<>();
-            for (MyAnimeListAuthor author : authors) {
+            for (Author author : authors) {
                 authorModel = new AuthorModel();
                 authorModel.setFirstName(author.getFirstName());
                 authorModel.setLastName(author.getLastName());
@@ -135,7 +135,7 @@ public class TransformMangaMapper extends TransformAbstractMapper {
         return manga;
     }
 
-    public MangaModel transformMyAnimeListMangaToDAO(MyAnimeListManga myAnimeListManga){
+    public MangaModel transformMyAnimeListMangaToDAO(Manga myAnimeListManga){
         MangaModel manga = new MangaModel();
 
         ModelMapper modelMapper = new ModelMapper();
@@ -152,11 +152,11 @@ public class TransformMangaMapper extends TransformAbstractMapper {
             manga.setGenres(genresModel);
         }
 
-        List<MyAnimeListCharacter> characters = myAnimeListManga.getCharacters();
+        List<Character> characters = myAnimeListManga.getCharacters();
         if (characters != null) {
             CharacterModel characterModel;
             Set<CharacterModel> charactersModel = new HashSet<>();
-            for (MyAnimeListCharacter character : characters) {
+            for (Character character : characters) {
                 characterModel = new CharacterModel();
                 characterModel.setRole(character.getRole());
                 characterModel.setFirstName(character.getFirstName());
@@ -176,11 +176,11 @@ public class TransformMangaMapper extends TransformAbstractMapper {
             manga.setCharacters(charactersModel);
         }
 
-        List<MyAnimeListAuthor> authors = myAnimeListManga.getAuthors();
+        List<Author> authors = myAnimeListManga.getAuthors();
         if (authors != null) {
             AuthorModel authorModel;
             Set<AuthorModel> authorsModel = new HashSet<>();
-            for (MyAnimeListAuthor author : authors) {
+            for (Author author : authors) {
                 authorModel = new AuthorModel();
                 authorModel.setFirstName(author.getFirstName());
                 authorModel.setLastName(author.getLastName());

@@ -2,11 +2,10 @@ package net.v4lproik.googlanime.mvc.controllers;
 
 import com.jayway.jsonpath.JsonPath;
 import net.v4lproik.googlanime.client.elasticsearch.Config;
+import net.v4lproik.googlanime.mvc.models.AbstractWebsite;
+import net.v4lproik.googlanime.mvc.models.FactoryWebsite;
 import net.v4lproik.googlanime.mvc.models.Website;
-import net.v4lproik.googlanime.mvc.models.WebsiteFactory;
-import net.v4lproik.googlanime.service.api.common.ImportOptions;
-import net.v4lproik.googlanime.service.api.common.WebsiteAbstract;
-import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListAnime;
+import net.v4lproik.googlanime.service.api.entities.AnimeModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,26 +23,22 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(
-        classes = {
-                Config.class
-        })
+@ContextConfiguration(classes = {Config.class})
 @ImportResource("classpath*  : application-context.xml")
 @WebAppConfiguration
 public class WebsiteControllerUTest {
 
     @Mock
-    WebsiteAbstract websiteAbstract;
+    AbstractWebsite website;
 
     @Mock
-    WebsiteFactory websiteFactory;
+    FactoryWebsite factoryWebsite;
 
     @InjectMocks
     private WebsiteController websiteController;
@@ -63,11 +58,12 @@ public class WebsiteControllerUTest {
         final Integer id = 20;
         final String type = "anime";
         final Boolean dependency = false;
-        MyAnimeListAnime anime = new MyAnimeListAnime(id);
+        AnimeModel anime = new AnimeModel();
+        anime.setId(new Long(20));
         anime.setTitle("Naruto");
 
-        when(websiteFactory.getWebsite(Website.valueOf(from.toUpperCase()))).thenReturn(websiteAbstract);
-        when(websiteAbstract.crawlById(new ImportOptions(anyInt(), type, dependency))).thenReturn(anime);
+        when(factoryWebsite.getWebsite(Website.valueOf(from.toUpperCase()))).thenReturn(website);
+        when(website.crawl(20, type)).thenReturn(anime);
 
 
         mockMvc.perform(get("/websites/import")
@@ -87,7 +83,8 @@ public class WebsiteControllerUTest {
         final Integer id = 20;
         final String type = "anime";
         final Boolean dependency = false;
-        MyAnimeListAnime anime = new MyAnimeListAnime(id);
+        AnimeModel anime = new AnimeModel();
+        anime.setId(new Long(20));
         anime.setTitle("Naruto");
 
         MvcResult result = mockMvc.perform(get("/websites/import")
@@ -111,12 +108,12 @@ public class WebsiteControllerUTest {
         final String from = "mal";
         final Integer id = 20;
         final String type = "anime";
-        MyAnimeListAnime anime = new MyAnimeListAnime(id);
+        AnimeModel anime = new AnimeModel();
+        anime.setId(new Long(20));
         anime.setTitle("Naruto");
 
-        when(websiteFactory.getWebsite(Website.valueOf(from.toUpperCase()))).thenReturn(websiteAbstract);
-        when(websiteAbstract.crawlById(new ImportOptions(anyInt(), type, false))).thenReturn(anime);
-
+        when(factoryWebsite.getWebsite(Website.valueOf(from.toUpperCase()))).thenReturn(website);
+        when(website.crawl(20, type)).thenReturn(anime);
 
         mockMvc.perform(get("/websites/import")
                         .param("from", from)
@@ -133,7 +130,8 @@ public class WebsiteControllerUTest {
         final String from = "unknown";
         final Integer id = 20;
         final String type = "anime";
-        MyAnimeListAnime anime = new MyAnimeListAnime(id);
+        AnimeModel anime = new AnimeModel();
+        anime.setId(new Long(20));
         anime.setTitle("Naruto");
 
         MvcResult result = mockMvc.perform(get("/websites/import")
