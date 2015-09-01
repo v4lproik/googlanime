@@ -5,14 +5,12 @@ import net.v4lproik.googlanime.client.mysql.SqlDatabaseInitializer;
 import net.v4lproik.googlanime.dao.api.AnimeDao;
 import net.v4lproik.googlanime.dao.api.MangaDao;
 import net.v4lproik.googlanime.service.api.AnimeServiceWrite;
-import net.v4lproik.googlanime.service.api.common.ImportOptions;
 import net.v4lproik.googlanime.service.api.entities.AnimeModel;
-import net.v4lproik.googlanime.service.api.myanimelist.MyAnimeList;
-import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListAnime;
-import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListCharacter;
-import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListEntry;
 import net.v4lproik.googlanime.service.api.utils.TransformAnimeMapper;
 import net.v4lproik.googlanime.service.api.utils.TransformMangaMapper;
+import com.github.v4lproik.myanimelist.api.impl.AnimeMangaInformation;
+import com.github.v4lproik.myanimelist.api.models.TypeEnum;
+import com.github.v4lproik.myanimelist.entities.Anime;
 import org.hibernate.SessionFactory;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -29,6 +27,7 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.io.File;
+import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doReturn;
@@ -60,7 +59,7 @@ public class AnimeRepositoryITest {
     TransformMangaMapper mangaMapper;
 
     @Spy
-    private MyAnimeList myAnimeList;
+    private AnimeMangaInformation myAnimeList;
 
     @Before
     public void setUp() throws Exception {
@@ -147,52 +146,29 @@ public class AnimeRepositoryITest {
     public void test_saveAnime_shouldBeInserted() throws Exception {
 
         // Given
-        ImportOptions options = new ImportOptions(2904, "anime", false);
-        String type = options.getType();
-        Integer id = options.getId();
-        String url = myAnimeList.createEntryURL(id, type);
-
-        File input = new File("src/test/resource/code-geass-r2.anime");
-        Document doc = Jsoup.parse(input, "UTF-8", url);
-
-        doReturn(doc).when(myAnimeList).getResultFromJSoup(url, type);
-
-        // When
-        MyAnimeListEntry response = myAnimeList.crawlById(options);
+        AnimeModel response = getAnime();
 
         // If more details needed
-        final Integer idCharacter = response.getCharacters().get(2).getId();
-        final MyAnimeListCharacter character = response.getCharacters().get(2);
-        final String urlCharacter = myAnimeList.createCharacterURL(idCharacter);
-        input = new File("src/test/resource/lelouch-lamperouge.character");
-        doc = Jsoup.parse(input, "UTF-8", url);
+//        final Integer idCharacter = response.getCharacters().get(2).getId();
+//        final MyAnimeListCharacter character = response.getCharacters().get(2);
+//        final String urlCharacter = myAnimeList.createCharacterURL(idCharacter);
+//        input = new File("src/test/resource/lelouch-lamperouge.character");
+//        doc = Jsoup.parse(input, "UTF-8", url);
+//
+//        myAnimeList.scrapCharacter(doc, urlCharacter, character);
+//
+//        AnimeModel anime = animeMapper.transformMyAnimeListAnimeToDAO((MyAnimeListAnime) response);
 
-        myAnimeList.scrapCharacter(doc, urlCharacter, character);
-
-        AnimeModel anime = animeMapper.transformMyAnimeListAnimeToDAO((MyAnimeListAnime) response);
-
-        animeDao.saveOrUpdate(anime);
+        animeDao.saveOrUpdate(response);
     }
 
     @Test
     public void test_saveAnimeTwice_shouldBeUpdated() throws Exception {
 
         // Given
-        ImportOptions options = new ImportOptions(2904, "anime", false);
-        String type = options.getType();
-        Integer id = options.getId();
-        String url = myAnimeList.createEntryURL(id, type);
-
-        File input = new File("src/test/resource/code-geass-r2.anime");
-        Document doc = Jsoup.parse(input, "UTF-8", url);
-
-        doReturn(doc).when(myAnimeList).getResultFromJSoup(url, type);
+        AnimeModel animeRes = getAnime();
 
         // When
-        MyAnimeListEntry response = myAnimeList.crawlById(options);
-
-        AnimeModel animeRes = animeMapper.transformMyAnimeListAnimeToDAO((MyAnimeListAnime) response);
-
         animeDao.saveOrUpdate(animeRes);
         animeRes.setTitle(animeRes.getTitle() + "_UPDATED");
         animeDao.saveOrUpdate(animeRes);
@@ -210,32 +186,37 @@ public class AnimeRepositoryITest {
     public void deleteAnime_shouldBeOK() throws Exception{
 
         // Given
-        ImportOptions options = new ImportOptions(2904, "anime", false);
-        String type = options.getType();
-        Integer id = options.getId();
-        String url = myAnimeList.createEntryURL(id, type);
+        AnimeModel response = getAnime();
 
-        File input = new File("src/test/resource/code-geass-r2.anime");
-        Document doc = Jsoup.parse(input, "UTF-8", url);
-
-        doReturn(doc).when(myAnimeList).getResultFromJSoup(url, type);
-
-        // When
-        MyAnimeListEntry response = myAnimeList.crawlById(options);
 
         // If more details needed
-        final Integer idCharacter = response.getCharacters().get(2).getId();
-        final MyAnimeListCharacter character = response.getCharacters().get(2);
-        final String urlCharacter = myAnimeList.createCharacterURL(idCharacter);
-        input = new File("src/test/resource/lelouch-lamperouge.character");
+//        final Integer idCharacter = response.getCharacters().get(2).getId();
+//        final MyAnimeListCharacter character = response.getCharacters().get(2);
+//        final String urlCharacter = myAnimeList.createCharacterURL(idCharacter);
+//        input = new File("src/test/resource/lelouch-lamperouge.character");
+//        doc = Jsoup.parse(input, "UTF-8", url);
+//
+//        response.getCharacters().set(2, myAnimeList.scrapCharacter(doc, urlCharacter, character));
+//
+//        AnimeModel anime = animeMapper.transformMyAnimeListAnimeToDAO((MyAnimeListAnime) response);
+
+        animeDao.saveOrUpdate(response);
+
+        animeDao.deleteById(response.getId());
+    }
+
+    private AnimeModel getAnime() throws IOException{
+        // Given
+        TypeEnum type = TypeEnum.ANIME;
+        Integer id = 2904;
+        String url = myAnimeList.createEntryURL(id, type);
+
+        Document doc = null;
+        File input = new File("src/test/resource/code-geass-r2.anime");
         doc = Jsoup.parse(input, "UTF-8", url);
 
-        response.getCharacters().set(2, myAnimeList.scrapCharacter(doc, urlCharacter, character));
+        doReturn(doc).when(myAnimeList).getResultFromJSoup(url, type.toString());
 
-        AnimeModel anime = animeMapper.transformMyAnimeListAnimeToDAO((MyAnimeListAnime) response);
-
-        animeDao.saveOrUpdate(anime);
-
-        animeDao.deleteById(new Long(2904));
+        return animeMapper.transformMyAnimeListAnimeToDAO((Anime) myAnimeList.crawl(id, type));
     }
 }

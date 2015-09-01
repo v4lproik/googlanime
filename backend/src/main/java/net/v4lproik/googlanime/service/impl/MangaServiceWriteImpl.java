@@ -4,8 +4,6 @@ import net.v4lproik.googlanime.dao.api.MangaDao;
 import net.v4lproik.googlanime.service.api.MangaServiceWrite;
 import net.v4lproik.googlanime.service.api.entities.AnimeIdModel;
 import net.v4lproik.googlanime.service.api.entities.MangaModel;
-import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListManga;
-import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListMangaDependency;
 import net.v4lproik.googlanime.service.api.utils.TransformMangaMapper;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +28,8 @@ public class MangaServiceWriteImpl implements MangaServiceWrite {
 
     @Transactional( readOnly = false)
     @Override
-    public void save(MyAnimeListMangaDependency manga) {
-        MangaModel mangaRes = mangaMapper.transformMyAnimeListMangaDependencyToDAO(manga);
+    public void save(MangaModel mangaRes) {
+//        MangaModel mangaRes = mangaMapper.transformMyAnimeListMangaDependencyToDAO(manga);
 
         if (mangaRes.getTitle() != null) {
 
@@ -49,16 +47,16 @@ public class MangaServiceWriteImpl implements MangaServiceWrite {
 
     @Transactional( readOnly = false)
     @Override
-    public void save(MyAnimeListManga manga) {
-        MangaModel entity = mangaMapper.transformMyAnimeListMangaToDAO(manga);
-        log.debug(entity.toString());
+    public void save(AnimeIdModel entity) {
+//        MangaModel entity = mangaMapper.transformMyAnimeListMangaToDAO(manga);
+//        log.debug(entity.toString());
         mangaDao.save(entity);
     }
 
     @Transactional( readOnly = false)
     @Override
-    public void delete(MyAnimeListManga manga) {
-        MangaModel entity = mangaMapper.transformMyAnimeListMangaToDAO(manga);
+    public void delete(MangaModel entity) {
+//        MangaModel entity = mangaMapper.transformMyAnimeListMangaToDAO(manga);
         mangaDao.delete(entity);
     }
 

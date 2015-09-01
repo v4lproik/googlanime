@@ -1,17 +1,11 @@
 package net.v4lproik.googlanime.mvc.controllers;
 
-import net.v4lproik.googlanime.mvc.models.BackendException;
-import net.v4lproik.googlanime.mvc.models.JSONResponse;
-import net.v4lproik.googlanime.mvc.models.Website;
-import net.v4lproik.googlanime.mvc.models.WebsiteFactory;
+import net.v4lproik.googlanime.mvc.models.*;
 import net.v4lproik.googlanime.service.api.AnimeServiceWrite;
 import net.v4lproik.googlanime.service.api.MangaServiceWrite;
-import net.v4lproik.googlanime.service.api.common.ImportOptions;
-import net.v4lproik.googlanime.service.api.common.WebsiteAbstract;
-import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListAnimeDependency;
-import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListEntry;
-import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListEntryDependency;
-import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListMangaDependency;
+import net.v4lproik.googlanime.service.api.entities.AnimeModel;
+import net.v4lproik.googlanime.service.api.entities.Entry;
+import net.v4lproik.googlanime.service.api.entities.MangaModel;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,7 +22,7 @@ public class WebsiteController {
     static Logger log = Logger.getLogger(WebsiteController.class.getName());
 
     @Autowired
-    private WebsiteFactory websiteFactory;
+    private FactoryWebsite factoryWebsite;
 
     @Autowired
     private AnimeServiceWrite animeServiceWrite;
@@ -46,7 +40,7 @@ public class WebsiteController {
 
         JSONResponse response = new JSONResponse();
 
-        WebsiteAbstract website = websiteFactory.getWebsite(Website.containsValue(from.toUpperCase()));
+        AbstractWebsite website = factoryWebsite.getWebsite(Website.containsValue(from.toUpperCase()));
 
         if (website == null) {
             response.setError(String.format("Website enum %s not found", from));
@@ -54,13 +48,12 @@ public class WebsiteController {
         }
 
         try{
-            MyAnimeListEntry myAnimeListAnime = website.crawl(new ImportOptions(name, type, dependency));
-            log.debug(myAnimeListAnime.toString());
-            response.setAnimes(myAnimeListAnime);
+            Entry entry = website.crawl(name, type);
+            response.setAnimes(entry);
 
             return response;
         }catch (IOException e){
-            log.debug("re " + e.getMessage());
+            log.debug(e);
             response.setError(e.getMessage());
         }
 
@@ -77,7 +70,7 @@ public class WebsiteController {
 
         JSONResponse response = new JSONResponse();
 
-        WebsiteAbstract website = websiteFactory.getWebsite(Website.containsValue(from.toUpperCase()));
+        AbstractWebsite website = factoryWebsite.getWebsite(Website.containsValue(from.toUpperCase()));
 
         if (website == null) {
             response.setError(String.format("Website enum %s not found", from));
@@ -85,12 +78,10 @@ public class WebsiteController {
         }
 
         try{
-            final ImportOptions opts = new ImportOptions(id, type, dependency);
             log.debug(String.format("/import with options from=%s, type=%s, id=%s, dependency=%s", from, type, id.toString(), dependency.toString()));
 
-            MyAnimeListEntry myAnimeListAnime = website.crawlById(opts);
-
-            response.setAnimes(myAnimeListAnime);
+            Entry entry = website.crawl(id, type);
+            response.setAnimes(entry);
 
             return response;
         }catch (IOException e){
@@ -111,7 +102,7 @@ public class WebsiteController {
 
         JSONResponse response = new JSONResponse();
 
-        WebsiteAbstract website = websiteFactory.getWebsite(Website.containsValue(from));
+        AbstractWebsite website = factoryWebsite.getWebsite(Website.containsValue(from.toUpperCase()));
 
         if (website == null) {
             response.setError(String.format("Website enum %s not found", from));
@@ -119,19 +110,18 @@ public class WebsiteController {
         }
 
         try{
-            final ImportOptions opts = new ImportOptions(id, type, dependency);
             log.debug(String.format("/import/store with options from=%s, type=%s, id=%s, dependency=%s", from, type, id.toString(), dependency.toString()));
 
-            Set<MyAnimeListEntryDependency> entries = website.crawlByIdList(opts);
+            Set<Entry> entries = website.crawlAndDependencies(id, type);
             response.setAnimes(entries);
 
-            for (MyAnimeListEntryDependency entity : entries){
+            for (Entry entity : entries){
 
-                if (entity.getType().equals("anime")){
-                    animeServiceWrite.save((MyAnimeListAnimeDependency) entity);
+                if (AbstractTypeEnum.fromValue(entity.getType()) == AbstractTypeEnum.ANIME){
+                    animeServiceWrite.save((AnimeModel) entity);
                 }else
                 {
-                    mangaServiceWrite.save((MyAnimeListMangaDependency) entity);
+                    mangaServiceWrite.save((MangaModel) entity);
                 }
             }
 

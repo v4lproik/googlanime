@@ -4,7 +4,7 @@ import net.v4lproik.googlanime.mvc.models.JSONResponse;
 import net.v4lproik.googlanime.mvc.models.Website;
 import net.v4lproik.googlanime.service.api.AnimeServiceRead;
 import net.v4lproik.googlanime.service.api.entities.Entry;
-import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListEntryDependency;
+import com.github.v4lproik.myanimelist.entities.EntryDependency;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -40,7 +40,7 @@ public class AnimeController {
         if (Website.containsValue(render) != null){
             switch (Website.containsValue(render)) {
                 case MAL:
-                    toCast = MyAnimeListEntryDependency.class;
+                    toCast = EntryDependency.class;
                     break;
             }
         }

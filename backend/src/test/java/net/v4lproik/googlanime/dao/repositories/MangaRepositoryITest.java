@@ -3,12 +3,11 @@ package net.v4lproik.googlanime.dao.repositories;
 import net.v4lproik.googlanime.client.mysql.DatabaseTestConfiguration;
 import net.v4lproik.googlanime.client.mysql.SqlDatabaseInitializer;
 import net.v4lproik.googlanime.dao.api.MangaDao;
-import net.v4lproik.googlanime.service.api.common.ImportOptions;
 import net.v4lproik.googlanime.service.api.entities.MangaModel;
-import net.v4lproik.googlanime.service.api.myanimelist.MyAnimeList;
-import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListEntry;
-import net.v4lproik.googlanime.service.api.myanimelist.models.MyAnimeListManga;
 import net.v4lproik.googlanime.service.api.utils.TransformMangaMapper;
+import com.github.v4lproik.myanimelist.api.impl.AnimeMangaInformation;
+import com.github.v4lproik.myanimelist.api.models.TypeEnum;
+import com.github.v4lproik.myanimelist.entities.Manga;
 import org.hibernate.SessionFactory;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -26,6 +25,7 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.io.File;
+import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doReturn;
@@ -51,7 +51,7 @@ public class MangaRepositoryITest {
     TransformMangaMapper mapper;
 
     @Spy
-    private MyAnimeList myAnimeList;
+    private AnimeMangaInformation myAnimeList;
 
     @Before
     public void setUp() throws Exception {
@@ -73,44 +73,19 @@ public class MangaRepositoryITest {
     public void test_saveManga_shouldBeInserted() throws Exception {
 
         // Given
-        ImportOptions options = new ImportOptions(11, "manga", false);
-        String type = options.getType();
-        final Integer id = options.getId();
-        String url = myAnimeList.createEntryURL(id, type);
-
-        File input = new File("src/test/resource/naruto.manga");
-        Document doc = Jsoup.parse(input, "UTF-8", url);
-
-        doReturn(doc).when(myAnimeList).getResultFromJSoup(url, type);
+        MangaModel response = getManga();
 
         // When
-        MyAnimeListEntry response = myAnimeList.crawlById(options);
-
-        MangaModel mangaRes = mapper.transformMyAnimeListMangaToDAO((MyAnimeListManga) response);
-
-        mangaDao.saveOrUpdate(mangaRes);
-
+        mangaDao.saveOrUpdate(response);
     }
 
     @Test
     public void test_saveMangaTwice_shouldBeUpdated() throws Exception {
 
         // Given
-        ImportOptions options = new ImportOptions(11, "manga", false);
-        String type = options.getType();
-        final Integer id = options.getId();
-        String url = myAnimeList.createEntryURL(id, type);
-
-        File input = new File("src/test/resource/naruto.manga");
-        Document doc = Jsoup.parse(input, "UTF-8", url);
-
-        doReturn(doc).when(myAnimeList).getResultFromJSoup(url, type);
+        MangaModel mangaRes = getManga();
 
         // When
-        MyAnimeListEntry response = myAnimeList.crawlById(options);
-
-        MangaModel mangaRes = mapper.transformMyAnimeListMangaToDAO((MyAnimeListManga) response);
-
         mangaDao.saveOrUpdate(mangaRes);
         mangaRes.setTitle(mangaRes.getTitle() + "_UPDATED");
         mangaDao.saveOrUpdate(mangaRes);
@@ -127,5 +102,20 @@ public class MangaRepositoryITest {
     @After
     public void rollBack() throws Exception{
         mangaDao.deleteById(new Long(11));
+    }
+
+    private MangaModel getManga() throws IOException {
+        // Given
+        TypeEnum type = TypeEnum.MANGA;
+        Integer id = 11;
+        String url = myAnimeList.createEntryURL(id, type);
+
+        Document doc = null;
+        File input = new File("src/test/resource/naruto.manga");
+        doc = Jsoup.parse(input, "UTF-8", url);
+
+        doReturn(doc).when(myAnimeList).getResultFromJSoup(url, type.toString());
+
+        return mapper.transformMyAnimeListMangaToDAO((Manga) myAnimeList.crawl(id, type));
     }
 }
