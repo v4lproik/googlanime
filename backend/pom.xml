@@ -11,7 +11,7 @@
 
     <properties>
         <spring.version>4.1.6.RELEASE</spring.version>
-        <myanimelist-api.version>0.1.4-SNAPSHOT</myanimelist-api.version>
+        <myanimelist-api.version>0.1.5-SNAPSHOT</myanimelist-api.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 

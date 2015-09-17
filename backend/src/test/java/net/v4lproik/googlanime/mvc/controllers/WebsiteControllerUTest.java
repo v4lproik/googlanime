@@ -1,11 +1,11 @@
 package net.v4lproik.googlanime.mvc.controllers;
 
 import com.jayway.jsonpath.JsonPath;
+import net.v4lproik.googlanime.client.crawler.CrawlerRegistry;
 import net.v4lproik.googlanime.client.elasticsearch.Config;
-import net.v4lproik.googlanime.mvc.models.AbstractWebsite;
-import net.v4lproik.googlanime.mvc.models.FactoryWebsite;
-import net.v4lproik.googlanime.mvc.models.Website;
 import net.v4lproik.googlanime.service.api.entities.AnimeModel;
+import net.v4lproik.googlanime.service.api.models.SourceEnum;
+import net.v4lproik.googlanime.service.api.models.TypeEnum;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,10 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class WebsiteControllerUTest {
 
     @Mock
-    AbstractWebsite website;
-
-    @Mock
-    FactoryWebsite factoryWebsite;
+    private CrawlerRegistry website;
 
     @InjectMocks
     private WebsiteController websiteController;
@@ -62,9 +59,7 @@ public class WebsiteControllerUTest {
         anime.setId(new Long(20));
         anime.setTitle("Naruto");
 
-        when(factoryWebsite.getWebsite(Website.valueOf(from.toUpperCase()))).thenReturn(website);
-        when(website.crawl(20, type)).thenReturn(anime);
-
+        when(website.crawl(20, TypeEnum.fromValue(type), SourceEnum.fromValue(from))).thenReturn(anime);
 
         mockMvc.perform(get("/websites/import")
                         .param("from", from)
@@ -112,8 +107,7 @@ public class WebsiteControllerUTest {
         anime.setId(new Long(20));
         anime.setTitle("Naruto");
 
-        when(factoryWebsite.getWebsite(Website.valueOf(from.toUpperCase()))).thenReturn(website);
-        when(website.crawl(20, type)).thenReturn(anime);
+        when(website.crawl(20, TypeEnum.fromValue(type), SourceEnum.fromValue(from))).thenReturn(anime);
 
         mockMvc.perform(get("/websites/import")
                         .param("from", from)
