@@ -1,6 +1,9 @@
 # Googlanime
 [![Circle CI](https://circleci.com/gh/v4lproik/googlanime/tree/master.svg?style=shield)](https://circleci.com/gh/v4lproik/googlanime/tree/master)
 
+## This repository is not maintained anymore. The project is now hosted [here for the backend](https://github.com/googanime/googanime-backend/tree/master) and [here for the frontend](https://github.com/googanime/googanime-frontend/tree/master)
+
+
 **Googlanime** contains a backend (JEE Rest API) and a frontend (EmberJS).
 
 This projects aims to provide a clear and nice interface to whoever is seeking for anime/manga information.
